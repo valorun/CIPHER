@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Robot panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+    <script src="/static/js/jquery.min.js"></script>
+</head>
+
+<body class="light-grey">
+
+  <!-- Top container -->
+  <div class="bar top black large" style="z-index:4">
+    <button class="bar-item button hide-large hover-none hover-text-light-grey" onclick="open_sidebar();"><i class="fa fa-bars"></i>  Menu</button>
+    <div class="bar-item right">
+     <a href="/logout" class="bar-item button padding"><i class="fas fa-lock-open"></i>  Déconnexion</a>
+   </div>
+ </div>
+
+ <!-- Sidebar/menu -->
+ <nav class="sidebar collapse dark-blue animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
+  <div class="center">
+    <img src="/w3images/avatar2.png" class="circle margin-right" style="width:46px">
+  </div>
+  <hr>
+  <div class="container">
+    <h5>Navigation</h5>
+  </div>
+  <div class="bar-block">
+    <a href="#" class="bar-item button padding-16 hide-large dark-grey hover-black" onclick="close_sidebar()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
+    <a href="#" class="bar-item button padding"><i class="fas fa-tachometer-alt"></i>  Tableau de bord</a>
+    <a href="#" class="bar-item button padding"><i class="fas fa-terminal"></i>  Commandes manuelles</a>
+    <a href="/speech" class="bar-item button padding"><i class="fas fa-comments"></i>  Actions vocales</a>
+    <a href="/graph" class="bar-item button padding"><i class="fas fa-project-diagram"></i>  Sequence drawer</a>
+    <a href="#" class="bar-item button padding"><i class="fas fa-cog"></i>  Paramètres</a>
+  </div>
+</nav>
+
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="overlay hide-large animate-opacity" onclick="close_sidebar()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="main" style="margin-left:300px;margin-top:43px;">
+
+  <!-- Header -->
+  <header class="container" style="padding-top:22px">
+    <h5><b><i class="fa fa-dashboard"></i> Panneau de control</b></h5>
+  </header>
+
+  <div class="row-padding margin-bottom">
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="container padding-16 light-grey">
+    <h4>FOOTER</h4>
+    <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+  </footer>
+
+  <!-- End page content -->
+</div>
+
+<script>
+// Get the Sidebar
+var mySidebar = document.getElementById("mySidebar");
+
+// Get the DIV with overlay effect
+var overlayBg = document.getElementById("myOverlay");
+
+// Toggle between showing and hiding the sidebar, and add overlay effect
+function open_sidebar() {
+  if (mySidebar.style.display === 'block') {
+    mySidebar.style.display = 'none';
+    overlayBg.style.display = "none";
+  } else {
+    mySidebar.style.display = 'block';
+    overlayBg.style.display = "block";
+  }
+}
+
+// Close the sidebar with the close button
+function close_sidebar() {
+  mySidebar.style.display = "none";
+  overlayBg.style.display = "none";
+}
+</script>
+
+</body>
+</html>
