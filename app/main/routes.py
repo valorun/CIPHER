@@ -7,8 +7,8 @@ from . import main
 from app.model import db, Sequence
 import json
 
-
 @main.route('/')
+@main.route('/index')
 def index():
 	if not session.get('logged_in'):
 		return render_template('login.html')
@@ -20,12 +20,19 @@ def debug():
 	return render_template('debug.html')
 
 
-@main.route('/graph')
-def graph():
+@main.route('/commands')
+def commands():
 	if not session.get('logged_in'):
 		return render_template('login.html')
 	else:
-		return render_template('graph.html')
+		return render_template('commands.html')
+
+@main.route('/graph')
+def graph():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return render_template('graph.html')
 
 @main.route('/speech')
 def speech():
@@ -33,6 +40,13 @@ def speech():
 		return render_template('login.html')
 	else:
 		return render_template('speech.html')
+
+@main.route('/settings')
+def settings():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return render_template('settings.html')
 
 @main.route('/save_sequence', methods=['POST'])
 def save_sequence():
