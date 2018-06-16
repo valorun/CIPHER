@@ -10,15 +10,15 @@ $(document).ready(function() {
   socket = io.connect('http://127.0.0.1:5000/client');
   //reponse du serveur lors d'une de l'écoute d'une phrase
   socket.on('response', function(msg) {
-      console.log('Message from server: ', msg);
-      if ('speechSynthesis' in window) {
-        var to_speak = new SpeechSynthesisUtterance(msg);
-        window.speechSynthesis.speak(to_speak);
-      }
+    console.log('Message from server: ', msg);
+    if ('speechSynthesis' in window) {
+      var to_speak = new SpeechSynthesisUtterance(msg);
+      window.speechSynthesis.speak(to_speak);
+    }
   });
 
   socket.on('connect', function() {
-      socket.emit('client_connect');
+    socket.emit('client_connect');
   });
 
   if ('webkitSpeechRecognition' in window) {
@@ -47,7 +47,7 @@ $(document).ready(function() {
         }
       }
       final_transcript = capitalize(final_transcript);
-      $("#detectionResult").append(linebreak(final_transcript));
+      $("#detectionResult").append("<li>"+linebreak(final_transcript)+"</li>");
       socket.emit('speech_detected', final_transcript);
     };
   }

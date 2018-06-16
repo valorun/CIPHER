@@ -1,0 +1,112 @@
+{% extends 'template.html' %} {% block content %}
+<link href="/static/css/vis.min.css" rel="stylesheet" type="text/css" />
+<script src="/static/js/sequences/vis.js"></script>
+<script src="/static/js/sequences/graph.js"></script>
+<script src="/static/js/sequences/sequences.js"></script>
+<style type="text/css">
+  #network {
+    width: 100%;
+    height: 600px;
+    border: 1px solid lightgray;
+  }
+</style>
+
+<header class="container padding-16">
+  <h2><b><i class="fa fa-project-diagram"></i> Sequence drawer</b></h2>
+</header>
+
+<div class="container card padding-16 margin">
+  <h3>Création</h3>
+  <div class="container margin">
+    <div>
+      <input type="radio" id="motionChoice" name="choice" value="motion" class="radio" checked>
+      <label for="motionChoice">Déplacement</label>
+      <div id="motionOptions" class="row-padding">
+        <div class="half">
+          <label for="left">Gauche:</label>
+          <input type="number" id="left" value="0" class="input border" min="-2047" max="2047">
+        </div>
+        <div class="half">
+          <label for="right">Droite:</label>
+          <input type="number" id="right" value="0" class="input border" min="-2047" max="2047">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <input type="radio" id="servoChoice" name="choice" value="servo" class="radio">
+      <label for="servoChoice">Séquence servomoteurs</label>
+      <div id="servoOptions" class="row-padding">
+        <label for="sequence">Séquence:</label>
+        <input type="text" id="sequence" value="" class="input border" placeholder="Exemple: sequence1">
+      </div>
+    </div>
+
+    <div>
+      <input type="radio" id="relayChoice" name="choice" value="relay" class="radio">
+      <label for="relayChoice">Relai</label>
+      <div id="relayOptions" class="row-padding">
+        <div class="half">
+          <label for="motionChoice">Relai:</label>
+          <select class="select border" name="relai" id="relai">
+            <option value="" disabled selected>Choisir un relai</option>
+            {% for r in relays %}
+            {% if r.enabled %}
+            <option value="{{ r.label }}" >{{ r.label }}</option>
+            {% endif %}
+            {% endfor %}
+          </select>
+        </div class="half">
+        <div>
+          <input class="check" type="checkbox" checked="checked" id="relayOnOff">
+          <label>On/Off</label>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <input type="radio" id="speechChoice" name="choice" value="speech" class="radio">
+      <label for="speechChoice">Parole</label>
+      <div id="speechOptions" class="row-padding">
+        <label for="sentence">Phrase:</label>
+        <input type="text" id="sentence" value="" class="input border" placeholder="Exemple: bonjour, je suis un robot">
+      </div>
+    </div>
+
+    <div>
+      <input type="radio" id="pauseChoice" name="choice" value="pause" class="radio">
+      <label for="pauseChoice">Pause</label>
+      <div id="pauseOptions" class="row-padding">
+        <label for="pause">Temps(ms):</label>
+        <input type="number" id="pause" value="0" class="input border" min="0">
+      </div>
+    </div>
+  </div>
+  <div id="network"></div>
+
+  <input type="text" id="name" value="" class="input" placeholder="Exemple: sequence1">
+  <input type="button" id="saveButton" value="Enregistrer" class="button dark-red">
+</div>
+
+<div class="container card padding-16 margin">
+  <h3>Séquences enregistrées</h3>
+  <table class="table bordered">
+    {% for s in sequences %}
+    <tr id="{{ s.id }}">
+      <td>{{ s.id }}</td>
+      <td>
+        {% if s.enabled==True %}
+          <input id="enable_{{ s.id }}" type="checkbox" name="enableSeq" checked="checked" class="check">
+        {% else %}
+          <input id="enable_{{ s.id }}" type="checkbox" name="enableSeq" class="check">
+        {% endif %}
+        <label for="enable_{{ s.id }}">activé</label>
+      </td>
+      <td><input id="edit_{{ s.id }}" type="button" name="editSeq" value="Editer" class="button dark-red"></td>
+      <td><input id="delete_{{ s.id }}" type="button" name="deleteSeq" value="Supprimer" class="button dark-red"></td>
+      <td class="hide"><div id="data_{{ s.id }}" name="dataSeq">{{ s.value }}</div></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

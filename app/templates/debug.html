@@ -7,10 +7,9 @@
 </header>
 
 <input type="text" id="command" value="" class="input border" placeholder="Exemple: move">
-<input class="button blue" id="sendButton" type="button" value="Envoyer">
+<input class="button dark-red" id="sendButton" type="button" value="Envoyer">
 <script>
   var socket;
-
 
   $(document).ready(function() {
 
@@ -22,6 +21,8 @@
     $("#sendButton").on("click", function(){
       socket.emit('debug_command', $("#command").val());
     });
+
   });
+
 </script>
 {% endblock %}

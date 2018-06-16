@@ -26,11 +26,11 @@
                 var playButtonId = "playRecordingButton" + recordingId;
                 var deleteButtonId = "deleteRecordingButton" + recordingId;
                 
-                var appendHtml = '<div id=' + playbackDivId + '>enregistrement #' + recordingId;
-                appendHtml += ' pour le mot <b>' + $("#currentKeyword").val() + '</b>';
-                appendHtml += '<input type="button" class="button blue" value="lire" id="' + playButtonId + '"" />';
-                appendHtml += '<input type="button" class="button blue" value="supprimer" id="' + deleteButtonId + '" />';
-                appendHtml += '</div>';
+                var appendHtml = '<tr id=' + playbackDivId + '>';
+                appendHtml += '<td>enregistrement #' + recordingId +' pour le mot <b>' + $("#currentKeyword").val() + '</b></td>';
+                appendHtml += '<td><input type="button" class="button blue" value="lire" id="' + playButtonId + '" /></td>';
+                appendHtml += '<td><input type="button" class="button blue" value="supprimer" id="' + deleteButtonId + '" /></td>';
+                appendHtml += '</tr>';
 
                 $("#training").append(appendHtml);
 
@@ -59,17 +59,23 @@
             var fr = new FileReader();
             fr.onload = function () {
                 var json=$.parseJSON( fr.result );
-                speechRec.resetBuffers();
-                speechRec.wordBuffer.push($("#currentKeyword").val());
-                speechRec.model=json;
-            
+                speechRec.model=json[0];
+                speechRec.wordBuffer=json[1];
+                speechRec.modelBuffer=json[2];
+                console.log(speechRec.model);
+                console.log(speechRec.wordBuffer);
+                console.log(speechRec.modelBuffer);
             };
             fr.readAsText(input);
         });
         
         //bouton permettant de sauvegarder le modèle
         $("#saveButton").click(function() {
-            download(JSON.stringify(speechRec.model), "dataset.txt");
+            var json=[];
+            json.push(speechRec.model);
+            json.push(speechRec.wordBuffer);
+            json.push(speechRec.modelBuffer);
+            download(JSON.stringify(json), "dataset.txt");
         });
 
         //bouton permettant de lancer la reconnaissance
@@ -95,9 +101,9 @@
                 var timeId = new Date().getTime();
                 var playbackDivId = "playbackKeywordSpotId" + timeId;
 
-                var appendHtml = '<div id=' + playbackDivId + '>';
+                var appendHtml = '<li id=' + playbackDivId + '>';
                 appendHtml += '<b> '+ result.match + '</b> ';
-                appendHtml += '</div>';
+                appendHtml += '</li>';
 
                 $("#detectionResult").append(appendHtml);
                 startDictation(); //on commence la reconnaissance quand le mot est reconnu

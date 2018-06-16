@@ -17,7 +17,7 @@ class SequenceReader:
 		for c in self.getChildren(startNode, edges):
 			socketio.start_background_task(self.executeSequence, c, nodes, edges)
 		self.threads-=1
-		
+
 	#execute une action suivant un label donné, par exemple 'sleep:100ms'
 	def executeAction(self, label):
 		if(len(label.split(":"))<2):
@@ -54,4 +54,3 @@ class SequenceReader:
 		nodes=json[0]
 		edges=json[1]
 		self.executeSequence("start", nodes, edges)
-		

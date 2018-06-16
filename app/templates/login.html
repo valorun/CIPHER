@@ -14,8 +14,8 @@
 	{% if session['logged_in'] %}
 	<p>Vous êtes déja connecté !!</p>
 	{% else %}
-	<div class="container center">
-		<form action="/login" method="POST" class="card container">
+	<div class="container display-middle card-4 center">
+		<form action="/login" method="POST" class="container">
 			<h2>Connexion au panneau de gestion<h2>
 			<p>
 				<input type="username" name="username" placeholder="Username" required>
@@ -24,7 +24,7 @@
 				<input type="password" name="password" placeholder="Password" required>
 			</p>
 			<p>
-				<input type="submit" value="Connexion">
+				<input type="submit" value="Connexion" class="button light-grey">
 			</p>
 		</form>
 	</div>

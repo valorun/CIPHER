@@ -2,37 +2,78 @@
 {% block content %}
 <!-- Include the WebRTC adapter -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-<script src="/static/js/adapter.js"></script>
-<script src="/static/js/JsSpeechRecognizer.js"></script>
-<script src="/static/js/keywordDetection.js"></script>
-<script src="/static/js/speechToText.js"></script>
+<script src="/static/js/speech/adapter.js"></script>
+<script src="/static/js/speech/JsSpeechRecognizer.js"></script>
+<script src="/static/js/speech/keywordDetection.js"></script>
+<script src="/static/js/speech/speechToText.js"></script>
+<script src="/static/js/speech/train.js"></script>
 
 <header class="container padding-16">
   <h2><b><i class="fa fa-comments"></i> Actions vocales</b></h2>
 </header>
 
-<div class="row">
-    <div class="one-half column">
-        <h3>Entrainement</h3>
-        <input type="file" id="inputDataset" style="display:none" class="select">
-        <label for="inputDataset" class="button blue">Charger un entrainement</label>
-        <div>
-            Mot clé: <input id="currentKeyword" type="text" value="" class="input">
-            <input class="button blue" id="startStopRecordingButton" type="button" value="Lancer l'entrainement">
-            <input class="button blue" id="saveButton" type="button" value="save training">
+<div class="">
+    <div class="container card padding-16 margin">
+        <h3>Mot clé d'activation</h3>
+        <div class="container">
+            <input type="file" id="inputDataset" class="select hide">
+            <label for="inputDataset" class="button dark-red">Charger un entrainement</label>
+        </div>
+        <div class="container padding">
+            <label for="currentKeyword">Mot clé: </label>
+            <input id="currentKeyword" type="text" value="" class="input">
+            <input class="button dark-red" id="startStopRecordingButton" type="button" value="Lancer l'entrainement">
+            <input class="button dark-red" id="saveButton" type="button" value="Enregistrer l'entrainement">
         </div>
 
-        <div id="training">
-        </div>
+        <table id="training" class="table bordered">
+        </table>
+
     </div>
 
-    <div class="one-half column">
+    <div class="container card padding-16 margin">
         <h3>Reconnaissance</h3>
-        <div>
-            <input class="button blue" id="startStopRecognition" type="button" value="Lancer la reconnaissance" />
+        <div class="container">
+            <input class="button dark-red" id="startStopRecognition" type="button" value="Lancer la reconnaissance">
         </div>
 
-        <div id="detectionResult">
+        <ul id="detectionResult" class="ul">
+        </ul>
+    </div>
+
+    <div class="container card padding-16 margin">
+
+        <h3>Entrainement</h3>
+        <div class="row">
+            <div class="third container">
+                <label for="currentSentence">Phrase: </label>
+                <input id="currentSentence" type="text" value="" class="input border">
+            </div>
+            <div class="third container">
+                <label for="currentResponse">Réponse: </label>
+                <input id="currentResponse" type="text" value="" class="input border">
+            </div>
+            <div class="third container">
+                <label for="currentSequence">Séquence (optionnel): </label>
+                <select id="currentSequence" class="select" name="sequence">
+                    <option value="" disabled selected>Choisir une séquence</option>
+                    <option value="" >Aucune</option>
+                    {% for s in sequences %}
+                    <option value="{{ s.id }}" >{{ s.id }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="container">
+            <input class="button dark-red" id="addToConvButton" type="button" value="Ajouter à la conversation">
+        </div>
+        <div class="container">
+            <h4>Conversation</h4>
+            <ul id="conversation" class="ul half">
+            </ul>
+        </div>
+        <div class="container">
+            <input class="button dark-red row" id="trainButton" type="button" value="Entrainer">
         </div>
     </div>
 </div>

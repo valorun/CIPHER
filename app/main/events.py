@@ -13,7 +13,7 @@ sequence_reader = SequenceReader()
 
 chatbot = ChatBot(
     'Hector',
-    trainer='chatterbot.trainers.ChatterBotCorpusTrainer',
+    trainer='chatterbot.trainers.ListTrainer',
     storage_adapter="chatterbot.storage.SQLStorageAdapter",
     logic_adapters=[
         {
@@ -26,9 +26,9 @@ chatbot = ChatBot(
     ],
     database="./chatbot.db"
 )
-chatbot.train(
-    './corpus_test.yml'
-)
+#chatbot.train(
+#    './corpus_test.yml'
+#)
 
 @socketio.on('client_connect', namespace='/client')
 def client_connect():
@@ -41,13 +41,18 @@ def speech_detected(transcript):
     if(len(response.split("]"))>1):
         seq_name=response.split("[")[1].split("]")[0]
         seq = Sequence.query.filter_by(id=seq_name).first()
-        #Si une séquence existe, on l'active
-        if(seq!=None):
+        response = response.split("]")[1]
+        #Si une séquence existe et est activée, on la lance
+        if(seq!=None and seq.enabled):
             seq_data = seq.value
             print('Command received: '+seq_name)
             sequence_reader.readSequence(json.loads(seq_data))
-    else:
-        emit("response", response)
+    emit("response", response)
+
+@socketio.on('train', namespace='/client')
+def train_chatbot(conversation):
+    print("Chatbot trained with: ".join(conversation))
+    chatbot.train(conversation)
 
 @socketio.on('disconnect', namespace='/client')
 def client_disconnect():
@@ -56,7 +61,7 @@ def client_disconnect():
 @socketio.on('debug_command', namespace='/debug')
 def debug_command(seq_name):
     seq = Sequence.query.filter_by(id=seq_name).first()
-    if(seq!=None):
+    if(seq!=None and seq.enabled):
         seq_data = seq.value
         print('Command received: '+seq_name)
         sequence_reader.readSequence(json.loads(seq_data))
