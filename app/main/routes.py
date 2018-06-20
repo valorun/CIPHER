@@ -4,7 +4,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from threading import Thread
 from . import main
-from app.model import db, Sequence, Relay
+from app.model import db, Sequence, Relay, Button
 import json
 
 @main.route('/')
@@ -22,10 +22,13 @@ def debug():
 
 @main.route('/commands')
 def commands():
-	if not session.get('logged_in'):
-		return render_template('login.html')
-	else:
-		return render_template('commands.html')
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        sequences=Sequence.query.all()
+        relays=Relay.query.all()
+        buttons=Button.query.all()
+        return render_template('commands.html', sequences=sequences, relays=relays, buttons=buttons)
 
 @main.route('/sequences')
 def sequences():
@@ -78,6 +81,21 @@ def save_relay():
         db.session.commit()
         return render_template('settings.html')
 
+@main.route('/save_button', methods=['POST'])
+def save_button():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        rel_label = request.form.get("rel_label")
+        btn_label = request.form.get("btn_label")
+        btn_left = request.form.get("btn_left")
+        btn_top = request.form.get("btn_top")
+        print("Saving button "+btn_label)
+        db_button = Button(relay_label=rel_label, label=btn_label, left=btn_left, top=btn_top)
+        db.session.merge(db_button)
+        db.session.commit()
+        return render_template('commands.html')
+
 @main.route('/enable_sequence', methods=['POST'])
 def enable_sequence():
     if not session.get('logged_in'):
@@ -125,6 +143,18 @@ def delete_relay():
         db.session.delete(db_rel)
         db.session.commit()
         return render_template('settings.html')
+
+@main.route('/delete_button', methods=['POST'])
+def delete_button():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        rel_label = request.form.get("rel_label")
+        print("Deleting relay "+rel_label)
+        db_btn = Button.query.filter_by(relay_label=rel_label).first()
+        db.session.delete(db_btn)
+        db.session.commit()
+        return render_template('commands.html')
 
 
 @main.route('/login', methods=['POST'])

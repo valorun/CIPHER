@@ -28,6 +28,7 @@ class ServoNamespace(BaseNamespace):
 class RelayNamespace(BaseNamespace):
 	def on_command(self, *args):
 		print('relay', args)
+		#TODO prendre en compte le cas où il n'y a pas détat spécifié
 
 
 #logging.getLogger('socketIO-client').setLevel(logging.DEBUG)

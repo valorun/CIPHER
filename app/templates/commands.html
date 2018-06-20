@@ -1,6 +1,72 @@
 {% extends 'template.html' %}
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+<script src="/static/js/commands/commands.js"></script>
+<style>
+#draggable {position:absolute; }
+</style>
 <header class="container padding-16">
-  <h2><b><i class="fa fa-terminal"></i> Commandes manuelles</b></h2>
+	<h2><b><i class="fa fa-terminal"></i> Commandes manuelles</b></h2>
 </header>
+
+<div class="row-padding">
+	<div class="half">
+	<div class="container card padding-16" >
+		<select class="select border" name="sequence" id="sequence">
+			<option value="" disabled selected>Choisir une séquence</option>
+			{% for s in sequences %}
+			{% if s.enabled %}
+			<option value="{{ s.id }}" >{{ s.id }}</option>
+			{% endif %}
+			{% endfor %}
+		</select>
+		<input class="button dark-red" id="playSeqButton" type="button" value="Executer la séquence">
+	</div>
+</div>
+	<div class="half">
+	<div class="container card padding-16 half">
+		<h3>Chariot</h3>
+		<table class="cell">
+			<tr>
+  				<td></td>
+  				<td><i class="button dark-red fas fa-arrow-up motion-direction" value="motion_up"></i></td>
+  				<td></td>
+			</tr>
+			<tr>
+  				<td><i class="button dark-red fas fa-arrow-left motion-direction" value="motion_left"></i></td>
+  				<td></td>
+  				<td><i class="button dark-red fas fa-arrow-right motion-direction" value="motion_right"></i></td>
+			</tr>
+			<tr>
+  				<td></td>
+  				<td><i class="button dark-red fas fa-arrow-down motion-direction" value="motion_down"></i></td>
+  				<td></td>
+			</tr>
+		</table>
+		<div id="motion_slider" class="cell" style="height:100px;"></div>
+	</div>
+</div>
+</div>
+
+<div>
+	<i class="button dark-red fas fa-edit" id="editPanelButton"></i>
+	<div id="newButtonOptions" class="row hide">
+		<select class="select border third" name="relays" id="relays">
+			<option value="" disabled selected>Choisir un relai</option>
+			{% for r in relays %}
+			{% if r.enabled %}
+			<option value="{{ r.label }}" >{{ r.label }}</option>
+			{% endif %}
+			{% endfor %}
+		</select>
+		<input id="buttonLabel" type="text" value="" class="input third" placeholder="Nom du bouton">
+		<input id="addButton" type="button" value="Ajouter" class="button dark-red third">
+	</div>
+	<div id="panel" class="border container" style="height: 600px; width:100%">
+		<i class="xxlarge text-red opacity padding-16 fas fa-trash hide" id="deleteIcon"></i>
+		{% for b in buttons %}
+		<span class='btn dark-red draggable' value="{{ b.relay_label }}" top="{{b.top}}" left="{{b.left}}">{{ b.label }}</span>
+		{% endfor %}
+	</div>
+</div>
 {% endblock %}

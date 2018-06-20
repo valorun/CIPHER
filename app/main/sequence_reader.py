@@ -4,7 +4,9 @@
 import time
 from .. import socketio
 import asyncio
+from app.model import db, Relay
 
+#classe permettant de lire une sequence ou d'executer une action
 class SequenceReader:
 	def __init__(self):
 		#nombre d'actions en cours, qu'il faut donc attendre avant d'executer une autre séquence
@@ -25,9 +27,20 @@ class SequenceReader:
 		action=label.split(":")[0]
 		option=label.split(":")[1]
 		if(action=="pause"):
+			#si c'est une pause, l'execution du script se met en pause
 			socketio.sleep( int(option.split("ms")[0])/1000 )
 		elif(action=="speech"):
+			#si c'est une parole, on retourne le tout directement au client
 			socketio.emit("response", option.split('"')[0], namespace="/client", broadcast=True)
+		elif(action=="relay"): 
+			#si c'est un relai, cherche d'abord le pin associé, reconstitue la requete
+			rel_label=option.rsplit(',',1)[0]
+			rel_state=""
+			#si un état est spécifié (0 ou 1)
+			if(len(option.rsplit(',',1))>1):
+				rel_state=','+option.rsplit(',',1)[1]
+			db_rel = Relay.query.filter_by(label=rel_label).first()
+			socketio.emit("command", db_rel.pin+rel_state, namespace="/relay", broadcast=True)
 		else:
 			#envoie de la commande aux raspberries
 			print("Sending "+action+" to rasperries.")

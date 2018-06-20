@@ -7,7 +7,7 @@ from chatterbot import ChatBot
 import json
 from .. import socketio
 from .sequence_reader import SequenceReader
-from app.model import  Sequence
+from app.model import  Sequence, Button
 
 sequence_reader = SequenceReader()
 
@@ -58,10 +58,15 @@ def train_chatbot(conversation):
 def client_disconnect():
     print('Client '+ str(request.remote_addr) +' disconnected')
 
-@socketio.on('debug_command', namespace='/debug')
-def debug_command(seq_name):
+@socketio.on('play_sequence', namespace='/client')
+def play_sequence(seq_name):
     seq = Sequence.query.filter_by(id=seq_name).first()
     if(seq!=None and seq.enabled):
         seq_data = seq.value
-        print('Command received: '+seq_name)
+        print('Executing sequence '+seq_name)
         sequence_reader.readSequence(json.loads(seq_data))
+
+@socketio.on('command', namespace='/client')
+def command(label):
+    print("Received command: "+label)
+    sequence_reader.executeAction(label);

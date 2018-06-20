@@ -99,7 +99,8 @@ function graphIsValid() { //check if all nodes have at least one parent node
         },
         layout: {
           hierarchical: {
-            direction: 'DU'
+            direction: 'DU',
+			sortMethod: 'directed'
           },
           randomSeed: 2 //layout will be always the same
         }
