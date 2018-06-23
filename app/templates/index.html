@@ -1,12 +1,23 @@
 {% extends 'template.html' %}
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+<script src="/static/js/connection.js"></script>
+<script src="/static/js/index/index.js"></script>
 
-  <!-- Header -->
-  <header class="container padding-16">
-    <h2><b><i class="fa fa-tachometer-alt"></i> Panneau de control</b></h2>
-  </header>
+<header class="container padding-16">
+	<h2><b><i class="fa fa-tachometer-alt"></i> Panneau de contrôl</b></h2>
+</header>
+<div class="row-padding">
+	<div class="container card padding-16">
+		<i class="xxlarge dark-red button fa fa-power-off" id="shutdownButton"></i>
+		<i class="xxlarge dark-red button fa fa-redo" id="rebootButton"></i>
+	</div>
 
-  <div class="row-padding margin-bottom">
-    En construction
-  </div>
+	<div class="container card padding-16">
+		<video src="rtsp://myhost.com/mymedia.format">
+			<!-- Fallback here -->
+		</video>
+	</div>
+</div>
+
 {% endblock %}

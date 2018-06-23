@@ -70,3 +70,15 @@ def play_sequence(seq_name):
 def command(label):
     print("Received command: "+label)
     sequence_reader.executeAction(label);
+
+
+@socketio.on('shutdown', namespace='/client')
+def shutdown():
+    print("Shutdown rasperries")
+    emit("shutdown", namespace="/raspi")
+
+@socketio.on('reboot', namespace='/client')
+def reboot():
+    print("Reboot rasperries")
+    emit("reboot", namespace="/raspi")
+    

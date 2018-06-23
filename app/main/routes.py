@@ -64,7 +64,7 @@ def save_sequence():
         seq_data = request.form.get("seq_data")
         print("Saving sequence "+seq_name)
         db_sequence = Sequence(id=seq_name, value=seq_data, enabled=True)
-        db.session.add(db_sequence)
+        db.session.merge(db_sequence)
         db.session.commit()
         return render_template('sequences.html')
 
@@ -160,6 +160,7 @@ def delete_button():
 @main.route('/login', methods=['POST'])
 def admin_login():
     if request.form['password'] == 'password' and request.form['username'] == 'admin':
+        session['username'] = request.form['username']
         session['logged_in'] = True
     else:
         flash('L\'utilisateur ou le mot de passe est incorrect')

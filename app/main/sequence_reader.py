@@ -40,7 +40,7 @@ class SequenceReader:
 			if(len(option.rsplit(',',1))>1):
 				rel_state=','+option.rsplit(',',1)[1]
 			db_rel = Relay.query.filter_by(label=rel_label).first()
-			socketio.emit("command", db_rel.pin+rel_state, namespace="/relay", broadcast=True)
+			socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay", broadcast=True)
 		else:
 			#envoie de la commande aux raspberries
 			print("Sending "+action+" to rasperries.")

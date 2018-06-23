@@ -1,6 +1,7 @@
 {% extends 'template.html' %}
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+<script src="/static/js/connection.js"></script>
 
 <header class="container padding-16">
   <h2><b><i class="fa fa-bug"></i> Panneau de debug</b></h2>
@@ -12,14 +13,8 @@
   var socket;
 
   $(document).ready(function() {
-
-    socket = io.connect('http://127.0.0.1:5000/debug');
-
-    socket.on('command', function(msg) {
-      console.log('Message from server: ', msg);
-    });
     $("#sendButton").on("click", function(){
-      socket.emit('debug_command', $("#command").val());
+      socket.emit('command', $("#command").val());
     });
 
   });

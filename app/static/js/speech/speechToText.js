@@ -17,10 +17,6 @@ $(document).ready(function() {
     }
   });
 
-  socket.on('connect', function() {
-    socket.emit('client_connect');
-  });
-
   if ('webkitSpeechRecognition' in window) {
 
     recognition = new webkitSpeechRecognition();
