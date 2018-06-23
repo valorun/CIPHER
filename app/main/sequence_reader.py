@@ -31,7 +31,7 @@ class SequenceReader:
 			socketio.sleep( int(option.split("ms")[0])/1000 )
 		elif(action=="speech"):
 			#si c'est une parole, on retourne le tout directement au client
-			socketio.emit("response", option.split('"')[0], namespace="/client", broadcast=True)
+			socketio.emit("response", option.split('"')[0], namespace="/client")
 		elif(action=="relay"): 
 			#si c'est un relai, cherche d'abord le pin associé, reconstitue la requete
 			rel_label=option.rsplit(',',1)[0]
@@ -40,11 +40,11 @@ class SequenceReader:
 			if(len(option.rsplit(',',1))>1):
 				rel_state=','+option.rsplit(',',1)[1]
 			db_rel = Relay.query.filter_by(label=rel_label).first()
-			socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay", broadcast=True)
+			socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay")
 		else:
 			#envoie de la commande aux raspberries
 			print("Sending "+action+" to rasperries.")
-			socketio.emit("command", option, namespace="/"+action, broadcast=True)
+			socketio.emit("command", option, namespace="/"+action)
 		print(label)
 
 	#retourne la liste des id des noeuds enfants

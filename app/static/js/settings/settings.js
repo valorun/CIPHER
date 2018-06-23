@@ -5,8 +5,9 @@ $(document).ready(function() {
     var pin=$("#newPin").val();
     $.post( "/save_relay", {rel_label:label, rel_pin:pin}, function(){
       console.log(label+" saved");
+      location.reload();
     });
-    location.reload(); 
+    //location.reload();
   });
 
   $('input[name=enableRel]').on("change", function() {

@@ -43,7 +43,7 @@ $(document).ready(function() {
 			command+=value+",-"+value;
 		}
 		socket.emit('command', command);
-	}).on('mouseup mouseleave', function() {
+	}).on('mouseup', function() { //mouseleave si on veut arreter quand la souris sort du bouton
 		var command="motion:0,0";
     	socket.emit('command', command);
 	});
