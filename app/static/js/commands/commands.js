@@ -1,7 +1,7 @@
 var editMode=true;
 $(document).ready(function() {
 
-    socket.on('update_buttons_positions', function(msg) {
+    socket.on('update_buttons_state', function(msg) {
     	console.log('Message from server: ', msg);
     });
 
@@ -79,6 +79,10 @@ function relayAlreadyUsed(rel_label){
 	return found;
 }
 
+//met à jour l'apparence d'un bouton
+function updateButtonState(relay, state){
+
+}
 
 //met a jour l'affichage suivant le mode (édition ou non)
 function updateMode(){

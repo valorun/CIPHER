@@ -7,7 +7,6 @@ var recognizing = false;
 
 $(document).ready(function() {
 
-  socket = io.connect('http://127.0.0.1:5000/client');
   //reponse du serveur lors d'une de l'écoute d'une phrase
   socket.on('response', function(msg) {
     console.log('Message from server: ', msg);

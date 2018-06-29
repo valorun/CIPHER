@@ -71,7 +71,6 @@ def command(label):
     print("Received command: "+label)
     sequence_reader.executeAction(label);
 
-
 @socketio.on('shutdown', namespace='/client')
 def shutdown():
     print("Shutdown rasperries")
