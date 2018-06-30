@@ -7,7 +7,7 @@ from chatterbot import ChatBot
 import json
 from .. import socketio
 from .sequence_reader import SequenceReader
-from app.model import  Sequence, Button
+from app.model import  Sequence, Relay, Button
 
 sequence_reader = SequenceReader()
 
@@ -34,6 +34,10 @@ chatbot = ChatBot(
 def client_connect():
 	print("Client "+str(request.remote_addr)+' connected.')
 
+@socketio.on('disconnect', namespace='/client')
+def client_disconnect():
+    print('Client '+ str(request.remote_addr) +' disconnected')
+
 @socketio.on('speech_detected', namespace='/client')
 def speech_detected(transcript):
     print("Received data: " + transcript)
@@ -54,10 +58,6 @@ def train_chatbot(conversation):
     print("Chatbot trained with: ".join(conversation))
     chatbot.train(conversation)
 
-@socketio.on('disconnect', namespace='/client')
-def client_disconnect():
-    print('Client '+ str(request.remote_addr) +' disconnected')
-
 @socketio.on('play_sequence', namespace='/client')
 def play_sequence(seq_name):
     seq = Sequence.query.filter_by(id=seq_name).first()
@@ -71,6 +71,8 @@ def command(label):
     print("Received command: "+label)
     sequence_reader.executeAction(label);
 
+
+
 @socketio.on('shutdown', namespace='/client')
 def shutdown():
     print("Shutdown rasperries")
@@ -80,4 +82,20 @@ def shutdown():
 def reboot():
     print("Reboot rasperries")
     emit("reboot", namespace="/raspi")
-    
+
+
+#Met a jour l'etat des relais cote client à la demande d'un client
+@socketio.on('update_relays_state', namespace='/client')
+def update_relays_state():
+    print("Updating relay status on client")
+    for relay in Relay.query.distinct(Relay.pin):
+        pin=relay.pin
+        emit("get_state", pin, namespace="/relay", broadcast=True)
+
+#Met a jour l'etat des relais cote client à la demande d'un raspberry
+@socketio.on('update_state', namespace='/relay')
+def update_state(pin, state):
+    print("Updating relay status on client")
+    for relay in Relay.query.filter_by(pin=pin):
+        label=relay.label
+        emit("update_relay_state", {'label':label, 'state':state}, namespace="/client", broadcast=True)

@@ -1,8 +1,17 @@
 var editMode=true;
 $(document).ready(function() {
 
-    socket.on('update_buttons_state', function(msg) {
-    	console.log('Message from server: ', msg);
+    socket.on('update_relay_state', function(relay) {
+    	$( "span[value='"+relay.label+"']" ).each(function(){
+    		if(relay.state===0){
+				$(this).addClass('green');
+				$(this).removeClass('dark-red');
+    		}
+    		else{
+    			$(this).addClass('dark-red');
+				$(this).removeClass('green');
+    		}
+    	})
     });
 
     $("#playSeqButton").on("click", function(){
@@ -137,4 +146,5 @@ function updateDraggables(){
 		});
 		$(this).css({'top': top, 'left' : left})
 	});
+	socket.emit('update_relays_state');
 }

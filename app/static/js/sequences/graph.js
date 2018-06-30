@@ -32,7 +32,7 @@ function graphIsValid() { //check if all nodes have at least one parent node
   });
 }
 
-    function draw() {
+function draw() {
       // create an array with nodes
       nodes = new vis.DataSet();
       nodes.add([{
@@ -100,7 +100,7 @@ function graphIsValid() { //check if all nodes have at least one parent node
         layout: {
           hierarchical: {
             direction: 'DU',
-			sortMethod: 'directed'
+            sortMethod: 'directed'
           },
           randomSeed: 2 //layout will be always the same
         }
@@ -108,42 +108,42 @@ function graphIsValid() { //check if all nodes have at least one parent node
       network = new vis.Network(container, data, options);
     }
 
-function updateForm() {
-  $("#motionOptions").addClass("hide");
-  $("#servoOptions").addClass("hide");
-  $("#relayOptions").addClass("hide");
-  $("#speechOptions").addClass("hide");
-  $("#pauseOptions").addClass("hide");
-  if ($("#motionChoice").prop("checked") == true) {
-    $("#motionOptions").removeClass("hide");
-  } else if ($("#servoChoice").prop("checked") == true) {
-    $("#servoOptions").removeClass("hide");
-  } else if ($("#relayChoice").prop("checked") == true) {
-    $("#relayOptions").removeClass("hide");
-  } else if ($("#speechChoice").prop("checked") == true) {
-    $("#speechOptions").removeClass("hide");
-  } else if ($("#pauseChoice").prop("checked") == true) {
-    $("#pauseOptions").removeClass("hide");
-  }
-}
+    function updateForm() {
+      $("#motionOptions").addClass("hide");
+      $("#servoOptions").addClass("hide");
+      $("#relayOptions").addClass("hide");
+      $("#speechOptions").addClass("hide");
+      $("#pauseOptions").addClass("hide");
+      if ($("#motionChoice").prop("checked") == true) {
+        $("#motionOptions").removeClass("hide");
+      } else if ($("#servoChoice").prop("checked") == true) {
+        $("#servoOptions").removeClass("hide");
+      } else if ($("#relayChoice").prop("checked") == true) {
+        $("#relayOptions").removeClass("hide");
+      } else if ($("#speechChoice").prop("checked") == true) {
+        $("#speechOptions").removeClass("hide");
+      } else if ($("#pauseChoice").prop("checked") == true) {
+        $("#pauseOptions").removeClass("hide");
+      }
+    }
 
-function handleNodeToAdd(nodeData) {
-  var action = "";
-  nodeData.shape = 'box';
-  if ($("#motionChoice").prop("checked") == true) {
-    action += "motion:" + $("#left").val() + "," + $("#right").val();
-  } else if ($("#servoChoice").prop("checked") == true) {
-    action += "servo:" + $("#sequence").val();
-  } else if ($("#relayChoice").prop("checked") == true) {
-    action += "relay:" + $("#relai").val()+","+($("#relayOnOff").prop("checked")?1:0);
-  } else if ($("#speechChoice").prop("checked") == true) {
-    action += "speech:\'" + $("#sentence").val() + "\'";
-  } else if ($("#pauseChoice").prop("checked") == true) {
-    action += "pause:" + $("#pause").val() + "ms";
-    nodeData.shape = "circle"
-  }
-  nodeData.label = action;
-}
+    function handleNodeToAdd(nodeData) {
+      var action = "";
+      nodeData.shape = 'box';
+      if ($("#motionChoice").prop("checked") == true) {
+        action += "motion:" + $("#left").val() + "," + $("#right").val();
+      } else if ($("#servoChoice").prop("checked") == true) {
+        action += "servo:" + $("#sequence").val();
+      } else if ($("#relayChoice").prop("checked") == true) {
+        action += "relay:" + $("#relai").val()+","+($("#relayOnOff").prop("checked")?1:0);
+      } else if ($("#speechChoice").prop("checked") == true) {
+        action += "speech:\'" + $("#sentence").val() + "\'";
+      } else if ($("#pauseChoice").prop("checked") == true) {
+        action += "pause:" + $("#pause").val() + "ms";
+        nodeData.shape = "circle"
+      }
+      nodeData.label = action;
+    }
 
 function saveGraph(){
   //get the input value
@@ -153,8 +153,9 @@ function saveGraph(){
   console.log(sequence);
   name=$("#name").val();
 
-  $.post( "/save_sequence", {seq_name:name, seq_data : JSON.stringify(sequence, null, 4)});
-  location.reload(); 
+  $.post( "/save_sequence", {seq_name:name, seq_data : JSON.stringify(sequence, null, 4)}, function(){
+    location.reload(); 
+  });
 }
 
 function editSequence(seq_name){

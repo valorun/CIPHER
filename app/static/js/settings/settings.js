@@ -3,11 +3,16 @@ $(document).ready(function() {
   $("#addRelay").on("click", function(){
     var label=$("#newLabel").val();
     var pin=$("#newPin").val();
-    $.post( "/save_relay", {rel_label:label, rel_pin:pin}, function(){
-      console.log(label+" saved");
-      location.reload();
-    });
-    //location.reload();
+    if (/\s/.test(str)) {
+      alert("Un label de reali ne doit pas contenir d'espace.");
+    }
+    else{
+      $.post( "/save_relay", {rel_label:label, rel_pin:pin}, function(){
+        console.log(label+" saved");
+        location.reload();
+      });
+      //location.reload();
+    }
   });
 
   $('input[name=enableRel]').on("change", function() {
@@ -30,7 +35,7 @@ function enableRelay(rel_label){
 }
 
 function deleteRelay(rel_label){
-  var confirm = window.confirm("Etes vous sûr de voulir supprimer le relai \'"+rel_label+"\' ?");
+  var confirm = window.confirm("Etes vous sûr de vouloir supprimer le relai \'"+rel_label+"\' ?");
   if(confirm){
     $.post( "/delete_relay", {rel_label:rel_label}, function(){
       console.log(rel_label+" deleted");
