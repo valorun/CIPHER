@@ -3,7 +3,7 @@ $(document).ready(function() {
 
     socket.on('update_relay_state', function(relay) {
     	$( "span[value='"+relay.label+"']" ).each(function(){
-    		if(relay.state===0){
+    		if(relay.state===1){
 				$(this).addClass('green');
 				$(this).removeClass('dark-red');
     		}
@@ -71,7 +71,7 @@ $(document).ready(function() {
 			alert("Un bouton correspondant au même relai existe déjà");
 			return;
 		}
-		$("#panel").append("<span class='btn dark-red draggable disabled' value="+relay+">"+buttonLabel+"</span>");
+		$("#panel").append("<span class='btn draggable disabled' value="+relay+">"+buttonLabel+"</span>");
 		updateDraggables();
 	});
 });

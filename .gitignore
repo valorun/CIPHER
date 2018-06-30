@@ -1,3 +1,4 @@
 *.yml
 *.db
 __pycache__
+*.pem
