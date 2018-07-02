@@ -76,7 +76,7 @@ $(document).ready(function() {
 	});
 });
 
-//test si un bouton corrspondant au relai indiqué existe déja
+//test si un bouton correspondant au relai indiqué existe déja
 function relayAlreadyUsed(rel_label){
 	var found=false;
 	$('.draggable').each(function(){
@@ -86,11 +86,6 @@ function relayAlreadyUsed(rel_label){
 		}
 	});
 	return found;
-}
-
-//met à jour l'apparence d'un bouton
-function updateButtonState(relay, state){
-
 }
 
 //met a jour l'affichage suivant le mode (édition ou non)
