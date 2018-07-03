@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # coding: utf-8
 
+import os
 from flask import request
 from flask_socketio import SocketIO, emit
 from chatterbot import ChatBot
@@ -10,6 +11,8 @@ from .sequence_reader import SequenceReader
 from app.model import  Sequence, Relay, Button
 
 sequence_reader = SequenceReader()
+
+KEYWORDS_DATASET="keywords_dataset.json"
 
 chatbot = ChatBot(
     'Hector',
@@ -77,11 +80,13 @@ def command(label):
 def shutdown():
     print("Shutdown rasperries")
     emit("shutdown", namespace="/raspi")
+    os.system('shutdown -h now')
 
 @socketio.on('reboot', namespace='/client')
 def reboot():
     print("Reboot rasperries")
     emit("reboot", namespace="/raspi")
+    os.system('reboot -h now')
 
 
 #Met a jour l'etat des relais cote client à la demande d'un client
@@ -99,3 +104,18 @@ def update_state(pin, state):
     for relay in Relay.query.filter_by(pin=pin):
         label=relay.label
         emit("update_relay_state", {'label':label, 'state':state}, namespace="/client", broadcast=True)
+
+
+#Sauvegarde l'entrainement à la reconnaissance de mots clés
+@socketio.on('save_keywords_dataset', namespace='/client')
+def save_keywords_dataset(dataset):
+    print("Saving keywords dataset")
+    with open(KEYWORDS_DATASET, 'w') as file:
+        file.write(dataset)
+
+#Sauvegarde l'entrainement à la reconnaissance de mots clés
+@socketio.on('load_keywords_dataset', namespace='/client')
+def load_keywords_dataset():
+    with open(KEYWORDS_DATASET) as f:
+        dataset = json.load(f)
+        emit("load_keywords_dataset", { 'dataset':dataset}, namespace="/client", broadcast=True)
