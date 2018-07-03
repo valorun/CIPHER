@@ -79,14 +79,14 @@ def command(label):
 @socketio.on('shutdown', namespace='/client')
 def shutdown():
     print("Shutdown rasperries")
-    emit("shutdown", namespace="/raspi")
-    os.system('shutdown -h now')
+    emit("shutdown", namespace="/raspi", broadcast=True)
+    #os.system('shutdown -h now')
 
 @socketio.on('reboot', namespace='/client')
 def reboot():
     print("Reboot rasperries")
-    emit("reboot", namespace="/raspi")
-    os.system('reboot -h now')
+    emit("reboot", namespace="/raspi", broadcast=True)
+    #os.system('reboot -h now')
 
 
 #Met a jour l'etat des relais cote client à la demande d'un client
@@ -118,4 +118,4 @@ def save_keywords_dataset(dataset):
 def load_keywords_dataset():
     with open(KEYWORDS_DATASET) as f:
         dataset = json.load(f)
-        emit("load_keywords_dataset", { 'dataset':dataset}, namespace="/client", broadcast=True)
+        emit("load_keywords_dataset", dataset, namespace="/client", broadcast=True)

@@ -4,12 +4,12 @@ $(document).ready(function() {
     socket.on('update_relay_state', function(relay) {
     	$( "span[value='"+relay.label+"']" ).each(function(){
     		if(relay.state===1){
-				$(this).addClass('green');
-				$(this).removeClass('dark-red');
+			$(this).addClass('green');
+			$(this).removeClass('dark-red');
     		}
-    		else{
+    		else if(relay.state===0){
     			$(this).addClass('dark-red');
-				$(this).removeClass('green');
+			$(this).removeClass('green');
     		}
     	})
     });
