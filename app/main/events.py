@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import os
-from flask import request
+from flask import request, current_app
 from flask_socketio import SocketIO, emit
 from chatterbot import ChatBot
 import json
@@ -10,7 +10,7 @@ from .. import socketio
 from .sequence_reader import SequenceReader
 from app.model import  Sequence, Relay, Button
 
-sequence_reader = SequenceReader()
+sequence_reader = SequenceReader(current_app._get_current_object())
 
 KEYWORDS_DATASET="keywords_dataset.json"
 

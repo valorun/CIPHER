@@ -8,7 +8,8 @@ from app.model import db, Relay
 
 #classe permettant de lire une sequence ou d'executer une action
 class SequenceReader:
-	def __init__(self):
+	def __init__(self, app):
+		self.app = app
 		#nombre d'actions en cours, qu'il faut donc attendre avant d'executer une autre séquence
 		self.threads = 0
 
@@ -39,7 +40,8 @@ class SequenceReader:
 			#si un état est spécifié (0 ou 1)
 			if(len(option.rsplit(',',1))>1):
 				rel_state=','+option.rsplit(',',1)[1]
-			db_rel = Relay.query.filter_by(label=rel_label).first()
+			with app.app_context():
+				db_rel = Relay.query.filter_by(label=rel_label).first()
 			socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay")
 		else:
 			#envoie de la commande aux raspberries
