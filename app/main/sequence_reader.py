@@ -65,9 +65,9 @@ class SequenceReader:
 				
 		else:
 			#envoie de la commande aux raspberries
-			print("Sending "+action+" to rasperries.")
+			logging.info("Sending "+action+" to rasperries.")
 			socketio.emit("command", option, namespace="/"+action)
-		print(label)
+		logging.info(label)
 
 	#retourne la liste des id des noeuds enfants
 	def getChildren(self, id, edges):

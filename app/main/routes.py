@@ -62,7 +62,7 @@ def save_sequence():
     else:
         seq_name = request.form.get("seq_name")
         seq_data = request.form.get("seq_data")
-        print("Saving sequence "+seq_name)
+        logging.info("Saving sequence "+seq_name)
         db_sequence = Sequence(id=seq_name, value=seq_data, enabled=True)
         db.session.merge(db_sequence)
         db.session.commit()
@@ -75,7 +75,7 @@ def save_relay():
     else:
         rel_label = request.form.get("rel_label")
         rel_pin = request.form.get("rel_pin")
-        print("Saving relay "+rel_label)
+        logging.info("Saving relay "+rel_label)
         db_relay = Relay(label=rel_label, pin=rel_pin, enabled=True)
         db.session.add(db_relay)
         db.session.commit()
@@ -90,7 +90,7 @@ def save_button():
         btn_label = request.form.get("btn_label")
         btn_left = request.form.get("btn_left")
         btn_top = request.form.get("btn_top")
-        print("Saving button "+btn_label)
+        logging.info("Saving button "+btn_label)
         db_button = Button(relay_label=rel_label, label=btn_label, left=btn_left, top=btn_top)
         db.session.merge(db_button)
         db.session.commit()
@@ -102,7 +102,7 @@ def enable_sequence():
         return render_template('login.html')
     else:
         seq_name = request.form.get("seq_name")
-        print("Updating "+seq_name)
+        logging.info("Updating "+seq_name)
         db_seq = Sequence.query.filter_by(id=seq_name).first()
         db_seq.enabled = not db_seq.enabled
         db.session.commit()
@@ -114,7 +114,7 @@ def enable_relay():
         return render_template('login.html')
     else:
         rel_label = request.form.get("rel_label")
-        print("Updating relay "+rel_label)
+        logging.info("Updating relay "+rel_label)
         db_rel = Relay.query.filter_by(label=rel_label).first()
         db_rel.enabled = not db_rel.enabled
         db.session.commit()
@@ -126,7 +126,7 @@ def delete_sequence():
         return render_template('login.html')
     else:
         seq_name = request.form.get("seq_name")
-        print("Deleting "+seq_name)
+        logging.info("Deleting "+seq_name)
         db_seq = Sequence.query.filter_by(id=seq_name).first()
         db.session.delete(db_seq)
         db.session.commit()
@@ -138,7 +138,7 @@ def delete_relay():
         return render_template('login.html')
     else:
         rel_label = request.form.get("rel_label")
-        print("Deleting relay "+rel_label)
+        logging.info("Deleting relay "+rel_label)
         db_rel = Relay.query.filter_by(label=rel_label).first()
         db.session.delete(db_rel)
         db.session.commit()
@@ -150,7 +150,7 @@ def delete_button():
         return render_template('login.html')
     else:
         rel_label = request.form.get("rel_label")
-        print("Deleting relay "+rel_label)
+        logging.info("Deleting relay "+rel_label)
         db_btn = Button.query.filter_by(relay_label=rel_label).first()
         db.session.delete(db_btn)
         db.session.commit()
