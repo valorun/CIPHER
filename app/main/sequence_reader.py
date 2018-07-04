@@ -8,21 +8,20 @@ from app.model import db, Relay
 
 #classe permettant de lire une sequence ou d'executer une action
 class SequenceReader:
-	def __init__(self, app):
-		self.app = app
+	def __init__(self):
 		#nombre d'actions en cours, qu'il faut donc attendre avant d'executer une autre séquence
 		self.threads = 0
 
 	#lance l'execution de la séquence,place chaque nouvelle branche dans un thread différent
-	def executeSequence(self, startNode, nodes, edges):
+	def executeSequence(self, app, startNode, nodes, edges):
 		self.threads+=1
-		self.executeAction(self.getNodeLabel(startNode, nodes))
+		self.executeAction(app, self.getNodeLabel(startNode, nodes))
 		for c in self.getChildren(startNode, edges):
-			socketio.start_background_task(self.executeSequence, c, nodes, edges)
+			socketio.start_background_task(self.executeSequence, app, c, nodes, edges)
 		self.threads-=1
 
 	#execute une action suivant un label donné, par exemple 'sleep:100ms'
-	def executeAction(self, label):
+	def executeAction(self, app, label):
 		if(len(label.split(":"))<2):
 			return
 		action=label.split(":")[0]
@@ -39,7 +38,7 @@ class SequenceReader:
 			rel_state=""
 			#si un état est spécifié (0 ou 1)
 			if(len(option.rsplit(',',1))>1):
-				rel_state=','+option.rsplit(',',1)[1]
+				rel_state=option.rsplit(',',1)[1]
 			with app.app_context():
 				db_rel = Relay.query.filter_by(label=rel_label).first()
 			socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay")
@@ -63,9 +62,9 @@ class SequenceReader:
 			if(n["id"]==id):
 				return n["label"]
 
-	def readSequence(self, json):
+	def readSequence(self, app, json):
 		if(self.threads>0): #on attend que la séquence en cours soit achevée pour en lancer une nouvelle
 			return
 		nodes=json[0]
 		edges=json[1]
-		self.executeSequence("start", nodes, edges)
+		self.executeSequence(app, "start", nodes, edges)

@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import os
+import logging
 from flask import request, current_app
 from flask_socketio import SocketIO, emit
 from chatterbot import ChatBot
@@ -10,7 +11,7 @@ from .. import socketio
 from .sequence_reader import SequenceReader
 from app.model import  Sequence, Relay, Button
 
-sequence_reader = SequenceReader(current_app._get_current_object())
+sequence_reader = SequenceReader()
 
 KEYWORDS_DATASET="keywords_dataset.json"
 
@@ -67,12 +68,12 @@ def play_sequence(seq_name):
     if(seq!=None and seq.enabled):
         seq_data = seq.value
         print('Executing sequence '+seq_name)
-        sequence_reader.readSequence(json.loads(seq_data))
+        sequence_reader.readSequence(current_app._get_current_object(), json.loads(seq_data))
 
 @socketio.on('command', namespace='/client')
 def command(label):
-    print("Received command: "+label)
-    sequence_reader.executeAction(label);
+    logging.info("Received command: "+label)
+    sequence_reader.executeAction(current_app._get_current_object(), label);
 
 
 

@@ -7,15 +7,6 @@ var recognizing = false;
 
 $(document).ready(function() {
 
-  //reponse du serveur lors d'une de l'écoute d'une phrase
-  socket.on('response', function(msg) {
-    console.log('Message from server: ', msg);
-    if ('speechSynthesis' in window) {
-      var to_speak = new SpeechSynthesisUtterance(msg);
-      window.speechSynthesis.speak(to_speak);
-    }
-  });
-
   if ('webkitSpeechRecognition' in window) {
 
     recognition = new webkitSpeechRecognition();
