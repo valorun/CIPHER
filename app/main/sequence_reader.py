@@ -58,7 +58,7 @@ class SequenceReader:
 							socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay")
 
 					for peer in peers:
-						emit("get_state", peer.pin, namespace="/relay", broadcast=True)
+						emit("get_state", peer.pin, namespace="/relay", broadcast=True, callback=receive_state)
 
 				else:
 					socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay")
