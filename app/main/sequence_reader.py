@@ -41,7 +41,28 @@ class SequenceReader:
 				rel_state=option.rsplit(',',1)[1]
 			with app.app_context():
 				db_rel = Relay.query.filter_by(label=rel_label).first()
-			socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay")
+				parity = db_rel.parity
+
+				#si le relai est appairé
+				if(parity!=""):
+					#on récupère tout les relais pairs
+					peers = Relay.query.filter(Relay.parity==parity, Relay.label!=rel_label)
+					count = len(peers)
+
+					def receive_state(pin, state):
+						nonlocal count
+						#si le pin est à 0, on le supprime du compte des pairs potentiels
+						if(state==0):
+							count=count-1
+						if(count==0)
+							socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay")
+
+					for peer in peers:
+						emit("get_state", peer.pin, namespace="/relay", broadcast=True)
+
+				else:
+					socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay")
+				
 		else:
 			#envoie de la commande aux raspberries
 			print("Sending "+action+" to rasperries.")
