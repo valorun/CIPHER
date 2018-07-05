@@ -4,12 +4,12 @@ $(document).ready(function() {
     socket.on('update_relay_state', function(relay) {
     	$( "span[value='"+relay.label+"']" ).each(function(){
     		if(relay.state===1){
-			$(this).addClass('green');
-			$(this).removeClass('dark-red');
+				$(this).addClass('green');
+				$(this).removeClass('dark-red');
     		}
     		else if(relay.state===0){
     			$(this).addClass('dark-red');
-			$(this).removeClass('green');
+				$(this).removeClass('green');
     		}
     	})
     });
@@ -111,6 +111,8 @@ function updateMode(){
 
 //met a jour les boutons, en le attribuant un handler et sauvegardant leur position
 function updateDraggables(){
+	var panel_width=$("#panel").width();
+	var panel_height=$("#panel").height();
 	$('.draggable').each(function(){
 		var left=parseInt($(this).attr("left"));
 		var top=parseInt($(this).attr("top"));
@@ -126,7 +128,7 @@ function updateDraggables(){
 					var btn_left=ui.position.left;
 					var btn_top=ui.position.top;
 					//sauvegarde la position du bouton
-					$.post( "/save_button", {rel_label:rel_label, btn_label:btn_label, btn_left:btn_left, btn_top:btn_top});
+					$.post( "/save_button", {rel_label:rel_label, btn_label:btn_label, btn_left:btn_left/panel_width, btn_top:btn_top/panel_height});
     			}
   			},
   			grid: [ 20, 20 ],
@@ -141,5 +143,6 @@ function updateDraggables(){
 		});
 		$(this).css({'top': top, 'left' : left})
 	});
+
 	socket.emit('update_relays_state');
 }

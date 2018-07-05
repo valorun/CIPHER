@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # coding: utf-8
 
+import logging
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from threading import Thread
 from . import main
@@ -75,8 +76,9 @@ def save_relay():
     else:
         rel_label = request.form.get("rel_label")
         rel_pin = request.form.get("rel_pin")
+        rel_parity = request.form.get("rel_parity")
         logging.info("Saving relay "+rel_label)
-        db_relay = Relay(label=rel_label, pin=rel_pin, enabled=True)
+        db_relay = Relay(label=rel_label, pin=rel_pin, enabled=True, parity=rel_parity)
         db.session.add(db_relay)
         db.session.commit()
         return render_template('settings.html')

@@ -3,11 +3,12 @@ $(document).ready(function() {
   $("#addRelay").on("click", function(){
     var label=$("#newLabel").val();
     var pin=$("#newPin").val();
-    if (/\s/.test(str)) {
-      alert("Un label de reali ne doit pas contenir d'espace.");
+    var parity=$("#newParity").val();
+    if (/\s/.test(label)) {
+      alert("Un label de relai ne doit pas contenir d'espace.");
     }
     else{
-      $.post( "/save_relay", {rel_label:label, rel_pin:pin}, function(){
+      $.post( "/save_relay", {rel_label:label, rel_pin:pin, rel_parity:parity}, function(){
         console.log(label+" saved");
         location.reload();
       });

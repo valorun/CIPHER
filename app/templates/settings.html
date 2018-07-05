@@ -9,13 +9,17 @@
 <div class="container card padding-16 margin">
 	<h3>Ajouter un relai</h3>
 	<div class="container padding">
-		<div class="half container">
+		<div class="third container">
 			<label for="newLabel">Label: </label>
 			<input id="newLabel" type="text" value="" class="input">
 		</div>
-		<div class="half container">
+		<div class="third container">
 			<label for="newPin">Pin: </label>
 			<input id="newPin" type="text" value="" class="input">
+		</div>
+		<div class="third container">
+			<label for="newParity">Parité: </label>
+			<input id="newParity" type="text" value="" class="input">
 		</div>
 		<div class="container">
 			<input class="button dark-red" id="addRelay" type="button" value="Ajouter">
@@ -30,11 +34,13 @@
 		<tr>
   			<th>Label</th>
   			<th>Pin</th>
+  			<th>Parité</th>
 		</tr>
 		{% for r in relays %}
 		<tr id="{{ r.label }}">
 			<td class="white"><span >{{ r.label }}</span></td>
 			<td class="white"><span>{{ r.pin }}</span></td>
+			<td class="white"><span>{{ r.parity }}</span></td>
 			<!-- <td><input id="label_{{ r.label }}" type="text" name="labelRel" value="{{ r.label }}" class="input"></td>-->
 			<!-- <td><input id="pin_{{ r.label }}" type="text" name="pinRel" value="{{ r.pin }}" class="input"></td>-->
 			<td>

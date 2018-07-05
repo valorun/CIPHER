@@ -54,7 +54,7 @@ class SequenceReader:
 						#si le pin est à 0, on le supprime du compte des pairs potentiels
 						if(state==0):
 							count=count-1
-						if(count==0)
+						if(count==0):
 							socketio.emit("command", (db_rel.pin, rel_state), namespace="/relay")
 
 					for peer in peers:

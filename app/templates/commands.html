@@ -67,6 +67,16 @@
 		{% for b in buttons %}
 		<span class='btn draggable' value="{{ b.relay_label }}" top="{{b.top}}" left="{{b.left}}">{{ b.label }}</span>
 		{% endfor %}
+		<script type="text/javascript">	
+			var panel_width=$("#panel").width();
+			var panel_height=$("#panel").height();
+			$('.draggable').each(function(){
+				var left=parseFloat($(this).attr("left"))*panel_width;
+				var top=parseFloat($(this).attr("top"))*panel_height;
+				$(this).attr("left", left);
+				$(this).attr("top", top);
+			});
+		</script>
 	</div>
 </div>
 {% endblock %}
