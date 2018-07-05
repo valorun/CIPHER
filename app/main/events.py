@@ -96,7 +96,7 @@ def update_relays_state():
     logging.info("Updating relay status on client")
     for relay in Relay.query.distinct(Relay.pin):
         pin=relay.pin
-        emit("get_state", pin, namespace="/relay", broadcast=True)
+        emit("update_state", pin, namespace="/relay", broadcast=True)
 
 #Met a jour l'etat des relais cote client à la demande d'un raspberry
 @socketio.on('update_state', namespace='/relay')
