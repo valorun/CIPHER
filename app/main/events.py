@@ -17,6 +17,7 @@ def client_connect():
 @socketio.on('disconnect', namespace='/client')
 def client_disconnect():
     logging.info('Client '+ str(request.remote_addr) +' disconnected')
+    emit("stop", pin, namespace="/servo", broadcast=True)
 
 
 @socketio.on('train', namespace='/client')
