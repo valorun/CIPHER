@@ -1,41 +1,71 @@
 var editMode=true;
 $(document).ready(function() {
 
-    socket.on('update_relay_state', function(relay) {
-    	$( "span[value='"+relay.label+"']" ).each(function(){
-    		if(relay.state===1){
+	//initialise les positions des boutons
+	var panel_width=$("#panel").width();
+	var panel_height=$("#panel").height();
+	$('.draggable').each(function(){
+		var left=parseFloat($(this).attr("left"))*panel_width;
+		var top=parseFloat($(this).attr("top"))*panel_height;
+		$(this).attr("left", left);
+		$(this).attr("top", top);
+	});
+
+	function rescale_panel(){
+		var new_panel_width=$("#panel").width();
+		var new_panel_height=$("#panel").height();
+     	$('.draggable').each(function(){
+			var left=parseFloat($(this).attr("left"))/panel_width*new_panel_width;
+			var top=parseFloat($(this).attr("top"))/panel_height*new_panel_height;
+			$(this).attr("left", left);
+			$(this).attr("top", top);
+			console.log(panel_width);
+		});
+		panel_width=new_panel_width;
+		panel_height=new_panel_height;
+		updateDraggables();
+	}
+
+	$('#panel').bind('resize', function(e){
+		rescale_panel()
+	});
+
+
+	socket.on('update_relay_state', function(relay) {
+		$( "span[value='"+relay.label+"']" ).each(function(){
+			if(relay.state===1){
 				$(this).addClass('green');
 				$(this).removeClass('dark-red');
-    		}
-    		else if(relay.state===0){
-    			$(this).addClass('dark-red');
+			}
+			else if(relay.state===0){
+				$(this).addClass('dark-red');
 				$(this).removeClass('green');
-    		}
-    	})
-    });
+			}
+		})
+	});
 
-    $("#playSeqButton").on("click", function(){
-    	if($("#sequence").val()!==null && $("#sequence").val()!==""){
-      		socket.emit('play_sequence', $("#sequence").val());
-      	}
-    });
+	$("#playSeqButton").on("click", function(){
+		if($("#sequence").val()!==null && $("#sequence").val()!==""){
+			socket.emit('play_sequence', $("#sequence").val());
+		}
+	});
 
 	$( function() {
-    	$( "#motion_slider" ).slider({
-     		orientation: "vertical",
-      		range: "min",
-      		min: 0,
-      		max: 2047,
-      		value: 0,
-      		slide: function( event, ui ) {
-        		$( "#amount" ).val( ui.value );
-      		}
-    	});
-  	});
+		$( "#motion_slider" ).slider({
+			orientation: "vertical",
+			range: "min",
+			min: 0,
+			max: 2047,
+			value: 0,
+			slide: function( event, ui ) {
+				$( "#amount" ).val( ui.value );
+			}
+		});
+	});
 	updateDraggables();
 	updateMode();
 
-  	$(".motion-direction").on("mousedown", function(){
+	$(".motion-direction").on("mousedown touchstart", function(){
 		var dir=$(this).attr('value');
 		var value=$( "#motion_slider" ).slider( "value" );
 		var command="motion:";
@@ -52,9 +82,9 @@ $(document).ready(function() {
 			command+=value+",-"+value;
 		}
 		socket.emit('command', command);
-	}).on('mouseup', function() { //mouseleave si on veut arreter quand la souris sort du bouton
+	}).on('mouseup touchend', function() { //mouseleave si on veut arreter quand la souris sort du bouton
 		var command="motion:0,0";
-    	socket.emit('command', command);
+		socket.emit('command', command);
 	});
 
 	//bouton de changement de mode
@@ -116,25 +146,25 @@ function updateDraggables(){
 	$('.draggable').each(function(){
 		var left=parseInt($(this).attr("left"));
 		var top=parseInt($(this).attr("top"));
-    	$(this).draggable({
-    		stop: function( event, ui ) {
-    			var rel_label=$(this).attr("value");
+		$(this).draggable({
+			stop: function( event, ui ) {
+				var rel_label=$(this).attr("value");
     			if(ui.position.top<20 && ui.position.left<20){ //supprime un objet lorsqu'on l'approche de l'icone de suppression
     				$.post( "/delete_button", {rel_label:rel_label});
-    				$(this).remove();
-    			}
-    			else{
-					var btn_label=$(this).text();
-					var btn_left=ui.position.left;
-					var btn_top=ui.position.top;
+    			$(this).remove();
+    		}
+    		else{
+    			var btn_label=$(this).text();
+    			var btn_left=ui.position.left;
+    			var btn_top=ui.position.top;
 					//sauvegarde la position du bouton
 					$.post( "/save_button", {rel_label:rel_label, btn_label:btn_label, btn_left:btn_left/panel_width, btn_top:btn_top/panel_height});
-    			}
-  			},
-  			grid: [ 20, 20 ],
-  			snap: true,
-        	containment: $(this).parent()
-    	}).on("click",function(){
+				}
+			},
+			grid: [ 20, 20 ],
+			snap: true,
+			containment: $(this).parent()
+		}).on("click",function(){
 			if(!editMode){
 				command="relay:"+$(this).attr("value");
 				console.log(command);

@@ -4,7 +4,30 @@
 from flask import Flask
 from flask_socketio import SocketIO
 from .model import db
+from chatterbot import ChatBot
 import os
+
+KEYWORDS_DATASET=os.path.join(os.path.dirname(__file__),"keywords_dataset.json")
+CHATBOT_DATABASE=os.path.join(os.path.dirname(__file__),"chatbot.db")
+
+chatbot = ChatBot(
+    'Hector',
+    trainer='chatterbot.trainers.ListTrainer',
+    storage_adapter="chatterbot.storage.SQLStorageAdapter",
+    logic_adapters=[
+        {
+            'import_path': "chatterbot.logic.MathematicalEvaluation",
+            'language': "FRE"
+        },
+        {
+            'import_path': "chatterbot.logic.BestMatch"
+        }
+    ],
+    database=CHATBOT_DATABASE
+)
+#chatbot.train(
+#    './corpus_test.yml'
+#)
 
 socketio = SocketIO()
 
