@@ -9,24 +9,30 @@ $(document).ready(function() {
 		var top=parseFloat($(this).attr("top"))*panel_height;
 		$(this).attr("left", left);
 		$(this).attr("top", top);
+ 		//$(this).css({'top': top, 'left' : left})
 	});
 
 	function rescale_panel(){
 		var new_panel_width=$("#panel").width();
 		var new_panel_height=$("#panel").height();
-     	$('.draggable').each(function(){
+     		$('.draggable').each(function(){
+			//console.log($(this).attr("left"));
 			var left=parseFloat($(this).attr("left"))/panel_width*new_panel_width;
 			var top=parseFloat($(this).attr("top"))/panel_height*new_panel_height;
-			$(this).attr("left", left);
-			$(this).attr("top", top);
-			console.log(panel_width);
+			left=Math.abs(left);
+			top=Math.abs(top);
+			//$(this).attr("left", left);
+			//$(this).attr("top", top);
+			$(this).css({'top': top, 'left' : left})
+			console.log(left);
+			console.log(top);
 		});
 		panel_width=new_panel_width;
 		panel_height=new_panel_height;
 		updateDraggables();
 	}
 
-	$('#panel').bind('resize', function(e){
+	$(window).bind('resize', function(e){
 		rescale_panel()
 	});
 

@@ -3,10 +3,11 @@
 
 import logging
 import time
+import json
 from flask import current_app
 from .. import socketio, chatbot
 import asyncio
-from app.model import db, Relay
+from app.model import db, Relay, Sequence
 
 #classe permettant de lire une sequence ou d'executer une action
 class SequenceReader:
