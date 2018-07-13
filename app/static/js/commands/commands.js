@@ -9,31 +9,26 @@ $(document).ready(function() {
 		var top=parseFloat($(this).attr("top"))*panel_height;
 		$(this).attr("left", left);
 		$(this).attr("top", top);
- 		//$(this).css({'top': top, 'left' : left})
 	});
 
 	function rescale_panel(){
 		var new_panel_width=$("#panel").width();
 		var new_panel_height=$("#panel").height();
-     		$('.draggable').each(function(){
-			//console.log($(this).attr("left"));
+     	$('.draggable').each(function(){
 			var left=parseFloat($(this).attr("left"))/panel_width*new_panel_width;
 			var top=parseFloat($(this).attr("top"))/panel_height*new_panel_height;
 			left=Math.abs(left);
 			top=Math.abs(top);
-			//$(this).attr("left", left);
-			//$(this).attr("top", top);
-			$(this).css({'top': top, 'left' : left})
-			console.log(left);
-			console.log(top);
+			$(this).attr("left", left);
+			$(this).attr("top", top);
 		});
 		panel_width=new_panel_width;
 		panel_height=new_panel_height;
-		updateDraggables();
 	}
 
 	$(window).bind('resize', function(e){
-		rescale_panel()
+		rescale_panel();
+		updateDraggables();
 	});
 
 
@@ -150,7 +145,7 @@ function updateDraggables(){
 	var panel_width=$("#panel").width();
 	var panel_height=$("#panel").height();
 	$('.draggable').each(function(){
-		var left=parseInt($(this).attr("left"));
+		var left=parseInt($(this).attr("left")); //position précédemment définie
 		var top=parseInt($(this).attr("top"));
 		$(this).draggable({
 			stop: function( event, ui ) {
@@ -160,9 +155,11 @@ function updateDraggables(){
     			$(this).remove();
     		}
     		else{
-    			var btn_label=$(this).text();
-    			var btn_left=ui.position.left;
-    			var btn_top=ui.position.top;
+    				var btn_label=$(this).text();
+    				var btn_left=ui.position.left;
+    				var btn_top=ui.position.top;
+    				$(this).attr("left", btn_left); //on garde la nouvelle position
+					$(this).attr("top", btn_top);
 					//sauvegarde la position du bouton
 					$.post( "/save_button", {rel_label:rel_label, btn_label:btn_label, btn_left:btn_left/panel_width, btn_top:btn_top/panel_height});
 				}
@@ -177,7 +174,7 @@ function updateDraggables(){
 				socket.emit('command', command);
 			}
 		});
-		$(this).css({'top': top, 'left' : left})
+		$(this).css({'top': top, 'left' : left})//on applique la position précédemment définie
 	});
 
 	socket.emit('update_relays_state');

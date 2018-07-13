@@ -55,7 +55,9 @@
                     <option value="" disabled selected>Choisir une séquence</option>
                     <option value="" >Aucune</option>
                     {% for s in sequences %}
-                    <option value="{{ s.id }}" >{{ s.id }}</option>
+                        {% if s.enabled %}
+                        <option value="{{ s.id }}" >{{ s.id }}</option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>

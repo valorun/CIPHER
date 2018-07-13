@@ -1,7 +1,7 @@
 var socket;
 $(document).ready(function() {
-	socket = io.connect('https://192.168.1.78:5000/client');
-	//socket = io.connect('127.0.0.1:5000/client');
+	//socket = io.connect('https://192.168.1.78:5000/client');
+	socket = io.connect('127.0.0.1:5000/client');
 	socket.on('command', function(msg) {
     		console.log('Message from server: ', msg);
    	 });

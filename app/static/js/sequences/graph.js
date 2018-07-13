@@ -99,6 +99,7 @@ function draw() {
         },
         layout: {
           hierarchical: {
+            enabled: true,
             direction: 'DU',
             sortMethod: 'directed'
           },
