@@ -114,6 +114,8 @@ function draw() {
       $("#servoOptions").addClass("hide");
       $("#relayOptions").addClass("hide");
       $("#speechOptions").addClass("hide");
+	  $("#scriptOptions").addClass("hide");
+	  $("#soundOptions").addClass("hide");
       $("#pauseOptions").addClass("hide");
       if ($("#motionChoice").prop("checked") == true) {
         $("#motionOptions").removeClass("hide");
@@ -125,6 +127,10 @@ function draw() {
         $("#speechOptions").removeClass("hide");
       } else if ($("#pauseChoice").prop("checked") == true) {
         $("#pauseOptions").removeClass("hide");
+      } else if ($("#scriptChoice").prop("checked") == true) {
+        $("#scriptOptions").removeClass("hide");
+      } else if ($("#soundChoice").prop("checked") == true) {
+        $("#soundOptions").removeClass("hide");
       }
     }
 
@@ -136,9 +142,13 @@ function draw() {
       } else if ($("#servoChoice").prop("checked") == true) {
         action += "servo:" + $("#sequence").val();
       } else if ($("#relayChoice").prop("checked") == true) {
-        action += "relay:" + $("#relai").val()+","+($("#relayOnOff").prop("checked")?1:0);
+        action += "relay:" + $("#relay").val()+","+($("#relayOnOff").prop("checked")?1:0);
       } else if ($("#speechChoice").prop("checked") == true) {
         action += "speech:\'" + $("#sentence").val() + "\'";
+      } else if ($("#scriptChoice").prop("checked") == true) {
+        action += "script:" + $("#script").val();
+      } else if ($("#soundChoice").prop("checked") == true) {
+        action += "sound:" + $("#sound").val();
       } else if ($("#pauseChoice").prop("checked") == true) {
         action += "pause:" + $("#pause").val() + "ms";
         nodeData.shape = "circle"
