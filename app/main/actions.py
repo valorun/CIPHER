@@ -4,8 +4,10 @@
 import logging
 import time
 import json
+import importlib.util
+import os
 from flask import current_app
-from .. import socketio, chatbot
+from .. import socketio, chatbot, SCRIPTS_LOCATION
 import asyncio
 from app.model import db, Relay, Sequence
 
@@ -29,6 +31,7 @@ class SequenceReader:
 			return
 		action=label.split(":")[0]
 		option=label.split(":")[1]
+
 		if(action=="pause"):
 			#si c'est une pause, l'execution du script se met en pause
 			socketio.sleep( int(option.split("ms")[0])/1000 )
@@ -61,7 +64,15 @@ class SequenceReader:
 
 				else:
 					socketio.emit("activate_relay", (pin, rel_state), namespace="/relay")
-				
+		elif(action=="script"):
+			#si c'est un script, execute importe le script demandé et execute sa methode start
+			spec = importlib.util.spec_from_file_location("script", os.path.join(SCRIPTS_LOCATION, option))
+			script = importlib.util.module_from_spec(spec)
+			spec.loader.exec_module(script)
+			socketio.emit("response", script.start(), namespace="/client")
+		elif(action=="sound"):
+			#si c'est un son, execute le son demandé
+			socketio.emit("play_sound", option, namespace="/client")
 		else:
 			#envoie de la commande aux raspberries
 			logging.info("Sending "+action+" to rasperries.")

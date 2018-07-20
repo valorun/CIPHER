@@ -32,9 +32,9 @@
 	<h3>Relais enregistrées</h3>
 	<table class="table bordered">
 		<tr>
-  			<th>Label</th>
-  			<th>Pin</th>
-  			<th>Parité</th>
+			<th>Label</th>
+			<th>Pin</th>
+			<th>Parité</th>
 		</tr>
 		{% for r in relays %}
 		<tr id="{{ r.label }}">
@@ -55,5 +55,12 @@
 		</tr>
 		{% endfor %}
 	</table>
+</div>
+
+<div class="container card padding-16 margin">
+	<label for="voices">Voix:</label>
+	<select class="select border" name="voices" id="voices">
+
+	</select>
 </div>
 {% endblock %}

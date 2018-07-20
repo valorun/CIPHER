@@ -9,6 +9,8 @@ import os
 
 KEYWORDS_DATASET=os.path.join(os.path.dirname(__file__),"keywords_dataset.json")
 CHATBOT_DATABASE=os.path.join(os.path.dirname(__file__),"chatbot.db")
+SCRIPTS_LOCATION=os.path.join(os.path.dirname(__file__),"scripts/")
+SOUNDS_LOCATION=os.path.join(os.path.dirname(__file__),"sounds/")
 
 chatbot = ChatBot(
     'Hector',

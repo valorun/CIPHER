@@ -2,3 +2,5 @@
 *.db
 __pycache__
 *.pem
+*.mp3
+*.wav

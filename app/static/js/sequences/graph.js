@@ -72,8 +72,12 @@ function draw() {
         locales: locales,
         manipulation: {
           addNode: function(nodeData, callback) {
-            handleNodeToAdd(nodeData);
-            callback(nodeData);
+            if(handleNodeToAdd(nodeData)){
+              callback(nodeData);
+            }
+            else{
+              alert("Le champ choisi est vide !");
+            }
           },
           editNode: function(nodeData, callback) {
             if (nodeData.id !== "start") {
@@ -114,8 +118,8 @@ function draw() {
       $("#servoOptions").addClass("hide");
       $("#relayOptions").addClass("hide");
       $("#speechOptions").addClass("hide");
-	  $("#scriptOptions").addClass("hide");
-	  $("#soundOptions").addClass("hide");
+      $("#scriptOptions").addClass("hide");
+      $("#soundOptions").addClass("hide");
       $("#pauseOptions").addClass("hide");
       if ($("#motionChoice").prop("checked") == true) {
         $("#motionOptions").removeClass("hide");
@@ -142,31 +146,41 @@ function draw() {
       } else if ($("#servoChoice").prop("checked") == true) {
         action += "servo:" + $("#sequence").val();
       } else if ($("#relayChoice").prop("checked") == true) {
+        if($("#relay").val() == null)
+          return false;
         action += "relay:" + $("#relay").val()+","+($("#relayOnOff").prop("checked")?1:0);
       } else if ($("#speechChoice").prop("checked") == true) {
         action += "speech:\'" + $("#sentence").val() + "\'";
       } else if ($("#scriptChoice").prop("checked") == true) {
+        if($("#script").val() == null)
+          return false;
         action += "script:" + $("#script").val();
       } else if ($("#soundChoice").prop("checked") == true) {
+        if($("#sound").val() == null)
+          return false;
         action += "sound:" + $("#sound").val();
       } else if ($("#pauseChoice").prop("checked") == true) {
         action += "pause:" + $("#pause").val() + "ms";
         nodeData.shape = "circle"
       }
       nodeData.label = action;
+      return true;
     }
 
-function saveGraph(){
+    function saveGraph(){
   //get the input value
   sequence = [];
   sequence.push(nodes.get());
   sequence.push(edges.get());
   console.log(sequence);
   name=$("#name").val();
-
-  $.post( "/save_sequence", {seq_name:name, seq_data : JSON.stringify(sequence, null, 4)}, function(){
-    location.reload(); 
-  });
+  if(/\S/.test(name)){
+    $.post( "/save_sequence", {seq_name:name, seq_data : JSON.stringify(sequence, null, 4)}, function(){
+      location.reload(); 
+    });
+  }else{
+    alert("Le nom donné est invalide.");
+  }
 }
 
 function editSequence(seq_name){

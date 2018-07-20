@@ -79,7 +79,14 @@
       <label for="scriptChoice">Script</label>
       <div id="scriptOptions" class="row-padding">
         <label for="script">Script:</label>
-        <input type="text" id="script" value="" class="input border" placeholder="Exemple: meteo">
+        <select class="select border" name="script" id="script">
+            <option value="" disabled selected>Choisir un script</option>
+            {% for s in scripts %}
+            {% if s %}
+            <option value="{{ s }}" >{{ s }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
       </div>
     </div>
 	
@@ -88,10 +95,10 @@
       <label for="soundChoice">Son</label>
       <div id="soundOptions" class="row-padding">
           <label for="soundChoice">Son:</label>
-          <select class="select border" name="relai" id="relai">
+          <select class="select border" name="sound" id="sound">
             <option value="" disabled selected>Choisir un son</option>
             {% for s in sounds %}
-            <option value="{{ s.label}}" >{{ s.label }}</option>
+            <option value="{{ s }}" >{{ s }}</option>
             {% endfor %}
           </select>
       </div>
