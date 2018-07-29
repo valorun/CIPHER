@@ -5,3 +5,5 @@ conversations:
   - parfait et toi ?
 - - Super, c'est cool alors
   - yep t'as vu
+- - Voilà une phrase {entity}
+  - réponse test[script]

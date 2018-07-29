@@ -7,6 +7,7 @@ import json
 import importlib.util
 import os
 from flask import current_app
+from flask_socketio import SocketIO, emit
 from .. import socketio, chatbot, SCRIPTS_LOCATION
 import asyncio
 from app.model import db, Relay, Sequence
@@ -18,15 +19,15 @@ class SequenceReader:
 		self.threads = 0
 
 	#lance l'execution de la séquence,place chaque nouvelle branche dans un thread différent
-	def executeSequence(self, app, startNode, nodes, edges):
+	def executeSequence(self, app, startNode, nodes, edges, args=None):
 		self.threads+=1
-		self.executeAction(app, self.getNodeLabel(startNode, nodes))
+		self.executeAction(app, self.getNodeLabel(startNode, nodes), args)
 		for c in self.getChildren(startNode, edges):
-			socketio.start_background_task(self.executeSequence, app, c, nodes, edges)
+			socketio.start_background_task(self.executeSequence, app, c, nodes, edges, args)
 		self.threads-=1
 
 	#execute une action suivant un label donné, par exemple 'sleep:100ms'
-	def executeAction(self, app, label):
+	def executeAction(self, app, label, args=None):
 		if(len(label.split(":"))<2):
 			return
 		action=label.split(":")[0]
@@ -69,7 +70,7 @@ class SequenceReader:
 			spec = importlib.util.spec_from_file_location("script", os.path.join(SCRIPTS_LOCATION, option))
 			script = importlib.util.module_from_spec(spec)
 			spec.loader.exec_module(script)
-			socketio.emit("response", script.start(), namespace="/client")
+			socketio.emit("response", script.start(args), namespace="/client")
 		elif(action=="sound"):
 			#si c'est un son, execute le son demandé
 			socketio.emit("play_sound", option, namespace="/client")
@@ -93,30 +94,38 @@ class SequenceReader:
 			if(n["id"]==id):
 				return n["label"]
 
-	def readSequence(self, app, json):
+	def readSequence(self, app, json, args=None):
 		if(self.threads>0): #on attend que la séquence en cours soit achevée pour en lancer une nouvelle
 			return
 		nodes=json[0]
 		edges=json[1]
-		self.executeSequence(app, "start", nodes, edges)
+		self.executeSequence(app, "start", nodes, edges, args)
 
 
 sequence_reader = SequenceReader()
 
+
 @socketio.on('speech_detected', namespace='/client')
 def speech_detected(transcript):
-    logging.info("Received data: " + transcript)
-    response = str(chatbot.get_response(transcript))
-    if(len(response.split("]"))>1):
-        seq_name=response.split("[")[1].split("]")[0]
-        seq = Sequence.query.filter_by(id=seq_name).first()
-        response = response.split("]")[1]
-        #Si une séquence existe et est activée, on la lance
-        if(seq!=None and seq.enabled):
-            seq_data = seq.value
-            logging.info('Command received: '+seq_name)
-            sequence_reader.readSequence(json.loads(seq_data))
-    emit("response", response)
+	logging.info("Received data: " + transcript)
+	response = chatbot.get_response(transcript)
+	response_text = response.text
+
+	if(len(response_text.split("]"))>1):
+		seq_name=response_text.split("[")[1].split("]")[0]
+		seq = Sequence.query.filter_by(id=seq_name).first()
+		response_text = response_text.split("]")[1]
+		#Si une séquence existe et est activée, on la lance
+		if(seq!=None and seq.enabled):
+			seq_data = seq.value
+			logging.info('Command received: '+seq_name)
+			entities=None
+			if hasattr(response, 'entities'): #Si des entités sont détectées, on les passera à la séquence
+				entities=response.entities
+				print("\n"+str(entities)+"\n")
+			sequence_reader.readSequence(current_app._get_current_object(), json.loads(seq_data), entities)
+	emit("response", response_text)
+
 
 @socketio.on('play_sequence', namespace='/client')
 def play_sequence(seq_name):

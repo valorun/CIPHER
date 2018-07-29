@@ -5,6 +5,7 @@ from flask import Flask
 from flask_socketio import SocketIO
 from .model import db
 from chatterbot import ChatBot
+from .entity_adapter import EntityAdapter
 import os
 
 KEYWORDS_DATASET=os.path.join(os.path.dirname(__file__),"keywords_dataset.json")
@@ -14,21 +15,23 @@ SOUNDS_LOCATION=os.path.join(os.path.dirname(__file__),"sounds/")
 
 chatbot = ChatBot(
     'Hector',
+    #trainer='chatterbot.trainers.ChatterBotCorpusTrainer',
     trainer='chatterbot.trainers.ListTrainer',
     storage_adapter="chatterbot.storage.SQLStorageAdapter",
     logic_adapters=[
+        #{
+        #    'import_path': 'chatterbot.logic.MathematicalEvaluation',
+        #    'language': 'FRE'
+        #},
         {
-            'import_path': "chatterbot.logic.MathematicalEvaluation",
-            'language': "FRE"
-        },
-        {
-            'import_path': "chatterbot.logic.BestMatch"
+            'import_path': "app.entity_adapter.EntityAdapter"
         }
     ],
     database=CHATBOT_DATABASE
 )
+
 #chatbot.train(
-#    './corpus_test.yml'
+#    os.path.join(os.path.dirname(__file__),'../corpus_test.yml')
 #)
 
 socketio = SocketIO()

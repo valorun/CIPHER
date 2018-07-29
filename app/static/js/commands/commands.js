@@ -14,7 +14,7 @@ $(document).ready(function() {
 	function rescale_panel(){
 		var new_panel_width=$("#panel").width();
 		var new_panel_height=$("#panel").height();
-     	$('.draggable').each(function(){
+		$('.draggable').each(function(){
 			var left=parseFloat($(this).attr("left"))/panel_width*new_panel_width;
 			var top=parseFloat($(this).attr("top"))/panel_height*new_panel_height;
 			left=Math.abs(left);
@@ -32,7 +32,7 @@ $(document).ready(function() {
 	});
 
 
-	socket.on('update_relay_state', function(relay) {
+	socket.on('updateRelayState', function(relay) {
 		$( "span[value='"+relay.label+"']" ).each(function(){
 			if(relay.state===1){
 				$(this).addClass('green');
@@ -95,15 +95,24 @@ $(document).ready(function() {
 	$("#addButton").on("click", function(){
 		var buttonLabel=$("#buttonLabel").val();
 		var relay=$("#relays").val();
-		//si on a bien sélectionné un nom et un relai
-		if(relay===null || buttonLabel===null) return;
 		//si le relay selectionné n'est pas déja utilisé
 		if(relayAlreadyUsed(relay)){
-			alert("Un bouton correspondant au même relai existe déjà");
+			alertModal("Un bouton correspondant au même relai existe déjà.");
 			return;
 		}
-		$("#panel").append("<span class='btn draggable disabled' value="+relay+">"+buttonLabel+"</span>");
-		updateDraggables();
+		console.log(relay);
+		$.ajax({
+			type: 'POST',
+			url: '/save_button',
+			data: {rel_label:relay, btn_label:buttonLabel, btn_left:"0.0", btn_top:"0.0"},
+			success: function(){
+				$("#panel").append("<span class='btn draggable disabled' value="+relay+">"+buttonLabel+"</span>");
+				updateDraggables();
+			},
+			error: function(request, status, error){
+				alertModal(request.responseText);
+			}
+		});
 	});
 });
 
@@ -151,17 +160,37 @@ function updateDraggables(){
 			stop: function( event, ui ) {
 				var rel_label=$(this).attr("value");
     			if(ui.position.top<20 && ui.position.left<20){ //supprime un objet lorsqu'on l'approche de l'icone de suppression
-    				$.post( "/delete_button", {rel_label:rel_label});
-    			$(this).remove();
+    				var btn=$(this);
+    			$.ajax({
+    				type: 'POST',
+    				url: '/delete_button',
+    				data: {rel_label:rel_label},
+    				success: function(){
+    					btn.remove();
+    				},
+    				error: function(request, status, error){
+    					alertModal(request.responseText);
+    				}
+    			});
     		}
     		else{
-    				var btn_label=$(this).text();
-    				var btn_left=ui.position.left;
-    				var btn_top=ui.position.top;
+    			var btn_label=$(this).text();
+    			var btn_left=ui.position.left;
+    			var btn_top=ui.position.top;
     				$(this).attr("left", btn_left); //on garde la nouvelle position
-					$(this).attr("top", btn_top);
+    				$(this).attr("top", btn_top);
 					//sauvegarde la position du bouton
-					$.post( "/save_button", {rel_label:rel_label, btn_label:btn_label, btn_left:btn_left/panel_width, btn_top:btn_top/panel_height});
+					$.ajax({
+						type: 'POST',
+						url: '/save_button',
+						data: {rel_label:rel_label, btn_label:btn_label, btn_left:btn_left/panel_width, btn_top:btn_top/panel_height},
+						success: function(){
+
+						},
+						error: function(request, status, error){
+							alertModal(request.responseText);
+						}
+					});
 				}
 			},
 			grid: [ 20, 20 ],

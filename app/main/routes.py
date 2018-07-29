@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import logging
-from flask import Flask, Response, flash, redirect, render_template, request, session, abort
+from flask import Flask, Response, flash, redirect, render_template, request, session, abort, send_from_directory
 from os import listdir
 from os.path import isfile, join
 from . import main
@@ -66,7 +66,7 @@ def admin_login():
         session['username'] = request.form['username']
         session['logged_in'] = True
     else:
-        flash('L\'utilisateur ou le mot de passe est incorrect')
+        flash('L\'utilisateur ou le mot de passe est incorrect.')
     return index()
 
 @main.route("/logout")
@@ -74,13 +74,18 @@ def logout():
     session['logged_in'] = False
     return index()
 
+
+@main.errorhandler(400)
+def page_not_found(e):
+    return "La requête est invalide", 400
+
 @main.errorhandler(404)
 def page_not_found(e):
-    return "Cette page n'existe pas"
+    return "Cette page n'existe pas", 404
 
 @main.errorhandler(405)
 def method_not_allowed(e):
-    return "Cette page n'existe pas"
+    return "Cette page n'existe pas", 405
 
 
 @main.route("/play_sound/<sound_name>", methods=['GET'])
@@ -92,3 +97,7 @@ def play_sound(sound_name):
                 yield data
                 data = fwav.read(1024)
     return Response(generate(), mimetype="audio/x-wav")
+
+@main.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(main.root_path, 'static'), 'favicon.ico',mimetype='image/vnd.microsoft.icon')

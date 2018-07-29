@@ -2,74 +2,76 @@
 <html lang="fr">
 
 <head>
-  <meta charset="utf-8">
-  <title>Robot panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/static/css/main.css">
-  <link rel="stylesheet" href="/static/css/fontawesome.css">
-  <script src="/static/js/jquery.min.js"></script>
-  <script src="/static/js/jquery-ui.min.js"></script>
-  <link rel="stylesheet" href="/static/css/jquery-ui.min.css">
-  <script src="/static/js/js.cookie.min.js"></script>
-  <script src="/static/js/socket.io.js"></script>
+	<meta charset="utf-8">
+	<title>Robot panel</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<link rel="stylesheet" href="/static/css/main.css">
+	<link rel="stylesheet" href="/static/css/fontawesome.css">
+	<script src="/static/js/jquery.min.js"></script>
+	<script src="/static/js/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="/static/css/jquery-ui.min.css">
+	<script src="/static/js/js.cookie.min.js"></script>
+	<script src="/static/js/socket.io.js"></script>
+	<script src="/static/js/utils.js"></script>
 </head>
 
 <body class="light-grey">
 
-  <!-- Top container -->
-  <div class="bar top black large" style="z-index:4; position:sticky">
-    <button class="bar-item button hide-large hover-none hover-text-light-grey" onclick="open_sidebar();"><i class="fa fa-bars"></i>  Menu</button>
-    <div class="bar-item left">
-      HECTOR
-    </div>
-    <div class="bar-item right">
-     <a href="/logout" class="button padding"><i class="fas fa-lock-open"></i>  Déconnexion</a>
-   </div>
- </div>
+	<!-- Top container -->
+	<div class="bar top black large" style="z-index:4; position:sticky">
+		<button class="bar-item button hide-large hover-none hover-text-light-grey" onclick="open_sidebar();"><i class="fa fa-bars"></i>  Menu</button>
+		<div class="bar-item left">
+			HECTOR
+		</div>
+		<div class="bar-item right">
+			<a href="/logout" class="button padding"><i class="fas fa-lock-open"></i>  Déconnexion</a>
+		</div>
+	</div>
 
- <!-- Sidebar/menu -->
- <nav class="sidebar collapse dark-blue animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
-  <div class="center">
-    {% if session.logged_in %}
-    <h3>Bienvenue {{ session['username'] }} !</h3>
-    {% endif %}
-    <i class="xxxlarge fas fa-robot"></i>
-    <!--<img src="/static/img/logo.png" class="margin-right" style="width:50%">-->
-  </div>
-  <hr>
-  <div class="container">
-    <h5>Navigation</h5>
-  </div>
-  <div class="bar-block">
-    <a href="#" class="bar-item button padding-16 hide-large dark-grey hover-black" onclick="close_sidebar()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Fermer le menu</a>
-    <a href="/" class="bar-item button padding"><i class="fas fa-tachometer-alt"></i>  Tableau de bord</a>
-    <a href="/commands" class="bar-item button padding"><i class="fas fa-terminal"></i>  Commandes manuelles</a>
-    <a href="/speech" class="bar-item button padding"><i class="fas fa-comments"></i>  Actions vocales</a>
-    <a href="/sequences" class="bar-item button padding"><i class="fas fa-project-diagram"></i>  Séquences</a>
-    <a href="/debug" class="bar-item button padding"><i class="fas fa-bug"></i>  Debug</a>
-    <a href="/settings" class="bar-item button padding"><i class="fas fa-cog"></i>  Paramètres</a>
-  </div>
-</nav>
+	<!-- Sidebar/menu -->
+	<nav class="sidebar collapse dark-blue animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
+		<div class="center">
+			{% if session.logged_in %}
+			<h3>Bienvenue {{ session['username'] }} !</h3>
+			{% endif %}
+			<i class="xxxlarge fas fa-robot"></i>
+			<!--<img src="/static/img/logo.png" class="margin-right" style="width:50%">-->
+		</div>
+		<hr>
+		<div class="container">
+			<h4>Navigation</h4>
+		</div>
+		<div class="bar-block">
+			<a href="/" class="bar-item button padding"><i class="fas fa-tachometer-alt"></i>  Tableau de bord</a>
+			<a href="/commands" class="bar-item button padding"><i class="fas fa-terminal"></i>  Commandes manuelles</a>
+			<a href="/speech" class="bar-item button padding"><i class="fas fa-comments"></i>  Actions vocales</a>
+			<a href="/sequences" class="bar-item button padding"><i class="fas fa-project-diagram"></i>  Séquences</a>
+			<a href="/debug" class="bar-item button padding"><i class="fas fa-bug"></i>  Debug</a>
+			<a href="/settings" class="bar-item button padding"><i class="fas fa-cog"></i>  Paramètres</a>
+			<a href="#" class="bar-item button padding-16 hide-large dark-grey hover-black" onclick="close_sidebar()" title="close menu"><i class="fa fa-chevron-left"></i></a>
+		</div>
+	</nav>
 
 
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="overlay hide-large animate-opacity" onclick="close_sidebar()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+	<!-- Overlay effect when opening sidebar on small screens -->
+	<div class="overlay hide-large animate-opacity" onclick="close_sidebar()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
-<!-- !PAGE CONTENT! -->
-<div class="main container" style="margin-left:300px;margin-top:43px;">
+	<!-- !PAGE CONTENT! -->
+	<div class="main container" style="margin-left:300px;margin-top:43px;">
 
- {% block content %}
- {% endblock %}
+		{% block content %}
+		{% endblock %}
 
- <!-- Footer -->
- <footer class="container padding-16 light-grey">
-  <p><a href="https://clarius-robot.com/" target="_blank">La confrérie du boulon</a></p>
-</footer>
+		<!-- Footer -->
+		<footer class="container padding-16 light-grey">
+			<p><a href="https://clarius-robot.com/" target="_blank">La confrérie du boulon</a></p>
+		</footer>
 
-<!-- End page content -->
-</div>
+		<!-- End page content -->
+	</div>
 
-<script>
+	<script>
 // Get the Sidebar
 var mySidebar = document.getElementById("mySidebar");
 
@@ -78,21 +80,23 @@ var overlayBg = document.getElementById("myOverlay");
 
 // Toggle between showing and hiding the sidebar, and add overlay effect
 function open_sidebar() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
-    overlayBg.style.display = "none";
-  } else {
-    mySidebar.style.display = 'block';
-    overlayBg.style.display = "block";
-  }
+	if (mySidebar.style.display === 'block') {
+		mySidebar.style.display = 'none';
+		overlayBg.style.display = "none";
+	} else {
+		mySidebar.style.display = 'block';
+		overlayBg.style.display = "block";
+	}
 }
 
 // Close the sidebar with the close button
 function close_sidebar() {
-  mySidebar.style.display = "none";
-  overlayBg.style.display = "none";
+	mySidebar.style.display = "none";
+	overlayBg.style.display = "none";
 }
 </script>
+
+<div class="alert-modal bottom"></div>
 
 </body>
 </html>

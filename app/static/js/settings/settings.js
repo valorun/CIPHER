@@ -4,19 +4,19 @@ $(document).ready(function() {
     var label=$("#newLabel").val();
     var pin=$("#newPin").val();
     var parity=$("#newParity").val();
-    if (/\s/.test(label)) {
-      alert("Un label de relai ne doit pas contenir d'espace.");
-    }
-    if (/\s/.test(parity)) {
-      alert("Une parité ne doit pas contenir d'espace.");
-    }
-    else{
-      $.post( "/save_relay", {rel_label:label, rel_pin:pin, rel_parity:parity}, function(){
-        console.log(label+" saved");
+
+    $.ajax({
+      type: 'POST',
+      url: '/save_relay',
+      data: {rel_label:label, rel_pin:pin, rel_parity:parity},
+      success: function(){
         location.reload();
-      });
-      //location.reload();
-    }
+      },
+      error: function(request, status, error){
+        alertModal(request.responseText);
+      }
+    });
+    //location.reload();
   });
 
   //checkbox permettant d'activer ou désactiver un relai
@@ -53,17 +53,33 @@ $(document).ready(function() {
 
 //enable OR disable relay
 function enableRelay(rel_label){
-  $.post( "/enable_relay", {rel_label:rel_label}, function(){
-    console.log(rel_label+" updated");
-  });
+  $.ajax({
+      type: 'POST',
+      url: '/enable_relay',
+      data: {rel_label:rel_label},
+      success: function(){
+        console.log(rel_label+" updated");
+      },
+      error: function(request, status, error){
+        alertModal(request.responseText);
+      }
+    });
 }
 
 function deleteRelay(rel_label){
   var confirm = window.confirm("Etes vous sûr de vouloir supprimer le relai \'"+rel_label+"\' ?");
   if(confirm){
-    $.post( "/delete_relay", {rel_label:rel_label}, function(){
-      console.log(rel_label+" deleted");
+      $.ajax({
+      type: 'POST',
+      url: '/delete_relay',
+      data: {rel_label:rel_label},
+      success: function(){
+              console.log(rel_label+" deleted");
       $("#"+rel_label).remove();
+      },
+      error: function(request, status, error){
+        alertModal(request.responseText);
+      }
     });
   }
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/python
 # coding: utf-8
 
-def start():
-	return "coucou"
+def start(args):
+	return str(args[0])+" coucou"

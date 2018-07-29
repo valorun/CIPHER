@@ -2,9 +2,10 @@
 # coding: utf-8
 
 import logging
-from flask import Flask, redirect, render_template, request, session, abort
+from flask import Flask, flash, redirect, render_template, request, session, abort
 from . import main
 from app.model import db, Relay
+import re
 
 @main.route('/save_relay', methods=['POST'])
 def save_relay():
@@ -14,6 +15,8 @@ def save_relay():
         rel_label = request.form.get("rel_label")
         rel_pin = request.form.get("rel_pin")
         rel_parity = request.form.get("rel_parity")
+        if re.match(r"^$|\s+", rel_label) or re.match(r"^$|\s+", rel_parity):
+            return "Un label de relai ou une parité ne doit pas être vide ou contenir d'espace.", 400
         logging.info("Saving relay "+rel_label)
         db_relay = Relay(label=rel_label, pin=rel_pin, enabled=True, parity=rel_parity)
         db.session.add(db_relay)
@@ -26,6 +29,8 @@ def enable_relay():
         return render_template('login.html')
     else:
         rel_label = request.form.get("rel_label")
+        if re.match(r"^$|\s+", rel_label):
+            return "Un label de relai ne doit pas être vide ou contenir d'espace.", 400
         logging.info("Updating relay "+rel_label)
         db_rel = Relay.query.filter_by(label=rel_label).first()
         db_rel.enabled = not db_rel.enabled
@@ -38,6 +43,8 @@ def delete_relay():
         return render_template('login.html')
     else:
         rel_label = request.form.get("rel_label")
+        if re.match(r"^$|\s+", rel_label):
+            return "Un label de relai ne doit pas être vide ou contenir d'espace.", 400
         logging.info("Deleting relay "+rel_label)
         db_rel = Relay.query.filter_by(label=rel_label).first()
         db.session.delete(db_rel)
