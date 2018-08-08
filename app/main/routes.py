@@ -7,7 +7,7 @@ from os import listdir
 from os.path import isfile, join
 from . import main
 from .. import SOUNDS_LOCATION, SCRIPTS_LOCATION
-from app.model import db, Sequence, Relay, Button
+from app.model import db, Sequence, Relay
 
 @main.route('/')
 @main.route('/index')
@@ -29,8 +29,8 @@ def commands():
     else:
         sequences=Sequence.query.all()
         relays=Relay.query.all()
-        buttons=Button.query.all()
-        return render_template('commands.html', sequences=sequences, relays=relays, buttons=buttons)
+        sounds=[f for f in listdir(SOUNDS_LOCATION) if isfile(join(SOUNDS_LOCATION, f))]
+        return render_template('commands.html', sequences=sequences, relays=relays, sounds=sounds)
 
 @main.route('/sequences')
 def sequences():

@@ -24,12 +24,3 @@ class Relay(db.Model):
 	
 	def __repr__(self):
 		return '<Relay %r : >' % self.id
-
-class Button(db.Model):
-	relay_label = db.Column(db.String(50), db.ForeignKey('relay.label'), nullable=False, primary_key=True)
-	label = db.Column(db.String(50), nullable=False)
-	left = db.Column(db.Float, nullable=False)
-	top = db.Column(db.Float, nullable=False)
-	
-	def __repr__(self):
-		return '<Button %r : >' % self.name

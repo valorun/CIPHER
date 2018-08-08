@@ -4,4 +4,4 @@ __pycache__
 *.pem
 *.mp3
 *.wav
-app/keywords_dataset.json
+*.json

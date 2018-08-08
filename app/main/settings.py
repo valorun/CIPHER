@@ -15,8 +15,12 @@ def save_relay():
         rel_label = request.form.get("rel_label")
         rel_pin = request.form.get("rel_pin")
         rel_parity = request.form.get("rel_parity")
-        if re.match(r"^$|\s+", rel_label) or re.match(r"^$|\s+", rel_parity):
-            return "Un label de relai ou une parité ne doit pas être vide ou contenir d'espace.", 400
+        if re.match(r"^$|\s+", rel_label):
+            return "Un label de relai ne doit pas être vide ou contenir d'espace.", 400
+        if re.match(r"^$|\s+", rel_pin):
+            return "Un pin ne doit pas être vide ou contenir d'espace.", 400
+        if re.match(r"\s+", rel_parity):
+            return "Une parité ne doit pas contenir d'espace.", 400
         logging.info("Saving relay "+rel_label)
         db_relay = Relay(label=rel_label, pin=rel_pin, enabled=True, parity=rel_parity)
         db.session.add(db_relay)

@@ -1,9 +1,34 @@
 {% extends 'template.html' %}
 {% block content %}
+<script src="/static/js/lodash.js"></script>
+<script src="/static/js/gridstack.js"></script>
+<script src="/static/js/gridstack.jQueryUI.js"></script>
+<link rel="stylesheet" href="/static/css/gridstack.css">
+
 <script src="/static/js/connection.js"></script>
+<script src="/static/js/commands/grid.js"></script>
 <script src="/static/js/commands/commands.js"></script>
-<style>
-#draggable {position:absolute; }
+<script src="/static/js/commands/motion.js"></script>
+
+
+<style type="text/css">
+
+.grid-stack-item-content {
+	text-align: center;
+}
+
+.grid-stack-item-removing {
+	opacity: 0.2;
+}
+
+.trash {
+	height: 100px;
+	margin-bottom: 20px;
+	background: rgba(255, 0, 0);
+	position: relative;
+	opacity: 0.1;
+}
+
 </style>
 <header class="container padding-16">
 	<h2><b><i class="fa fa-terminal"></i> Commandes manuelles</b></h2>
@@ -16,15 +41,15 @@
 				<h3>Execution de séquence</h3>
 			</div>
 			<div class="container padding-16">
-					<select class="select border margin-bottom" name="sequence" id="sequence">
-						<option value="" disabled selected>Choisir une séquence</option>
-						{% for s in sequences %}
-						{% if s.enabled %}
-						<option value="{{ s.id }}" >{{ s.id }}</option>
-						{% endif %}
-						{% endfor %}
-					</select>
-					<input class="button dark-red" id="playSeqButton" type="button" value="Executer la séquence">
+				<select class="select border margin-bottom" name="sequence" id="sequence">
+					<option value="" disabled selected>Choisir une séquence</option>
+					{% for s in sequences %}
+					{% if s.enabled %}
+					<option value="{{ s.id }}" >{{ s.id }}</option>
+					{% endif %}
+					{% endfor %}
+				</select>
+				<input class="button dark-red" id="playSeqButton" type="button" value="Executer la séquence">
 				
 			</div>
 		</div>
@@ -36,49 +61,93 @@
 			</div>
 			<div class="container padding-16 cell-row">
 				
-					<table class="cell">
-						<tr>
-							<td></td>
-							<td><i class="button dark-red fas fa-arrow-up motion-direction" value="motion_up"></i></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><i class="button dark-red fas fa-arrow-left motion-direction" value="motion_left"></i></td>
-							<td></td>
-							<td><i class="button dark-red fas fa-arrow-right motion-direction" value="motion_right"></i></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td><i class="button dark-red fas fa-arrow-down motion-direction" value="motion_down"></i></td>
-							<td></td>
-						</tr>
-					</table>
-					<div id="motion_slider" class="cell" style="height:100px;"></div>
+				<table class="cell">
+					<tr>
+						<td></td>
+						<td><i class="button dark-red fas fa-arrow-up motion-direction" value="motion_up"></i></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><i class="button dark-red fas fa-arrow-left motion-direction" value="motion_left"></i></td>
+						<td></td>
+						<td><i class="button dark-red fas fa-arrow-right motion-direction" value="motion_right"></i></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><i class="button dark-red fas fa-arrow-down motion-direction" value="motion_down"></i></td>
+						<td></td>
+					</tr>
+				</table>
+				<div id="motion_slider" class="cell" style="height:100px;"></div>
 				
 			</div>
 		</div>
 	</div>
 </div>
 
+
 <div class="container">
 	<i class="button dark-red fas fa-edit" id="editPanelButton"></i>
-	<div id="newButtonOptions" class="row hide">
-		<select class="select border third" name="relays" id="relays">
-			<option value="" disabled selected>Choisir un relai</option>
-			{% for r in relays %}
-			{% if r.enabled %}
-			<option value="{{ r.label }}" >{{ r.label }}</option>
-			{% endif %}
-			{% endfor %}
-		</select>
-		<input id="buttonLabel" type="text" value="" class="input third" placeholder="Nom du bouton">
-		<input id="addButton" type="button" value="Ajouter" class="button dark-red third">
+	<div id="newButtonPanel" class="white border hide">
+		<div id="newButtonTypeChoice" class="row margin-bottom">
+			<div class="third">
+				<input type="radio" id="relayChoice" name="choice" value="relay" class="radio" checked>
+				<label for="relayChoice">Relai</label>
+			</div>
+			<div class="third">
+				<input type="radio" id="sequenceChoice" name="choice" value="sequence" class="radio">
+				<label for="sequenceChoice">Séquence</label>
+			</div>
+			<div class="third">
+				<input type="radio" id="soundChoice" name="choice" value="sound" class="radio">
+				<label for="soundChoice">Son</label>
+			</div>
+		</div>
+		<div id="newButtonOptions" class="row">
+			<select class="select border third" name="relays" id="relays">
+				<option value="" disabled selected>Choisir un relai</option>
+				{% for r in relays %}
+				{% if r.enabled %}
+				<option value="{{ r.label }}" >{{ r.label }}</option>
+				{% endif %}
+				{% endfor %}
+			</select>
+			<select class="select border third hide" name="sequences" id="sequences">
+				<option value="" disabled selected>Choisir une séquence</option>
+				{% for s in sequences %}
+				{% if s.enabled %}
+				<option value="{{ s.id }}" >{{ s.id }}</option>
+				{% endif %}
+				{% endfor %}
+			</select>
+			<select class="select border third hide" name="sounds" id="sounds">
+				<option value="" disabled selected>Choisir un son</option>
+				{% for s in sounds %}
+				<option value="{{ s }}" >{{ s }}</option>
+				{% endfor %}
+			</select>
+			<input id="buttonLabel" type="text" value="" class="input third" placeholder="Nom du bouton">
+			<input id="addButton" type="button" value="Ajouter" class="button dark-red third">
+		</div>
 	</div>
-	<div id="panel" class="border container white" style="height: 600px; width:100%">
-		<i class="xxlarge text-red opacity padding-16 fas fa-trash hide" id="deleteIcon"></i>
-		{% for b in buttons %}
-		<span class='btn draggable' value="{{ b.relay_label }}" top="{{b.top}}" left="{{b.left}}">{{ b.label }}</span>
-		{% endfor %}
+	<div id="panel" class="border container white" style="width:100%">
+		<div class="row-padding">
+			<div class="trash center text-white">
+				<h1><i class="fas fa-trash"></i></h1>
+			</div>
+		</div>
+		<div class="row-padding">
+			<div class="grid-stack" id="grid">
+
+			</div>
+		</div>
 	</div>
 </div>
+
+
+<script type="text/javascript">
+
+
+</script>
+
 {% endblock %}

@@ -4,7 +4,7 @@ var treshold=0.5; //seuil minimun de reconnaissance
 
 $(document).ready(function() {
 
-    socket.on('loadKeywordsDataset', function(dataset) {
+    socket.on('load_keywords_dataset', function(dataset) {
         speechRec.model=dataset[0];
         speechRec.wordBuffer=dataset[1];
         speechRec.modelBuffer=dataset[2];
@@ -68,7 +68,7 @@ $(document).ready(function() {
         json.push(speechRec.model);
         json.push(speechRec.wordBuffer);
         json.push(speechRec.modelBuffer);
-        socket.emit('saveKeywordsDataset', JSON.stringify(json));
+        socket.emit('save_keywords_dataset', JSON.stringify(json));
     });
 
     //bouton permettant de lancer la reconnaissance
@@ -104,7 +104,7 @@ $(document).ready(function() {
     };
     speechRec.keywordSpottedCallback=updateKeywordSpotting;
 
-    //on charge le modèle déjà enregistrés
-    socket.emit('loadKeywordsDataset');
+    //on charge le modèle déjà enregistré
+    socket.emit('load_keywords_dataset');
 
 });

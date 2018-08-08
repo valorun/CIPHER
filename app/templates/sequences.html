@@ -141,7 +141,7 @@
 					<tr id="{{ s.id }}">
 						<td>{{ s.id }}</td>
 						<td>
-							{% if s.enabled==True %}
+							{% if s.enabled %}
 							<input id="enable_{{ s.id }}" type="checkbox" name="enableSeq" checked="checked" class="check">
 							{% else %}
 							<input id="enable_{{ s.id }}" type="checkbox" name="enableSeq" class="check">

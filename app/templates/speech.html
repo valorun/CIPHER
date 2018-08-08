@@ -18,6 +18,11 @@
             <div class="container dark-blue">
                 <h3>Mot clé d'activation</h3>
             </div>
+            <div class="container">
+                <p>
+                    Le mot-clé d'activation est la porte d'entrée pour communiquer avec le robot. Vous pourrez engager la conversation avec lui une fois qu'il sera entraîné à reconnaître un plusieurs mots clé. Il est à noter que plus le nombre d'échantillons audio sera important lors de l'entraînement, plus performante sera la reconnaissance du mot-clé.
+                </p>
+            </div>
             <div class="container padding-16">
                 <label for="currentKeyword">Mot clé: </label>
                 <input id="currentKeyword" type="text" value="" class="input border margin-bottom">
@@ -25,7 +30,7 @@
                 <input class="button dark-red" id="saveButton" type="button" value="Enregistrer l'entrainement">   
             </div>
 
-            <table id="training" class="table bordered">
+            <table id="training" class="table bordered padding-16">
             </table>
 
         </div>
@@ -51,6 +56,12 @@
                 <h3>Entrainement</h3>
             </div>
             
+            <div class="container">
+                <p>
+                    Vous pouvez ici ajouter des phrases à une conversation. Des séquences peuvent être exécutées en réponse. Ces dernières peuvent avoir en paramètre des entités que l'on peut fournir dans la question a l'aide de la balise '{entity}'.
+                </p>
+            </div>
+
             <div class="row-padding">
                 <div class="third">
                     <label for="currentSentence">Phrase: </label>
@@ -73,22 +84,16 @@
                     </select>
                 </div>
             </div>
-            
-            <div class="container">
-                <p>
-                    Vous pouvez ici ajouter des phrases à une conversation. Des séquences peuvent être executées en réponse. Ces dernières peuvent avoir en paramètre des entitées que l'on peut fournir dans la question a l'aide de la balise '{entity}'
-                </p>
-            </div>
+
             <div class="container padding-16">
-                <div>
-                    <input class="button dark-red" id="addToConvButton" type="button" value="Ajouter à la conversation">
-                </div>
-                <div>
-                    <h4>Conversation</h4>
-                    <ul id="conversation" class="ul half">
-                    </ul>
-                </div>
+                <input class="button dark-red" id="addToConvButton" type="button" value="Ajouter à la conversation">
             </div>
+            <div class="container padding-16 leftbar">
+                <h4>Conversation</h4>
+                <ul id="conversation" class="ul half">
+                </ul>
+            </div>
+            
             <div class="container padding-16">
                 <input class="button dark-red" id="trainButton" type="button" value="Entrainer">
             </div>

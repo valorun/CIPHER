@@ -22,7 +22,8 @@ $(document).ready(function() {
 	});
 });
 
-function graphIsValid() { //check if all nodes have at least one parent node
+//check if all nodes have at least one parent node
+function graphIsValid() {
 	return nodes.get().filter(function(n) {
 		return n.id != "start"
 	}).every(function(n1) {
@@ -32,6 +33,7 @@ function graphIsValid() { //check if all nodes have at least one parent node
 	});
 }
 
+//draw the graph viewer
 function draw() {
       // create an array with nodes
       nodes = new vis.DataSet();
@@ -113,6 +115,7 @@ function draw() {
   network = new vis.Network(container, data, options);
 }
 
+//update the form to display the options corresponding to the type of button chosen
 function updateForm() {
 	$("#motionOptions").addClass("hide");
 	$("#servoOptions").addClass("hide");
@@ -138,6 +141,7 @@ function updateForm() {
 	}
 }
 
+//create a specific node corresponding to the option chosen
 function handleNodeToAdd(nodeData) {
 	var action = "";
 	nodeData.shape = 'box';
@@ -167,6 +171,7 @@ function handleNodeToAdd(nodeData) {
 	return true;
 }
 
+//save the graph on the server
 function saveGraph(){
   //get the input value
   sequence = [];
@@ -188,6 +193,7 @@ function saveGraph(){
   });
 }
 
+//edit the specified sequence
 function editSequence(seq_name){
 	$("#name").val(seq_name);
 	json = JSON.parse($("#data_"+seq_name).text());
