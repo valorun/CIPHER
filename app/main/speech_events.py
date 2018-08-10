@@ -16,9 +16,16 @@ def save_keywords_dataset(dataset):
 #Charge l'entrainement à la reconnaissance de mots clés
 @socketio.on('load_keywords_dataset', namespace='/client')
 def load_keywords_dataset():
-    with open(KEYWORDS_DATASET) as f:
-        dataset = json.load(f)
-        emit("load_keywords_dataset", dataset, namespace="/client", broadcast=True)
+	try:
+		with open(KEYWORDS_DATASET, 'r') as f:
+			dataset = json.load(f)
+			emit("load_keywords_dataset", dataset, namespace="/client", broadcast=True)
+	except IOError:
+		with open(KEYWORDS_DATASET, 'w') as f:
+			f.write("[]")
+	except ValueError:
+		pass
+
 
 @socketio.on('train', namespace='/client')
 def train_chatbot(conversation):

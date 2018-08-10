@@ -25,6 +25,13 @@ def load_buttons():
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
-        with open(COMMANDS_GRID) as f:
-            grid = json.load(f)
-            return jsonify(grid)
+        try:
+            with open(COMMANDS_GRID, 'r') as f:
+                grid = json.load(f)
+                return jsonify(grid)
+        except IOError:
+            with open(COMMANDS_GRID, 'w') as f:
+                f.write("[]")
+                return "Aucun fichier a charger.", 500
+        except ValueError:
+            return "Le format de fichier n'est pas reconnu.", 500

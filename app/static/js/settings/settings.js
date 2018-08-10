@@ -74,8 +74,8 @@ function deleteRelay(rel_label){
       url: '/delete_relay',
       data: {rel_label:rel_label},
       success: function(){
-              console.log(rel_label+" deleted");
-      $("#"+rel_label).remove();
+          console.log(rel_label+" deleted");
+          $("#"+rel_label).remove();
       },
       error: function(request, status, error){
         alertModal(request.responseText);
