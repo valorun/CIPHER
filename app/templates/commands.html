@@ -34,8 +34,9 @@
 	<h2><b><i class="fa fa-terminal"></i> Commandes manuelles</b></h2>
 </header>
 
-<div class="row-padding">
+<div class="row">
 	<div class="half">
+		<div class="panel">
 		<div class="card white">
 			<div class="container dark-blue">
 				<h3>Execution de séquence</h3>
@@ -54,7 +55,9 @@
 			</div>
 		</div>
 	</div>
+	</div>
 	<div class="half">
+		<div class="panel">
 		<div class="card white">
 			<div class="container dark-blue">
 				<h3>Chariot</h3>
@@ -83,13 +86,14 @@
 			</div>
 		</div>
 	</div>
+	</div>
 </div>
 
 
 <div class="container">
 	<i class="button dark-red fas fa-edit" id="editPanelButton"></i>
 	<div id="newButtonPanel" class="white border hide">
-		<div id="newButtonTypeChoice" class="row margin-bottom">
+		<div id="newButtonTypeChoice" class="row margin-bottom container">
 			<div class="third">
 				<input type="radio" id="relayChoice" name="choice" value="relay" class="radio" checked>
 				<label for="relayChoice">Relai</label>
@@ -103,8 +107,8 @@
 				<label for="soundChoice">Son</label>
 			</div>
 		</div>
-		<div id="newButtonOptions" class="row">
-			<select class="select border third" name="relays" id="relays">
+		<div id="newButtonOptions" class="row container">
+			<select class="select border quarter" name="relays" id="relays">
 				<option value="" disabled selected>Choisir un relai</option>
 				{% for r in relays %}
 				{% if r.enabled %}
@@ -112,7 +116,7 @@
 				{% endif %}
 				{% endfor %}
 			</select>
-			<select class="select border third hide" name="sequences" id="sequences">
+			<select class="select border quarter hide" name="sequences" id="sequences">
 				<option value="" disabled selected>Choisir une séquence</option>
 				{% for s in sequences %}
 				{% if s.enabled %}
@@ -120,20 +124,23 @@
 				{% endif %}
 				{% endfor %}
 			</select>
-			<select class="select border third hide" name="sounds" id="sounds">
+			<select class="select border quarter hide" name="sounds" id="sounds">
 				<option value="" disabled selected>Choisir un son</option>
 				{% for s in sounds %}
 				<option value="{{ s }}" >{{ s }}</option>
 				{% endfor %}
 			</select>
-			<input id="buttonLabel" type="text" value="" class="input third" placeholder="Nom du bouton">
-			<input id="addButton" type="button" value="Ajouter" class="button dark-red third">
+			
+			<input id="color" type="color" value="Ajouter" class="button light-grey border quarter" style="height: 40px">
+
+			<input id="buttonLabel" type="text" value="" class="input quarter border" placeholder="Nom du bouton">
+			<input id="addButton" type="button" value="Ajouter" class="button dark-red quarter">
 		</div>
 	</div>
 	<div id="panel" class="border container white" style="width:100%">
 		<div class="row-padding">
-			<div class="trash center text-white">
-				<h1><i class="fas fa-trash"></i></h1>
+			<div class="trash center text-white row">
+				<h1 class="cell-middle"><i class="fas fa-trash"></i></h1>
 			</div>
 		</div>
 		<div class="row-padding">

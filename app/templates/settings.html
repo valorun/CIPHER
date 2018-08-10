@@ -41,7 +41,8 @@
 		</div>
 		<div class="container">
 			<p>
-				<table class="table bordered">
+		
+				<table class="table bordered responsive">
 					<tr>
 						<th>Label</th>
 						<th>Pin</th>
@@ -62,10 +63,13 @@
 							{% endif %}
 							<label for="enable_{{ r.label }}">activé</label>
 						</td>
-						<td><input id="delete_{{ r.label }}" type="button" name="deleteRel" value="Supprimer" class="button dark-red"></td>
+						<td>
+							<a id="delete_{{ r.label }}" type="button" name="deleteRel" class="button dark-red"><i class="fas fa-trash"></i></a>
+						</td>
 					</tr>
 					{% endfor %}
 				</table>
+			
 			</p>
 		</div>
 	</div>

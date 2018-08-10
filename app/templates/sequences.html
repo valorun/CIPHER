@@ -148,8 +148,16 @@
 							{% endif %}
 							<label for="enable_{{ s.id }}">activé</label>
 						</td>
-						<td><input id="edit_{{ s.id }}" type="button" name="editSeq" value="Editer" class="button dark-red"></td>
-						<td><input id="delete_{{ s.id }}" type="button" name="deleteSeq" value="Supprimer" class="button dark-red"></td>
+						<td>
+							<a id="edit_{{ s.id }}" type="button" name="editSeq" class="button dark-red">
+								<i class="fas fa-edit "></i>
+							</a>
+						</td>
+						<td>
+							<a id="delete_{{ s.id }}" type="button" name="deleteSeq" class="button dark-red">
+								<i class="fas fa-trash"></i>
+							</a>
+						</td>
 						<td class="hide"><div id="data_{{ s.id }}" name="dataSeq">{{ s.value }}</div></td>
 					</tr>
 					{% endfor %}

@@ -23,6 +23,7 @@ $(document).ready(function() {
 
 	$("#addButton").on("click", function(){
 		var buttonLabel=$("#buttonLabel").val();
+		var color=$("#color").val();
 
 		var action=null;
 		var sequence=null;
@@ -48,7 +49,7 @@ $(document).ready(function() {
 			}
 		}
 		
-		addButton(buttonLabel, action, sequence, 1, 1, 1, 1);
+		addButton(buttonLabel, action, sequence, color, 1, 1, 1, 1);
 	});
 
 	$('input[type=radio][name=choice]').on("change", function() {

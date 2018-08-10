@@ -69,7 +69,7 @@ function loadGrid() {
 		success: function(result){
 			var items = GridStackUI.Utils.sort(result);
 			_.each(items, function (node) {
-				addButton(node.label, node.action, node.sequence, node.x, node.y, node.width, node.height);
+				addButton(node.label, node.action, node.sequence, node.color, node.x, node.y, node.width, node.height);
 			}, this);
 			grid.disable();
 			socket.emit('update_relays_state');
@@ -95,7 +95,8 @@ function saveGrid() {
 			height: node.height,
 			label: el.text(),
 			action: child.data('action'),
-			sequence: child.data('sequence')
+			sequence: child.data('sequence'),
+			color: child.css("background-color")
 		};
 	}, this);
 	console.log(serializedData);
@@ -123,7 +124,7 @@ function clearGrid () {
 
 //add a button to the grid
 //an action or a sequence can be associated if desired. if not, these values must be null
-function addButton(label, action, sequence, x, y, width, height){
+function addButton(label, action, sequence, color, x, y, width, height){
 	var actionLabel="";
 	if(action!=null)
 		actionLabel="data-action='"+action+"' ";
@@ -131,7 +132,8 @@ function addButton(label, action, sequence, x, y, width, height){
 	var sequenceLabel="";
 	if(sequence!=null)
 		sequenceLabel="data-sequence='"+sequence+"'";
-	var el= $('<div><div class="grid-stack-item-content btn grey" '+actionLabel+sequenceLabel+'>'+label+'</div><div/>');
+	console.log(color);
+	var el= $('<div><div class="grid-stack-item-content btn" style="background-color:'+color+'"'+actionLabel+sequenceLabel+'>'+label+'</div><div/>');
 	if(editMode){
 		el.children().first().addClass('disabled');
 	}

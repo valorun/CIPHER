@@ -3,7 +3,7 @@ $(document).ready(function() {
 		var seq_name=this.id.substr(this.id.indexOf('_')+1);
 		enableSequence(seq_name)
 	});
-	$('input[name=deleteSeq]').on("click", function() {
+	$('a[name=deleteSeq]').on("click", function() {
 		var seq_name=this.id.substr(this.id.indexOf('_')+1)
 		deleteSequence(seq_name)
 	});

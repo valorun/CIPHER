@@ -13,8 +13,17 @@ $(document).ready(function() {
 		});
 	});
 	
-	//controles du chariot
-	$(".motion-direction").on("mousedown touchstart", function(){
+
+	//selects different listeners depending on the type of device used.
+	let startActionEvent = "mousedown";
+	let stopActionEvent = "mouseup"; //mouseleave if we also want to stop when the cursor is out of the button
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+ 		startActionEvent = "touchstart";
+ 		stopActionEvent = "touchend";
+	}
+
+	//carriage controller
+	$(".motion-direction").on(startActionEvent, function(){
 		var dir=$(this).attr('value');
 		var value=$( "#motion_slider" ).slider( "value" );
 		var command="motion:";
@@ -31,7 +40,7 @@ $(document).ready(function() {
 			command+=value+",-"+value;
 		}
 		socket.emit('command', command);
-	}).on('mouseup touchend', function() { //mouseleave si on veut arreter quand la souris sort du bouton
+	}).on(stopActionEvent, function() {
 		var command="motion:0,0";
 		socket.emit('command', command);
 	});

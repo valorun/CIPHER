@@ -26,7 +26,7 @@ $(document).ready(function() {
   });
 
   //bouton permettant de supprimer le relai
-  $('input[name=deleteRel]').on("click", function() {
+  $('a[name=deleteRel]').on("click", function() {
     var rel_label=this.id.substr(this.id.indexOf('_')+1)
     deleteRelay(rel_label)
   });

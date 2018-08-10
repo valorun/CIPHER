@@ -37,8 +37,8 @@ $(document).ready(function() {
             
             var appendHtml = '<tr id=' + playbackDivId + '>';
             appendHtml += '<td>enregistrement #' + recordingId +' pour le mot <b>' + $("#currentKeyword").val() + '</b></td>';
-            appendHtml += '<td><input type="button" class="button blue" value="lire" id="' + playButtonId + '" /></td>';
-            appendHtml += '<td><input type="button" class="button blue" value="supprimer" id="' + deleteButtonId + '" /></td>';
+            appendHtml += '<td><a type="button" class="button blue" value="lire" id="' + playButtonId + '" ><i class="fas fa-play"></i></a></td>';
+            appendHtml += '<td><a type="button" class="button blue" id="' + deleteButtonId + '" ><i class="fas fa-trash"></i></a></td>';
             appendHtml += '</tr>';
 
             $("#training").append(appendHtml);

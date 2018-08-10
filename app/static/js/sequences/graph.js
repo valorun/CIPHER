@@ -16,7 +16,7 @@ $(document).ready(function() {
 		updateForm();
 	});
 
-	$('input[name=editSeq]').on("click", function() {
+	$('a[name=editSeq]').on("click", function() {
 		seq_name=this.id.substr(this.id.indexOf('_')+1);
 		editSequence(seq_name)
 	});
@@ -35,16 +35,16 @@ function graphIsValid() {
 
 //draw the graph viewer
 function draw() {
-      // create an array with nodes
-      nodes = new vis.DataSet();
-      nodes.add([{
-      	id: 'start',
-      	label: 'Start',
-      	color: 'red'
-      }]);
+        // create an array with nodes
+        nodes = new vis.DataSet();
+        nodes.add([{
+           id: 'start',
+           label: 'Start',
+           color: 'red'
+       }]);
 
-      // create an array with edges
-      edges = new vis.DataSet();
+        // create an array with edges
+        edges = new vis.DataSet();
 
       // create a network
       var container = document.getElementById('network');
