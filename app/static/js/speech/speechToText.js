@@ -38,7 +38,7 @@ $(document).ready(function() {
     };
   }
   else{
-    alert("Ce navigateur n'est pas compatible avec l\'API Webspeech.");
+    alertModal("Ce navigateur n'est pas compatible avec l\'API Webspeech.");
   }
 });
 

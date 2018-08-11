@@ -13,65 +13,90 @@
 </header>
 
 <div class="">
-    <div class="container card padding-16 margin">
-        <h3>Mot clé d'activation</h3>
-        <div class="container padding">
-            <label for="currentKeyword">Mot clé: </label>
-            <input id="currentKeyword" type="text" value="" class="input">
-            <input class="button dark-red" id="startStopRecordingButton" type="button" value="Lancer l'entrainement">
-            <input class="button dark-red" id="saveButton" type="button" value="Enregistrer l'entrainement">
-        </div>
-
-        <table id="training" class="table bordered">
-        </table>
-
-    </div>
-
-    <div class="container card padding-16 margin">
-        <h3>Reconnaissance</h3>
-        <div class="container">
-            <input class="button dark-red" id="startStopRecognition" type="button" value="Lancer la reconnaissance">
-        </div>
-
-        <ul id="detectionResult" class="ul">
-        </ul>
-    </div>
-
-    <div class="container card padding-16 margin">
-
-        <h3>Entrainement</h3>
-        <div class="row">
-            <div class="third container">
-                <label for="currentSentence">Phrase: </label>
-                <input id="currentSentence" type="text" value="" class="input border">
+    <div class="panel">
+        <div class="card white">
+            <div class="container dark-blue">
+                <h3>Mot clé d'activation</h3>
             </div>
-            <div class="third container">
-                <label for="currentResponse">Réponse: </label>
-                <input id="currentResponse" type="text" value="" class="input border">
+            <div class="container">
+                <p>
+                    Le mot-clé d'activation est la porte d'entrée pour communiquer avec le robot. Vous pourrez engager la conversation avec lui une fois qu'il sera entraîné à reconnaître un plusieurs mots clé. Il est à noter que plus le nombre d'échantillons audio sera important lors de l'entraînement, plus performante sera la reconnaissance du mot-clé.
+                </p>
             </div>
-            <div class="third container">
-                <label for="currentSequence">Séquence (optionnel): </label>
-                <select id="currentSequence" class="select" name="sequence">
-                    <option value="" disabled selected>Choisir une séquence</option>
-                    <option value="" >Aucune</option>
-                    {% for s in sequences %}
+            <div class="container padding-16">
+                <label for="currentKeyword">Mot clé: </label>
+                <input id="currentKeyword" type="text" value="" class="input border margin-bottom">
+                <input class="button dark-red margin-bottom" id="startStopRecordingButton" type="button" value="Lancer l'entrainement">
+                <input class="button dark-red margin-bottom" id="saveButton" type="button" value="Enregistrer l'entrainement">
+            </div>
+
+            <table id="training" class="table bordered responsive padding-16">
+            </table>
+
+        </div>
+    </div>
+    <div class="panel">
+        <div class="card white">
+            <div class="container dark-blue">
+                <h3>Reconnaissance</h3>
+            </div>
+            <div class="container">
+                <p>
+                    <input class="button dark-red" id="startStopRecognition" type="button" value="Lancer la reconnaissance">
+                    <ul id="detectionResult" class="ul">
+                    </ul>
+                </p>
+            </div>
+
+        </div>
+    </div>
+    <div class="panel">
+        <div class="card white">
+            <div class="container dark-blue">
+                <h3>Entrainement</h3>
+            </div>
+            
+            <div class="container">
+                <p>
+                    Vous pouvez ici ajouter des phrases à une conversation. Des séquences peuvent être exécutées en réponse. Ces dernières peuvent avoir en paramètre des entités que l'on peut fournir dans la question a l'aide de la balise '{entity}'.
+                </p>
+            </div>
+
+            <div class="row-padding">
+                <div class="third">
+                    <label for="currentSentence">Phrase: </label>
+                    <input id="currentSentence" type="text" value="" class="input border">
+                </div>
+                <div class="third">
+                    <label for="currentResponse">Réponse: </label>
+                    <input id="currentResponse" type="text" value="" class="input border">
+                </div>
+                <div class="third">
+                    <label for="currentSequence">Séquence (optionnel): </label>
+                    <select id="currentSequence" class="select border" name="sequence">
+                        <option value="" disabled selected>Choisir une séquence</option>
+                        <option value="" >Aucune</option>
+                        {% for s in sequences %}
                         {% if s.enabled %}
                         <option value="{{ s.id }}" >{{ s.id }}</option>
                         {% endif %}
-                    {% endfor %}
-                </select>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="container">
-            <input class="button dark-red" id="addToConvButton" type="button" value="Ajouter à la conversation">
-        </div>
-        <div class="container">
-            <h4>Conversation</h4>
-            <ul id="conversation" class="ul half">
-            </ul>
-        </div>
-        <div class="container">
-            <input class="button dark-red row" id="trainButton" type="button" value="Entrainer">
+
+            <div class="container padding-16">
+                <input class="button dark-red" id="addToConvButton" type="button" value="Ajouter à la conversation">
+            </div>
+            <div class="container padding-16 leftbar">
+                <h4>Conversation</h4>
+                <ul id="conversation" class="ul half">
+                </ul>
+            </div>
+            
+            <div class="container padding-16">
+                <input class="button dark-red" id="trainButton" type="button" value="Entrainer">
+            </div>
         </div>
     </div>
 </div>

@@ -3,20 +3,44 @@
 <script src="/static/js/connection.js"></script>
 
 <header class="container padding-16">
-  <h2><b><i class="fa fa-bug"></i> Panneau de debug</b></h2>
+	<h2><b><i class="fa fa-bug"></i> Panneau de debug</b></h2>
 </header>
 
-<input type="text" id="command" value="" class="input border" placeholder="Exemple: move">
-<input class="button dark-red" id="sendButton" type="button" value="Envoyer">
+<div class="panel">
+	<div class="card white">
+		<div class="container dark-blue">
+			<h3>Commande</h3>
+		</div>
+		<div class="container padding-16">
+			
+			<input type="text" id="command" value="" class="input border margin-bottom" placeholder="Exemple: motion:0,0">
+			<input class="button dark-red" id="sendCommandButton" type="button" value="Envoyer">
+			
+		</div>
+	</div>
+</div>
+<div class="panel">
+	<div class="card white">
+		<div class="container dark-blue">
+			<h3>Phrases</h3>
+		</div>
+		<div class="container padding-16">
+			<input type="text" id="statement" value="" class="input border margin-bottom" placeholder="Exemple: 'Ceci est un exemple'">
+			<input class="button dark-red" id="sendStatementButton" type="button" value="Envoyer">
+			
+		</div>
+	</div>
+</div>
 <script>
-  var socket;
+	$(document).ready(function() {
+		$("#sendCommandButton").on("click", function(){
+			socket.emit('command', $("#command").val());
+		});
+		$("#sendStatementButton").on("click", function(){
+			socket.emit('speech_detected', $("#statement").val());
+		});
 
-  $(document).ready(function() {
-    $("#sendButton").on("click", function(){
-      socket.emit('command', $("#command").val());
-    });
-
-  });
+	});
 
 </script>
 {% endblock %}
