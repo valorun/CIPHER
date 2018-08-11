@@ -133,7 +133,7 @@ function addButton(label, action, sequence, color, x, y, width, height){
 	if(sequence!=null)
 		sequenceLabel="data-sequence='"+sequence+"'";
 	console.log(color);
-	var el= $('<div><div class="grid-stack-item-content btn" style="background-color:'+color+'"'+actionLabel+sequenceLabel+'>'+label+'</div><div/>');
+	var el= $('<div><div class="grid-stack-item-content btn" style="background-color:'+color+'"'+actionLabel+sequenceLabel+'><strong class="display-middle">'+label+'</strong></div><div/>');
 	if(editMode){
 		el.children().first().addClass('disabled');
 	}

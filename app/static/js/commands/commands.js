@@ -9,7 +9,8 @@ $(document).ready(function() {
 
 	//update status information about a specified relay
 	socket.on('update_relay_state', function(relay) {
-		$( "div[action='relay:"+relay.label+"']" ).each(function(){
+		$( "div[data-action='relay:"+relay.label+"']" ).each(function(){
+			console.log(relay);
 			if(relay.state===1){
 				$(this).addClass('green');
 				$(this).removeClass('dark-red');
