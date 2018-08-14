@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	<link rel="stylesheet" href="/static/css/main.css">
+	<link rel="stylesheet" href="/static/css/custom.css">
 	<link rel="stylesheet" href="/static/css/fontawesome.css">
 	<script src="/static/js/jquery.min.js"></script>
 	<script src="/static/js/jquery-ui.min.js"></script>
@@ -20,12 +21,14 @@
 
 	<!-- Top container -->
 	<div class="bar top black large" style="z-index:4; position:sticky">
-		<button class="bar-item button hide-large hover-none hover-text-light-grey" onclick="open_sidebar();"><i class="fa fa-bars"></i>  Menu</button>
-		<div class="bar-item left">
-			<h2>HECTOR</h2>
+		<div class="bar-item hide-large">
+			<button class="btn hover-text-light-grey" onclick="open_sidebar();"><i class="fa fa-bars"></i>  Menu</button>
+		</div>
+		<div class="bar-item left hide-small hide-medium">
+			<a href="/" class="btn hover-text-light-grey"><strong>HECTOR</strong></a>
 		</div>
 		<div class="bar-item right">
-			<a href="/logout" class="button padding"><i class="fas fa-lock-open"></i>  Déconnexion</a>
+			<a href="/logout" class="button"><i class="fas fa-lock-open"></i>  Déconnexion</a>
 		</div>
 	</div>
 
@@ -58,7 +61,7 @@
 	<div class="overlay hide-large animate-opacity" onclick="close_sidebar()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 	<!-- !PAGE CONTENT! -->
-	<div class="main" style="margin-left:300px;margin-top:43px;">
+	<div class="main" style="margin-left:300px;">
 
 		{% block content %}
 		{% endblock %}
@@ -68,12 +71,12 @@
 			<a href="#" class="button dark-red margin"><i class="fa fa-arrow-up margin-right"></i>Remonter</a>
 			<p><a href="https://clarius-robot.com/" target="_blank">La confrérie du boulon</a></p>
 			<p>Réalisation: Valorun - Ronan COLLIER<p>
-		</footer>
+			</footer>
 
-		<!-- End page content -->
-	</div>
+			<!-- End page content -->
+		</div>
 
-	<script>
+		<script>
 // Get the Sidebar
 var mySidebar = document.getElementById("mySidebar");
 

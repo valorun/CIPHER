@@ -107,7 +107,7 @@ function draw() {
       		hierarchical: {
       			enabled: true,
       			direction: 'DU',
-      			sortMethod: 'directed'
+      			sortMethod: 'directed',
       		},
           randomSeed: 2 //layout will be always the same
       }

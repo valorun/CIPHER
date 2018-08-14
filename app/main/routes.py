@@ -3,8 +3,8 @@
 
 import logging
 from flask import Flask, Response, flash, redirect, render_template, request, session, abort, send_from_directory
-from os import listdir
-from os.path import isfile, join
+from os import listdir, makedirs
+from os.path import isfile, join, exists
 from . import main
 from .. import SOUNDS_LOCATION, SCRIPTS_LOCATION
 from app.model import db, Sequence, Relay
@@ -29,6 +29,8 @@ def commands():
     else:
         sequences=Sequence.query.all()
         relays=Relay.query.all()
+        if not exists(SOUNDS_LOCATION):
+            makedirs(SOUNDS_LOCATION)
         sounds=[f for f in listdir(SOUNDS_LOCATION) if isfile(join(SOUNDS_LOCATION, f))]
         return render_template('commands.html', sequences=sequences, relays=relays, sounds=sounds)
 
@@ -39,6 +41,10 @@ def sequences():
     else:
         relays=Relay.query.all()
         sequences=Sequence.query.all()
+        if not exists(SOUNDS_LOCATION):
+            makedirs(SOUNDS_LOCATION)
+        if not exists(SCRIPTS_LOCATION):
+            makedirs(SCRIPTS_LOCATION)
         sounds=[f for f in listdir(SOUNDS_LOCATION) if isfile(join(SOUNDS_LOCATION, f))]
         scripts=[f for f in listdir(SCRIPTS_LOCATION) if isfile(join(SCRIPTS_LOCATION, f))]
         return render_template('sequences.html', sequences=sequences, relays=relays, sounds=sounds, scripts=scripts)
