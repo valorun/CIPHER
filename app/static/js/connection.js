@@ -7,13 +7,11 @@ $(document).ready(function() {
   socket.on('command', function(msg) {
     console.log('Message from server: ', msg);
   });
-  socket.on('connect', function() {
-    socket.emit('client_connect');
-  });
 
   window.speechSynthesis.onvoiceschanged = function() {
     voices=window.speechSynthesis.getVoices();
   }
+
 	//reponse du serveur lors d'une de l'écoute d'une phrase
   socket.on('response', function(msg) {
     console.log('Message from server:', msg);

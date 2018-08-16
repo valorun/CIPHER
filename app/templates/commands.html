@@ -7,8 +7,9 @@
 
 <script src="/static/js/connection.js"></script>
 <script src="/static/js/commands/grid.js"></script>
-<script src="/static/js/commands/commands.js"></script>
+<script src="/static/js/commands/gridPanel.js"></script>
 <script src="/static/js/commands/motion.js"></script>
+<script src="/static/js/commands/colorpicker.js"></script>
 
 
 <style type="text/css">
@@ -29,14 +30,17 @@
 	opacity: 0.1;
 }
 
+.color-item{
+	height: 75px
+}
+
 </style>
 <header class="container padding-16">
 	<h2><b><i class="fa fa-terminal"></i> Commandes manuelles</b></h2>
 </header>
 
-<div class="row">
-	<div class="half">
-		<div class="panel">
+<div class="cell mobile">
+	<div class="panel">
 		<div class="card white">
 			<div class="container dark-blue">
 				<h3>Execution de séquence</h3>
@@ -51,20 +55,20 @@
 					{% endfor %}
 				</select>
 				<input class="button dark-red" id="playSeqButton" type="button" value="Executer la séquence">
-				
+
 			</div>
 		</div>
 	</div>
-	</div>
-	<div class="half">
-		<div class="panel">
+</div>
+<div class="cell mobile">
+	<div class="panel">
 		<div class="card white">
 			<div class="container dark-blue">
 				<h3>Chariot</h3>
 			</div>
-			<div class="container padding-16 cell-row">
-				
-				<table class="cell">
+			<div class="container padding-16 cell">
+
+				<table class="container cell">
 					<tr>
 						<td></td>
 						<td><i class="button dark-red fas fa-arrow-up motion-direction" value="motion_up"></i></td>
@@ -81,11 +85,11 @@
 						<td></td>
 					</tr>
 				</table>
-				<div id="motion_slider" class="cell" style="height:100px;"></div>
-				
+				<div class="container cell">
+					<div id="motion_slider" style="height:100px;"></div>
+				</div>	
 			</div>
 		</div>
-	</div>
 	</div>
 </div>
 
@@ -131,10 +135,14 @@
 				{% endfor %}
 			</select>
 			
-			<input id="color" type="color" value="Ajouter" class="button light-grey border quarter" style="height: 40px">
+			<!--<input id="color" type="color" value="Ajouter" class="button light-grey border quarter" style="height: 40px">-->
+			<a id="color" type="button" value="Couleur" class="border quarter button grey" data-color="grey">
+				<i class="fas fa-palette"></i>
+			</a>
+			
 
 			<input id="buttonLabel" type="text" value="" class="input quarter border" placeholder="Nom du bouton">
-			<input id="addButton" type="button" value="Ajouter" class="button dark-red quarter">
+			<input id="addButton" type="button" value="Ajouter" class="border button dark-red quarter">
 		</div>
 	</div>
 	<div id="panel" class="border container white" style="width:100%">
@@ -148,6 +156,32 @@
 
 			</div>
 		</div>
+	</div>
+</div>
+
+
+<div id="color-picker" class="modal" style="z-index:4;">
+	<div class="modal-content animate-top card-4">
+		<header class="container dark-blue"> 
+			<span onclick="$('#color-picker').hide();" 
+			class="button display-topright">&times;</span>
+			<h2>Selectionnez la couleur du bouton</h2>
+		</header>
+		<div class="container center">
+			<div class="row margin-top">
+				<input type="button" value="Bleu" class="btn quarter color-item blue" data-color="blue">
+				<input type="button" value="Rouge" class="btn quarter color-item red" data-color="red">
+				<input type="button" value="Jaune" class="btn quarter color-item yellow" data-color="yellow">
+				<input type="button" value="Vert" class="btn quarter color-item green" data-color="green">
+			</div>
+			<div class="row margin-bottom">
+				<input type="button" value="Gris" class="btn quarter color-item grey" data-color="grey">
+				<input type="button" value="Noir" class="btn quarter color-item black" data-color="black">
+				<input type="button" value="Bordeau" class="btn quarter color-item dark-red" data-color="dark-red">
+				<input type="button" value="Bleu-marine" class="btn quarter color-item dark-blue" data-color="dark-blue">
+			</div>
+		</div>
+
 	</div>
 </div>
 

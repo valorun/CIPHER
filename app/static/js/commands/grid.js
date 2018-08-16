@@ -96,7 +96,7 @@ function saveGrid() {
 			label: el.text(),
 			action: child.data('action'),
 			sequence: child.data('sequence'),
-			color: child.css("background-color")
+			color: child.data('color')
 		};
 	}, this);
 	console.log(serializedData);
@@ -132,8 +132,13 @@ function addButton(label, action, sequence, color, x, y, width, height){
 	var sequenceLabel="";
 	if(sequence!=null)
 		sequenceLabel="data-sequence='"+sequence+"'";
+
+	var colorData="";
+	if(color!=null)
+		colorData="data-color='"+color+"'";
+
 	console.log(color);
-	var el= $('<div><div class="grid-stack-item-content btn" style="background-color:'+color+'"'+actionLabel+sequenceLabel+'><strong class="display-middle">'+label+'</strong></div><div/>');
+	var el= $('<div><div class="grid-stack-item-content btn '+ color +'" '+ colorData + actionLabel+sequenceLabel+'><strong class="display-middle">'+label+'</strong></div><div/>');
 	if(editMode){
 		el.children().first().addClass('disabled');
 	}
