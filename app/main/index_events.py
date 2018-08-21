@@ -5,9 +5,7 @@ import logging
 import json
 from flask import request
 from flask_socketio import SocketIO, emit
-from .. import socketio
-
-raspies = []
+from .. import socketio, raspies
 
 
 @socketio.on('raspi_connect', namespace='/raspi')
@@ -25,10 +23,10 @@ def raspi_connect(relay_mode, motion_mode, servo_mode):
 
 @socketio.on('disconnect', namespace='/raspi')
 def raspi_disconnect():
+    global raspies
     logging.info("Raspberry "+str(request.remote_addr)+' disconnected.')
     print("Raspberry "+str(request.remote_addr)+' disconnected.')
-    newRaspies=raspies
-    raspies = [r for r in newRaspies if s.sid == request.sid]
+    raspies = [r for r in raspies if r['sid'] != request.sid]
     get_raspies();
 
 
@@ -48,5 +46,5 @@ def reboot():
 
 @socketio.on('get_raspies', namespace='/client')
 def get_raspies():
-    emit("get_raspies", raspies, namespace="/client")
+    emit("get_raspies", raspies, namespace="/client", broadcast=True)
 

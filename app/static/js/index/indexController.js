@@ -8,12 +8,9 @@ $(document).ready(function() {
     });
     socket.on('get_raspies', function(raspies) {
     	updateRaspies(raspies);
-    	console.log();
     });
 
     socket.emit("get_raspies");
-	updateRaspies();
-
 });
 
 function updateRaspies(raspies){

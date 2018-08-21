@@ -38,10 +38,10 @@ function draw() {
         // create an array with nodes
         nodes = new vis.DataSet();
         nodes.add([{
-           id: 'start',
-           label: 'Start',
-           color: 'red'
-       }]);
+        	id: 'start',
+        	label: 'Start',
+        	color: 'red'
+        }]);
 
         // create an array with edges
         edges = new vis.DataSet();
@@ -173,24 +173,24 @@ function handleNodeToAdd(nodeData) {
 
 //save the graph on the server
 function saveGraph(){
-  //get the input value
-  sequence = [];
-  sequence.push(nodes.get());
-  sequence.push(edges.get());
-  console.log(sequence);
-  name=$("#name").val();
+  	//get the input value
+  	sequence = [];
+  	sequence.push(nodes.get());
+  	sequence.push(edges.get());
+  	console.log(sequence);
+  	name=$("#name").val();
 
-  $.ajax({
-  	type: 'POST',
-  	url: '/save_sequence',
-  	data: {seq_name:name, seq_data : JSON.stringify(sequence, null, 4)},
-  	success: function(){
-  		location.reload();
-  	},
-  	error: function(request, status, error){
-  		alertModal(request.responseText);
-  	}
-  });
+  	$.ajax({
+  		type: 'POST',
+  		url: '/save_sequence',
+  		data: {seq_name:name, seq_data : JSON.stringify(sequence, null, 4)},
+  		success: function(){
+  			location.reload();
+  		},
+  		error: function(request, status, error){
+  			alertModal(request.responseText);
+  		}
+  	});
 }
 
 //edit the specified sequence

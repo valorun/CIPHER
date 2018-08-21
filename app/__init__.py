@@ -31,6 +31,8 @@ chatbot = ChatBot(
 
 socketio = SocketIO()
 
+raspies = []
+
 def create_app(debug=False):
     app = Flask(__name__)
 
