@@ -1,4 +1,5 @@
 # **Hector**
+![alt text](https://raw.githubusercontent.com/valorun/Hector/dev/app/static/img/capture.png)
 Interface de contrôle du projet de robotique Hector. Il s'agit d'une interface web réalisée en HTML/Js permettant une connexion à un raspberry via un serveur Python Flask. En outre, l'utilisateur peut ordonner l'exécution de commandes sur les raspberries inter-connectés, tel que l'activation de relais ou de servo-moteurs.
 # Pré-requis
 - Python3 sur le raspberry serveur

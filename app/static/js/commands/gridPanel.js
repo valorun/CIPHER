@@ -1,9 +1,9 @@
 function GridPanel(gridElement, editPanelButton, addButtonPanel){
-	editMode=false;
-	let self=this;
+	let editMode = false;
+	let self = this;
 
 	let callbacks = {};
-	triggerEvent = function(event){
+	let triggerEvent = function(event){
        for (var i=0; event in callbacks && i<callbacks[event].length; i++)
             callbacks[event][i]();
 	};
@@ -26,7 +26,6 @@ function GridPanel(gridElement, editPanelButton, addButtonPanel){
 	//update status information about a specified relay
 	socket.on('update_relay_state', function(relay) {
 		$( "div[data-action='relay:"+relay.label+"']" ).each(function(){
-			console.log(relay);
 			if(relay.state===1){
 				$(this).addClass('green');
 				$(this).removeClass('dark-red');
@@ -39,7 +38,7 @@ function GridPanel(gridElement, editPanelButton, addButtonPanel){
 	});
 
 	//enable edition mode, the buttons can not be clicked, but can be moved
-	enableEditionMode = function(){
+	let enableEditionMode = function(){
 		editMode=true;
 		$('.grid-stack-item-content').addClass("disabled");
 		editPanelButton.addClass('fa-check');
@@ -49,7 +48,7 @@ function GridPanel(gridElement, editPanelButton, addButtonPanel){
 	}
 
 	//disable edition mode, the buttons can not be moved, but can be clicked
-	disableEditionMode = function(){
+	let disableEditionMode = function(){
 		editMode=false;
 		$('.grid-stack-item-content').removeClass("disabled");
 		editPanelButton.addClass('fa-edit');
@@ -58,61 +57,6 @@ function GridPanel(gridElement, editPanelButton, addButtonPanel){
 		$('.trash').addClass('hide');
 	}
 
-	//load the grid from the server
-	self.loadGrid = function() {
-		grid.removeAll();
-		$.ajax({
-			type: 'POST',
-			url: '/load_buttons',
-			success: function(result){
-				var items = GridStackUI.Utils.sort(result);
-				_.each(items, function (node) {
-					self.addButton(node.label, node.action, node.sequence, node.color, node.x, node.y, node.width, node.height);
-				}, this);
-				grid.disable();
-				socket.emit('update_relays_state');
-			},
-			error: function(request, status, error){
-				triggerEvent();
-				alertModal(request.responseText);
-			}
-		});
-
-		return false;
-	}
-
-	//save the grid on the server
-	self.saveGrid = function() {
-		var serializedData = _.map($('.grid-stack > .grid-stack-item:visible'), function (el) {
-			el = $(el);
-			var node = el.data('_gridstack_node');
-			var child= el.children().first();
-			return {
-				x: node.x,
-				y: node.y,
-				width: node.width,
-				height: node.height,
-				label: el.text(),
-				action: child.data('action'),
-				sequence: child.data('sequence'),
-				color: child.data('color')
-			};
-		}, this);
-
-		$.ajax({
-			type: 'POST',
-			url: '/save_buttons',
-			data: {data: JSON.stringify(serializedData, null, '    ')},
-			success: function(){
-
-			},
-			error: function(request, status, error){
-				alertModal(request.responseText);
-			}
-		});
-
-		return false;
-	}
 
 	//delete all buttons on the grid
 	self.clearGrid = function() {
@@ -135,7 +79,6 @@ function GridPanel(gridElement, editPanelButton, addButtonPanel){
 		if(color!=null)
 			colorData="data-color='"+color+"'";
 
-		console.log(color);
 		var el= $('<div><div class="grid-stack-item-content btn '+ color +'" '+ colorData + actionLabel+sequenceLabel+'><strong class="display-middle">'+label+'</strong></div><div/>');
 		if(editMode){
 			el.children().first().addClass('disabled');
@@ -143,11 +86,11 @@ function GridPanel(gridElement, editPanelButton, addButtonPanel){
 		el.on("click", function(){
 			if(!editMode){
 				if(action!=null) {
-					console.log(action);
+					//console.log(action);
 					socket.emit('command', action);
 				}
 				if(sequence!=null) {
-					console.log(sequence);
+					//console.log(sequence);
 					socket.emit('play_sequence', sequence);
 				}
 			}
@@ -157,11 +100,10 @@ function GridPanel(gridElement, editPanelButton, addButtonPanel){
 	};
 
 	//update the display to match the selected mode
-	updateMode = function(){
+	self.updateMode = function(){
 		if(editMode){
 			disableEditionMode();
 			grid.disable();
-			self.saveGrid();
 		}
 		else{
 			enableEditionMode();
@@ -169,8 +111,17 @@ function GridPanel(gridElement, editPanelButton, addButtonPanel){
 		}
 	};
 
-	//initialize the grid at his initial state in disabled edition mode
-	self.loadGrid();
+	self.updateForm = function() {
+		$("#relays").addClass("hide");
+		$("#sequences").addClass("hide");
+		$("#sounds").addClass("hide");
+		if ($("#relayChoice").prop("checked") == true) {
+			$("#relays").removeClass("hide");
+		} else if ($("#sequenceChoice").prop("checked") == true) {
+			$("#sequences").removeClass("hide");
+		} else if ($("#soundChoice").prop("checked") == true) {
+			$("#sounds").removeClass("hide");
+		}
+	}
 	disableEditionMode();
-	editPanelButton.on("click", updateMode);
 }

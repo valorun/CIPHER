@@ -19,13 +19,13 @@ $(document).ready(function() {
     //location.reload();
     });
 
-    //checkbox permettant d'activer ou désactiver un relai
+    //checkbox to enable or disable the relay
     $('input[name=enableRel]').on("change", function() {
         var rel_label=this.id.substr(this.id.indexOf('_')+1)
         enableRelay(rel_label)
     });
 
-    //bouton permettant de supprimer le relai
+    //button to delete the relay
     $('a[name=deleteRel]').on("click", function() {
         var rel_label=this.id.substr(this.id.indexOf('_')+1)
         deleteRelay(rel_label)
@@ -33,7 +33,6 @@ $(document).ready(function() {
 
     window.speechSynthesis.onvoiceschanged = function() {
         var voices=window.speechSynthesis.getVoices();
-        console.log(voices);
         $.each(voices,function(){
             if(typeof Cookies.get('voice') !== 'undefined' && 
               Cookies.get('voice') === this.name){ //si il s'agit s'une voix déjà choisis, on la sélectionne
@@ -51,7 +50,10 @@ $(document).ready(function() {
 
 });
 
-//enable OR disable relay
+/** 
+ *  Enable OR disable a relay
+ *	@param	{string} rel_label relay label
+ */
 function enableRelay(rel_label){
     $.ajax({
         type: 'POST',
@@ -66,6 +68,10 @@ function enableRelay(rel_label){
     });
 }
 
+/** 
+ *  Delete a relay
+ *	@param	{string} rel_label relay label
+ */
 function deleteRelay(rel_label){
   var confirm = window.confirm("Etes vous sûr de vouloir supprimer le relai \'"+rel_label+"\' ?");
   if(confirm){

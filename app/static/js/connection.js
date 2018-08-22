@@ -2,7 +2,6 @@ var socket;
 var voices
 
 $(document).ready(function() {
-  console.log(window.location );
   socket = io.connect(window.location.host+'/client');
   socket.on('command', function(msg) {
     console.log('Message from server: ', msg);

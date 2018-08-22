@@ -1,7 +1,10 @@
-let grid;
+let gridPanel = null;
 
 $(document).ready(function() {
-	let grid= new GridPanel($('#grid'), $("#editPanelButton"), $('#newButtonPanel'));
+	gridPanel= new GridPanel($('#grid'), $("#editPanelButton"), $('#newButtonPanel'));
+
+	//initialize the grid at his initial state in disabled edition mode
+	loadGrid();
 
 	$("#addButton").on("click", function(){
 		var buttonLabel=$("#buttonLabel").val();
@@ -31,29 +34,19 @@ $(document).ready(function() {
 			}
 		}
 		
-		grid.addButton(buttonLabel, action, sequence, color, 1, 1, 1, 1);
+		gridPanel.addButton(buttonLabel, action, sequence, color, 1, 1, 1, 1);
 	});
 
 	$('input[type=radio][name=choice]').on("change", function() {
-		updateForm();
+		gridPanel.updateForm();
+	});
+
+	$("#editPanelButton").on("click", function(){
+		gridPanel.updateMode();
+		saveGrid();
 	});
 
 });
-
-//update the form to display the options corresponding to the type of button chosen
-function updateForm() {
-	$("#relays").addClass("hide");
-	$("#sequences").addClass("hide");
-	$("#sounds").addClass("hide");
-	if ($("#relayChoice").prop("checked") == true) {
-		$("#relays").removeClass("hide");
-	} else if ($("#sequenceChoice").prop("checked") == true) {
-		$("#sequences").removeClass("hide");
-	} else if ($("#soundChoice").prop("checked") == true) {
-		$("#sounds").removeClass("hide");
-	}
-}
-
 
 //check if a button with the same action already exists
 function actionAlreadyUsed(label){
@@ -77,4 +70,58 @@ function sequenceAlreadyUsed(label){
 		}
 	});
 	return found;
+}
+
+//load the grid from the server
+function loadGrid() {
+	gridPanel.clearGrid();
+	$.ajax({
+		type: 'POST',
+		url: '/load_buttons',
+		success: function(result){
+			var items = GridStackUI.Utils.sort(result);
+			_.each(items, function (node) {
+				gridPanel.addButton(node.label, node.action, node.sequence, node.color, node.x, node.y, node.width, node.height);
+			}, this);
+			socket.emit('update_relays_state');
+		},
+		error: function(request, status, error){
+			alertModal(request.responseText);
+		}
+	});
+
+	return false;
+}
+
+//save the grid on the server
+function saveGrid() {
+	var serializedData = _.map($('.grid-stack > .grid-stack-item:visible'), function (el) {
+		el = $(el);
+		var node = el.data('_gridstack_node');
+		var child= el.children().first();
+		return {
+			x: node.x,
+			y: node.y,
+			width: node.width,
+			height: node.height,
+			label: el.text(),
+			action: child.data('action'),
+			sequence: child.data('sequence'),
+			color: child.data('color')
+		};
+	}, this);
+
+	$.ajax({
+		type: 'POST',
+		url: '/save_buttons',
+		data: {data: JSON.stringify(serializedData, null, '    ')},
+		success: function(){
+
+		},
+		error: function(request, status, error){
+			alertModal(request.responseText);
+		}
+	});
+
+	return false;
 }
