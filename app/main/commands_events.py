@@ -16,8 +16,8 @@ def update_relays_state():
 
 #Met a jour l'etat des relais cote client à la demande d'un raspberry
 @socketio.on('update_state_for_client', namespace='/relay')
-def update_state_for_client(pin, state):
+def update_state_for_client(pin, state, raspi_id):
 	logging.info("Updating relay status on client")
-	for relay in Relay.query.filter_by(pin=pin):
+	for relay in Relay.query.filter_by(pin=pin, raspi_id=raspi_id):
 		label=relay.label
 		emit("update_relay_state", {'label':label, 'state':state}, namespace="/client", broadcast=True)

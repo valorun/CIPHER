@@ -14,13 +14,14 @@
 	<link rel="stylesheet" href="/static/vendor/jquery/jquery-ui.min.css">
 	<script src="/static/vendor/js.cookie.min.js"></script>
 	<script src="/static/vendor/socket.io.js"></script>
+
 	<script src="/static/js/utils.js"></script>
 </head>
 
-<body class="light-grey">
+<body class="background">
 
 	<!-- Top container -->
-	<div class="bar top black large" style="z-index:4; position:sticky">
+	<div class="bar top black large card-4" style="z-index:4; position:sticky">
 		<div class="bar-item hide-large">
 			<button class="btn hover-text-light-grey" onclick="open_sidebar();"><i class="fa fa-bars"></i>  Menu</button>
 		</div>
@@ -33,7 +34,7 @@
 	</div>
 
 	<!-- Sidebar/menu -->
-	<nav class="sidebar collapse dark-blue animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
+	<nav class="sidebar collapse primary animate-left" style="z-index:3;width:300px;" id="sidebar"><br>
 		<div class="center">
 			{% if session.logged_in %}
 			<h3>Bienvenue {{ session['username'] }} !</h3>
@@ -58,7 +59,7 @@
 
 
 	<!-- Overlay effect when opening sidebar on small screens -->
-	<div class="overlay hide-large animate-opacity" onclick="close_sidebar()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+	<div class="overlay hide-large animate-opacity" onclick="close_sidebar()" style="cursor:pointer" title="close side menu" id="overlay"></div>
 
 	<!-- !PAGE CONTENT! -->
 	<div class="main" style="margin-left:300px;">
@@ -67,42 +68,65 @@
 		{% endblock %}
 
 		<!-- Footer -->
-		<footer class="container padding-16 light-grey center">
-			<a href="#" class="button dark-red margin"><i class="fa fa-arrow-up margin-right"></i>Remonter</a>
+		<footer class="container padding-16 center">
+			<a href="#" class="button secondary margin"><i class="fa fa-arrow-up margin-right"></i>Remonter</a>
 			<p><a href="https://clarius-robot.com/" target="_blank">La confrérie du Boulon</a></p>
-			<p>Réalisation: Valorun - Ronan COLLIER<p>
+			<p>Réalisation: Valorun - Ronan COLLIER</p>
 			<p>Control Interface for Programmable Homemade Entertainment Robot</p>
-			</footer>
+		</footer>
 
-			<!-- End page content -->
-		</div>
+		<!-- End page content -->
+	</div>
 
-		<script>
-// Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
+	<script>
+	// Get the Sidebar
+	let sidebar = $("#sidebar");
 
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
+	// Get the DIV with overlay effect
+	let overlayBg = $("#overlay");
 
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function open_sidebar() {
-	if (mySidebar.style.display === 'block') {
-		mySidebar.style.display = 'none';
-		overlayBg.style.display = "none";
-	} else {
-		mySidebar.style.display = 'block';
-		overlayBg.style.display = "block";
+	// Toggle between showing and hiding the sidebar, and add overlay effect
+	function open_sidebar() {
+		if (sidebar.is(":visible")) {
+			sidebar.hide();
+			overlayBg.hide();
+		} else {
+			sidebar.show();
+			overlayBg.show();
+		}
 	}
-}
 
-// Close the sidebar with the close button
-function close_sidebar() {
-	mySidebar.style.display = "none";
-	overlayBg.style.display = "none";
-}
-</script>
+	// Close the sidebar with the close button
+	function close_sidebar() {
+		mySidebar.hide();
+		overlayBg.hide();
+	}
 
-<div class="alert-modal bottom"></div>
+	// Setup cards collapse
+	$(".accordion-header").each( (i, e) => {
+		let content=$(e).parent().find(".accordion-content");
+		let icon=$(e).find(".accordion-icon");
+		icon.addClass("fas fa-angle-right");
+		icon.removeClass("fa-angle-down");
+		content.hide();
+
+		$(e).on("click", () =>{
+			if(content.is(":visible")){
+				icon.addClass("fa-angle-right");
+				icon.removeClass("fa-angle-down");
+				content.hide();
+			}
+			else{
+				icon.addClass("fa-angle-down");
+				icon.removeClass("fa-angle-right");
+				content.show();
+			}
+		});
+
+	});
+	</script>
+
+	<div class="alert-modal bottom"></div>
 
 </body>
 </html>

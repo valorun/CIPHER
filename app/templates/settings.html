@@ -1,5 +1,6 @@
 {% extends 'template.html' %}
 {% block content %}
+<script src="/static/js/connection.js"></script>
 <script src="/static/js/settings/settingsController.js"></script>
 
 <header class="container padding-16">
@@ -7,86 +8,105 @@
 </header>
 
 <div class="panel">
-	<div class="card white">
-		<div class="container dark-blue">
-			<h3>Ajouter un relai</h3>
-		</div>
-		
-		<div class="row-padding">
-			<div class="third">
-				<label for="newLabel">Label: </label>
-				<input id="newLabel" type="text" value="" class="input border">
+	<div class="card tertiary">
+		<button class="btn container primary block left-align accordion-header">
+			<h4><i class="accordion-icon"></i> Ajouter un relai</h4>
+		</button>
+		<div  class="accordion-content">
+			<div class="row-padding">
+				<div class="quarter">
+					<label for="newLabel">Label: </label>
+					<input id="newLabel" type="text" value="" class="input border">
+				</div>
+				<div class="quarter">
+					<label for="newPin">Pin: </label>
+					<input id="newPin" type="text" value="" class="input border">
+				</div>
+				<div class="quarter">
+					<label for="newParity">Parité: </label>
+					<input id="newParity" type="text" value="" class="input border">
+				</div>
+				<div class="quarter">
+					<label for="newRaspiId">Raspberry: </label>
+					<input id="newRaspiId" type="text" value="" class="input border">
+				</div>
 			</div>
-			<div class="third">
-				<label for="newPin">Pin: </label>
-				<input id="newPin" type="text" value="" class="input border">
+
+			<div class="container padding-16">
+				<input class="button secondary" id="addRelay" type="button" value="Ajouter">
 			</div>
-			<div class="third">
-				<label for="newParity">Parité: </label>
-				<input id="newParity" type="text" value="" class="input border">
-			</div>
-		</div>
-		
-		<div class="container padding-16">
-			<input class="button dark-red" id="addRelay" type="button" value="Ajouter">
 		</div>
 	</div>
 </div>
 
 
 <div class="panel">
-	<div class="card white">
-		<div class="container dark-blue">
-			<h3>Relais enregistrées</h3>
-		</div>
-		<div class="container">
-			<p>
-		
-				<table class="table bordered">
-					<tr>
-						<th>Label</th>
-						<th>Pin</th>
-						<th>Parité</th>
-					</tr>
-					{% for r in relays %}
-					<tr id="{{ r.label }}">
-						<td class="white"><span >{{ r.label }}</span></td>
-						<td class="white"><span>{{ r.pin }}</span></td>
-						<td class="white"><span>{{ r.parity }}</span></td>
-						<!-- <td><input id="label_{{ r.label }}" type="text" name="labelRel" value="{{ r.label }}" class="input"></td>-->
-						<!-- <td><input id="pin_{{ r.label }}" type="text" name="pinRel" value="{{ r.pin }}" class="input"></td>-->
-						<td>
-							{% if r.enabled==True %}
-							<input id="enable_{{ r.label }}" type="checkbox" name="enableRel" checked="checked" class="check">
-							{% else %}
-							<input id="enable_{{ r.label }}" type="checkbox" name="enableRel" class="check">
-							{% endif %}
-							<label for="enable_{{ r.label }}">activé</label>
-						</td>
-						<td>
-							<a id="delete_{{ r.label }}" type="button" name="deleteRel" class="button dark-red"><i class="fas fa-trash"></i></a>
-						</td>
-					</tr>
-					{% endfor %}
-				</table>
-			
-			</p>
+	<div class="card tertiary">
+		<button class="btn container primary block left-align accordion-header">
+			<h4><i class="accordion-icon"></i> Relais enregistrés</h4>
+		</button>
+		<div  class="accordion-content">
+			<div class="container">
+				<p>
+
+					<table class="table bordered responsive">
+						<tr>
+							<th>Label</th>
+							<th>Pin</th>
+							<th>Parité</th>
+							<th>Raspberry</th>
+						</tr>
+						{% for r in relays %}
+						<tr id="{{ r.label }}">
+							<td class="tertiary"><span >{{ r.label }}</span></td>
+							<td class="tertiary"><span>{{ r.pin }}</span></td>
+							<td class="tertiary"><span>{{ r.parity }}</span></td>
+							<!-- <td><input id="label_{{ r.label }}" type="text" name="labelRel" value="{{ r.label }}" class="input"></td>-->
+							<!-- <td><input id="pin_{{ r.label }}" type="text" name="pinRel" value="{{ r.pin }}" class="input"></td>-->
+							<td class="tertiary"><span>{{ r.raspi_id }}</span></td>
+							<td>
+								{% if r.enabled==True %}
+								<input id="enable_{{ r.label }}" type="checkbox" name="enableRel" checked="checked" class="check">
+								{% else %}
+								<input id="enable_{{ r.label }}" type="checkbox" name="enableRel" class="check">
+								{% endif %}
+								<label for="enable_{{ r.label }}">activé</label>
+							</td>
+							<td>
+								<a id="delete_{{ r.label }}" type="button" name="deleteRel" class="button secondary"><i class="fas fa-trash"></i></a>
+							</td>
+						</tr>
+						{% endfor %}
+					</table>
+
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
 
 <div class="panel">
-	<div class="card white">
-		<div class="container dark-blue">
-			<h3>Voix</h3>
-		</div>
-		<div class="container">
-			<p>
-				<select class="select border" name="voices" id="voices">
+	<div class="card tertiary">
+		<button class="btn container primary block left-align accordion-header">
+			<h4><i class="accordion-icon"></i> Voix</h4>
+		</button>
+		<div  class="accordion-content">
+			<div class="container">
+				<p>
+					<select class="select border" name="voices" id="voices">
 
-				</select>
-			</p>
+					</select>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	settingsController.init();
+});
+
+</script>
+
 {% endblock %}

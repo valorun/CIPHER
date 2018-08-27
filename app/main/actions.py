@@ -41,7 +41,7 @@ class SequenceReader:
 			socketio.emit("response", option.split('"')[0], namespace="/client")
 		elif(action=="relay"):
 			#si c'est un relai, cherche d'abord le pin associé, reconstitue la requete
-			rel_label=option.rsplit(',',1)[0]
+			rel_label = option.rsplit(',',1)[0]
 			rel_state=""
 			#si un état est spécifié (0 ou 1)
 			if(len(option.rsplit(',',1))>1):
@@ -50,8 +50,9 @@ class SequenceReader:
 				db_rel = Relay.query.filter_by(label=rel_label).first()
 				if(not db_rel.enabled):
 					return
-				pin=db_rel.pin
+				pin = db_rel.pin
 				parity = db_rel.parity
+				raspi_id = db_rel.raspi_id
 
 				#si le relai est appairé
 				if(parity!=""):
@@ -61,10 +62,10 @@ class SequenceReader:
 					for peer in peers_rel:
 						peers.append(peer.pin)
 
-					socketio.emit("activate_paired_relay", (pin, rel_state, peers), namespace="/relay", broadcast=True)
+					socketio.emit("activate_paired_relay", (pin, rel_state, peers, raspi_id), namespace="/relay", broadcast=True)
 
 				else:
-					socketio.emit("activate_relay", (pin, rel_state), namespace="/relay")
+					socketio.emit("activate_relay", (pin, rel_state, raspi_id), namespace="/relay")
 		elif(action=="script"):
 			#si c'est un script, execute importe le script demandé et execute sa methode start
 			spec = importlib.util.spec_from_file_location("script", os.path.join(SCRIPTS_LOCATION, option))

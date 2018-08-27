@@ -9,23 +9,26 @@ import re
 
 @main.route('/save_relay', methods=['POST'])
 def save_relay():
-    if not session.get('logged_in'):
-        return render_template('login.html')
-    else:
-        rel_label = request.form.get("rel_label")
-        rel_pin = request.form.get("rel_pin")
-        rel_parity = request.form.get("rel_parity")
-        if re.match(r"^$|\s+", rel_label):
-            return "Un label de relai ne doit pas être vide ou contenir d'espace.", 400
-        if re.match(r"^$|\s+", rel_pin):
-            return "Un pin ne doit pas être vide ou contenir d'espace.", 400
-        if re.match(r"\s+", rel_parity):
-            return "Une parité ne doit pas contenir d'espace.", 400
-        logging.info("Saving relay "+rel_label)
-        db_relay = Relay(label=rel_label, pin=rel_pin, enabled=True, parity=rel_parity)
-        db.session.add(db_relay)
-        db.session.commit()
-        return render_template('settings.html')
+	if not session.get('logged_in'):
+		return render_template('login.html')
+	else:
+		rel_label = request.form.get("rel_label")
+		rel_pin = request.form.get("rel_pin")
+		rel_parity = request.form.get("rel_parity")
+		raspi_id = request.form.get("raspi_id")
+		if re.match(r"^$|\s+", rel_label):
+			return "Un label de relai ne doit pas être vide ou contenir d'espace.", 400
+		if re.match(r"^$|\s+", rel_pin):
+			return "Un pin ne doit pas être vide ou contenir d'espace.", 400
+		if re.match(r"\s+", rel_parity):
+			return "Une parité ne doit pas contenir d'espace.", 400
+		if re.match(r"^$|\s+", raspi_id):
+			return "Un id de rapsberry ne doit pas être vide ou contenir d'espace.", 400
+		logging.info("Saving relay "+rel_label)
+		db_relay = Relay(label=rel_label, pin=rel_pin, enabled=True, parity=rel_parity, raspi_id=raspi_id)
+		db.session.add(db_relay)
+		db.session.commit()
+		return render_template('settings.html')
 
 @main.route('/enable_relay', methods=['POST'])
 def enable_relay():

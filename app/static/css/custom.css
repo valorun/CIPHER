@@ -6,3 +6,9 @@
 body,h1,h2,h3,h4,h5,h6 {
 	font-family: "Electrolize", sans-serif
 }
+
+.background{color:#000!important;background-color:#f1f1f1!important}
+
+.primary{color:#fff!important;background-color:#1f2c39!important}
+.secondary{color:#fff!important;background-color:#82100A!important}
+.tertiary{color:#000!important;background-color:#fff!important}

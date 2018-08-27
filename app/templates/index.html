@@ -1,33 +1,33 @@
 {% extends 'template.html' %}
 {% block content %}
 <script src="/static/js/connection.js"></script>
-<script src="/static/js/index/indexController.js"></script>
+<script src="/static/js/index/raspiesController.js"></script>
 
 <header class="container padding-16">
 	<h2><b><i class="fa fa-tachometer-alt"></i> Panneau de contrôle</b></h2>
 </header>
 
 <div class="panel">
-	<div class="card white">
+	<div class="card tertiary">
 		<div class="container row" id="raspberries">
-			
+
 		</div>
 	</div>
 </div>
 
 <div class="panel">
-	<div class="card white">
+	<div class="card tertiary">
 		<div class="container">
 			<p>
-				<i class="xxlarge dark-red button fa fa-power-off" id="shutdownButton"></i>
-				<i class="xxlarge dark-red button fa fa-redo" id="rebootButton"></i>
+				<i class="xxlarge secondary button fa fa-power-off" id="shutdownButton"></i>
+				<i class="xxlarge secondary button fa fa-redo" id="rebootButton"></i>
 			</p>
 		</div>
 	</div>
 </div>
 
 <div class="panel">
-	<div class="card white">
+	<div class="card tertiary">
 		<div class="container">
 			<p>
 				<video src="">
@@ -37,5 +37,12 @@
 		</div>
 	</div>
 </div>
+<script>
+	$(document).ready(function() {
+		connectionManager.init();
+
+		raspiesController.init();
+	});
+</script>
 
 {% endblock %}

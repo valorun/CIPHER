@@ -6,11 +6,11 @@
 <link rel="stylesheet" href="/static/vendor/gridstack/gridstack.css">
 
 <script src="/static/js/connection.js"></script>
-<script src="/static/js/commands/gridPanel.js"></script>
+<script src="/static/js/commands/colorpicker.js"></script>
+<script src="/static/js/commands/gridPanelView.js"></script>
 <script src="/static/js/commands/gridPanelController.js"></script>
 <script src="/static/js/commands/motionController.js"></script>
 <script src="/static/js/commands/sequenceController.js"></script>
-<script src="/static/js/commands/colorpicker.js"></script>
 
 
 <style type="text/css">
@@ -42,53 +42,57 @@
 
 <div class="cell mobile">
 	<div class="panel">
-		<div class="card white">
-			<div class="container dark-blue">
-				<h3>Execution de séquence</h3>
-			</div>
-			<div class="container padding-16">
-				<select class="select border margin-bottom" name="sequence" id="sequence">
-					<option value="" disabled selected>Choisir une séquence</option>
-					{% for s in sequences %}
-					{% if s.enabled %}
-					<option value="{{ s.id }}" >{{ s.id }}</option>
-					{% endif %}
-					{% endfor %}
-				</select>
-				<input class="button dark-red" id="playSeqButton" type="button" value="Executer la séquence">
+		<div class="card tertiary">
+			<button class="btn container primary block left-align accordion-header">
+				<h4><i class="accordion-icon"></i> Execution de séquence</h4>
+			</button>
+			<div  class="accordion-content">
+				<div class="container padding-16">
+					<select class="select border margin-bottom" name="sequence" id="sequence">
+						<option value="" disabled selected>Choisir une séquence</option>
+						{% for s in sequences %}
+						{% if s.enabled %}
+						<option value="{{ s.id }}" >{{ s.id }}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
+					<input class="button secondary" id="playSeqButton" type="button" value="Executer la séquence">
 
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 <div class="cell mobile">
 	<div class="panel">
-		<div class="card white">
-			<div class="container dark-blue">
-				<h3>Chariot</h3>
-			</div>
-			<div class="container padding-16 cell">
+		<div class="card tertiary">
+			<button class="btn container primary block left-align accordion-header">
+				<h4><i class="accordion-icon"></i> Chariot</h4>
+			</button>
+			<div  class="accordion-content">
+				<div class="container padding-16 cell">
 
-				<table class="container cell">
-					<tr>
-						<td></td>
-						<td><i class="button dark-red fas fa-arrow-up motion-direction" value="motion_up"></i></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><i class="button dark-red fas fa-arrow-left motion-direction" value="motion_left"></i></td>
-						<td></td>
-						<td><i class="button dark-red fas fa-arrow-right motion-direction" value="motion_right"></i></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td><i class="button dark-red fas fa-arrow-down motion-direction" value="motion_down"></i></td>
-						<td></td>
-					</tr>
-				</table>
-				<div class="container cell">
-					<div id="motion_slider" style="height:100px;"></div>
-				</div>	
+					<table class="container cell">
+						<tr>
+							<td></td>
+							<td><i class="button secondary fas fa-arrow-up motion-direction" value="motion_up"></i></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td><i class="button secondary fas fa-arrow-left motion-direction" value="motion_left"></i></td>
+							<td></td>
+							<td><i class="button secondary fas fa-arrow-right motion-direction" value="motion_right"></i></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><i class="button secondary fas fa-arrow-down motion-direction" value="motion_down"></i></td>
+							<td></td>
+						</tr>
+					</table>
+					<div class="container cell">
+						<div id="motion_slider" style="height:100px;"></div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -96,8 +100,8 @@
 
 
 <div class="container">
-	<i class="button dark-red fas fa-edit" id="editPanelButton"></i>
-	<div id="newButtonPanel" class="white border hide">
+	<i class="button secondary fas fa-edit" id="editPanelButton"></i>
+	<div id="newButtonPanel" class="tertiary border hide">
 		<div id="newButtonTypeChoice" class="row margin-bottom container">
 			<div class="third">
 				<input type="radio" id="relayChoice" name="choice" value="relay" class="radio" checked>
@@ -135,15 +139,15 @@
 				<option value="{{ s }}" >{{ s }}</option>
 				{% endfor %}
 			</select>
-			
+
 			<!--<input id="color" type="color" value="Ajouter" class="button light-grey border quarter" style="height: 40px">-->
 			<a id="color" type="button" value="Couleur" class="border quarter button grey" data-color="grey">
 				<i class="fas fa-palette"></i>
 			</a>
-			
+
 
 			<input id="buttonLabel" type="text" value="" class="input quarter border" placeholder="Nom du bouton">
-			<input id="addButton" type="button" value="Ajouter" class="border button dark-red quarter">
+			<input id="addButton" type="button" value="Ajouter" class="border button secondary quarter">
 		</div>
 	</div>
 	<div id="panel" class="border container white" style="width:100%">
@@ -163,9 +167,8 @@
 
 <div id="color-picker" class="modal" style="z-index:4;">
 	<div class="modal-content animate-top card-4">
-		<header class="container dark-blue"> 
-			<span onclick="$('#color-picker').hide();" 
-			class="button display-topright">&times;</span>
+		<header class="container primary">
+			<span onclick="$('#color-picker').hide();" class="button display-topright xlarge">&times;</span>
 			<h2>Selectionnez la couleur du bouton</h2>
 		</header>
 		<div class="container center">
@@ -188,7 +191,13 @@
 
 
 <script type="text/javascript">
+$(document).ready(function() {
+	connectionManager.init();
 
+	gridPanelController.init();
+	motionController.init();
+	sequenceController.init();
+});
 
 </script>
 

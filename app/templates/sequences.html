@@ -1,7 +1,7 @@
 {% extends 'template.html' %} {% block content %}
 <link href="/static/vendor/vis.js/vis.min.css" rel="stylesheet" type="text/css" />
 <script src="/static/vendor/vis.js/vis.js"></script>
-<script src="/static/js/sequences/graphPanel.js"></script>
+<script src="/static/js/sequences/graphPanelView.js"></script>
 <script src="/static/js/sequences/graphPanelController.js"></script>
 <script src="/static/js/sequences/sequencesController.js"></script>
 <style type="text/css">
@@ -17,11 +17,12 @@
 </header>
 
 <div class="panel">
-	<div class="card white">
-		<div class="container dark-blue">
-			<h3>Création</h3>
-		</div>
-		<div class="container padding-16">
+	<div class="card tertiary">
+		<button class="btn container primary block left-align accordion-header">
+			<h4><i class="accordion-icon"></i> Création</h4>
+		</button>
+		<div  class="accordion-content">
+			<div class="container padding-16">
 
 				<div class="container margin-bottom">
 					<div>
@@ -123,48 +124,58 @@
 				<div id="network"></div>
 
 				<input type="text" id="name" value="" class="input border margin-bottom" placeholder="Exemple: sequence1">
-				<input type="button" id="saveButton" value="Enregistrer" class="button dark-red">
-			
+				<input type="button" id="saveButton" value="Enregistrer" class="button secondary">
+
+			</div>
 		</div>
 	</div>
 </div>
 
 
 <div class="panel">
-	<div class="card white">
-		<div class="container dark-blue">
-			<h3>Séquences enregistrées</h3>
-		</div>
-		<div class="container">
-			<p>
-				<table class="table bordered">
-					{% for s in sequences %}
-					<tr id="{{ s.id }}">
-						<td>{{ s.id }}</td>
-						<td>
-							{% if s.enabled %}
-							<input id="enable_{{ s.id }}" type="checkbox" name="enableSeq" checked="checked" class="check">
-							{% else %}
-							<input id="enable_{{ s.id }}" type="checkbox" name="enableSeq" class="check">
-							{% endif %}
-							<label for="enable_{{ s.id }}">activé</label>
-						</td>
-						<td>
-							<a id="edit_{{ s.id }}" type="button" name="editSeq" class="button dark-red">
-								<i class="fas fa-edit "></i>
-							</a>
-						</td>
-						<td>
-							<a id="delete_{{ s.id }}" type="button" name="deleteSeq" class="button dark-red">
-								<i class="fas fa-trash"></i>
-							</a>
-						</td>
-						<td class="hide"><div id="data_{{ s.id }}" name="dataSeq">{{ s.value }}</div></td>
-					</tr>
-					{% endfor %}
-				</table>
-			</p>
+	<div class="card tertiary">
+		<button class="btn container primary block left-align accordion-header">
+			<h4><i class="accordion-icon"></i> Séquences enregistrées</h4>
+		</button>
+		<div  class="accordion-content">
+			<div class="container">
+				<p>
+					<table class="table bordered responsive">
+						{% for s in sequences %}
+						<tr id="{{ s.id }}">
+							<td>{{ s.id }}</td>
+							<td>
+								{% if s.enabled %}
+								<input id="enable_{{ s.id }}" type="checkbox" name="enableSeq" checked="checked" class="check">
+								{% else %}
+								<input id="enable_{{ s.id }}" type="checkbox" name="enableSeq" class="check">
+								{% endif %}
+								<label for="enable_{{ s.id }}">activé</label>
+							</td>
+							<td>
+								<a id="edit_{{ s.id }}" type="button" name="editSeq" class="button dark-red">
+									<i class="fas fa-edit "></i>
+								</a>
+							</td>
+							<td>
+								<a id="delete_{{ s.id }}" type="button" name="deleteSeq" class="button dark-red">
+									<i class="fas fa-trash"></i>
+								</a>
+							</td>
+							<td class="hide"><div id="data_{{ s.id }}" name="dataSeq">{{ s.value }}</div></td>
+						</tr>
+						{% endfor %}
+					</table>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+$(document).ready(function() {
+	graphPanelController.init();
+	sequencesController.init();
+});
+
+</script>
 {% endblock %}

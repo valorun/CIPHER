@@ -1,34 +1,39 @@
-var socket;
-var voices
+var socket = io.connect(window.location.host+'/client');
 
-$(document).ready(function() {
-  socket = io.connect(window.location.host+'/client');
-  socket.on('command', function(msg) {
-    console.log('Message from server: ', msg);
-  });
+var connectionManager = {
+	voices: null,
+	init: function(){
+		window.speechSynthesis.onvoiceschanged = () => {
+			this.voices=window.speechSynthesis.getVoices();
+		}
 
-  window.speechSynthesis.onvoiceschanged = function() {
-    voices=window.speechSynthesis.getVoices();
-  }
+		this.bind();
+	},
+	bind: function(){
+		socket.on('command', function(msg) {
+			console.log('Message from server: ', msg);
+		});
 
-	//reponse du serveur lors d'une de l'écoute d'une phrase
-  socket.on('response', function(msg) {
-    console.log('Message from server:', msg);
-    if ('speechSynthesis' in window) {
-      var to_speak = new SpeechSynthesisUtterance(msg);
+		//server response when a sentence must be play on the client
+		socket.on('response', (msg) => {
+			console.log('Message from server:', msg);
+			this.speak(msg);
+		});
+		socket.on('play_sound', function(sound_name) {
+			var audio = new Audio(window.location.origin+'/play_sound/'+sound_name);
+			audio.play();
+		});
+	},
 
-      $.each(voices,function(){
-        if(Cookies.get("voice") === this.name){
-          to_speak.voice= this;
-        }
-      });
-      window.speechSynthesis.speak(to_speak);
-   }
- });
-
-  socket.on('play_sound', function(sound_name) {
-    var audio = new Audio(window.location.origin+'/play_sound/'+sound_name);
-    audio.play();
-  });
-
-});
+	speak: function(msg){
+		if ('speechSynthesis' in window) {
+			let to_speak = new SpeechSynthesisUtterance(msg);
+			$.each(this.voices,function(){
+				if(Cookies.get("voice") === this.name){
+					to_speak.voice = this;
+				}
+			});
+			window.speechSynthesis.speak(to_speak);
+		}
+	}
+}

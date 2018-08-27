@@ -13,22 +13,22 @@
 </style>
 </head>
 
-<body class="light-grey">
-	
+<body class="background">
+
 	{% if session['logged_in'] %}
 	<div class="panel green top center">
 		<h3>Vous êtes déja connecté !</h3>
-	</div>  
+	</div>
 	{% else %}
 	<div class="panel dark-red top center">
 		{% for message in get_flashed_messages() %}
 		<h3 class="flash">{{ message }}</h3>
-		{% endfor %}	
+		{% endfor %}
 	</div>
 	{% endif %}
 
 	<div class="display-middle center mobile">
-		<div class="container card-4 white">
+		<div class="container card-4 tertiary">
 			<h2>Connexion au panneau de gestion</h2>
 			<form action="/login" method="POST" class="container">
 				<p>
