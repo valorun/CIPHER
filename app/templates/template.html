@@ -16,6 +16,7 @@
 	<script src="/static/vendor/socket.io.js"></script>
 
 	<script src="/static/js/utils.js"></script>
+	<script src="/static/js/templateController.js"></script>
 </head>
 
 <body class="background">
@@ -23,7 +24,7 @@
 	<!-- Top container -->
 	<div class="bar top black large card-4" style="z-index:4; position:sticky">
 		<div class="bar-item hide-large">
-			<button class="btn hover-text-light-grey" onclick="open_sidebar();"><i class="fa fa-bars"></i>  Menu</button>
+			<button class="btn hover-text-light-grey" id="sidebar_button"><i class="fa fa-bars"></i>  Menu</button>
 		</div>
 		<div class="bar-item left hide-small hide-medium">
 			<a href="/" class="btn hover-text-light-grey"><strong>C.I.P.H.E.R<sup>v1</sup></strong></a>
@@ -53,13 +54,13 @@
 			<a href="/sequences" class="bar-item button padding"><i class="fas fa-project-diagram"></i>  Séquences</a>
 			<a href="/debug" class="bar-item button padding"><i class="fas fa-bug"></i>  Debug</a>
 			<a href="/settings" class="bar-item button padding"><i class="fas fa-cog"></i>  Paramètres</a>
-			<a href="#" class="bar-item button padding-16 hide-large dark-grey hover-black" onclick="close_sidebar()" title="close menu"><i class="fa fa-chevron-left"></i></a>
+			<a href="#" class="bar-item button padding-16 hide-large dark-grey hover-black" title="fermer le menu" id="close_sidebar_button"><i class="fa fa-chevron-left"></i></a>
 		</div>
 	</nav>
 
 
 	<!-- Overlay effect when opening sidebar on small screens -->
-	<div class="overlay hide-large animate-opacity" onclick="close_sidebar()" style="cursor:pointer" title="close side menu" id="overlay"></div>
+	<div class="overlay hide-large animate-opacity" style="cursor:pointer" title="close side menu" id="overlay"></div>
 
 	<!-- !PAGE CONTENT! -->
 	<div class="main" style="margin-left:300px;">
@@ -79,50 +80,8 @@
 	</div>
 
 	<script>
-	// Get the Sidebar
-	let sidebar = $("#sidebar");
-
-	// Get the DIV with overlay effect
-	let overlayBg = $("#overlay");
-
-	// Toggle between showing and hiding the sidebar, and add overlay effect
-	function open_sidebar() {
-		if (sidebar.is(":visible")) {
-			sidebar.hide();
-			overlayBg.hide();
-		} else {
-			sidebar.show();
-			overlayBg.show();
-		}
-	}
-
-	// Close the sidebar with the close button
-	function close_sidebar() {
-		mySidebar.hide();
-		overlayBg.hide();
-	}
-
-	// Setup cards collapse
-	$(".accordion-header").each( (i, e) => {
-		let content=$(e).parent().find(".accordion-content");
-		let icon=$(e).find(".accordion-icon");
-		icon.addClass("fas fa-angle-right");
-		icon.removeClass("fa-angle-down");
-		content.hide();
-
-		$(e).on("click", () =>{
-			if(content.is(":visible")){
-				icon.addClass("fa-angle-right");
-				icon.removeClass("fa-angle-down");
-				content.hide();
-			}
-			else{
-				icon.addClass("fa-angle-down");
-				icon.removeClass("fa-angle-right");
-				content.show();
-			}
-		});
-
+	$(document).ready(function() {
+		templateController.init();
 	});
 	</script>
 
