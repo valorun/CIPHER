@@ -3,10 +3,6 @@ from flask import Flask
 import os
 
 db = SQLAlchemy()
-#app = Flask(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.path.dirname(__file__), 'server_data.db')
-#db = SQLAlchemy(app)
-
 
 class Sequence(db.Model):
 	id = db.Column(db.String(50), primary_key=True)
