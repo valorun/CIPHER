@@ -11,7 +11,6 @@ from .. import socketio, raspies
 @socketio.on('raspi_connect', namespace='/raspi')
 def raspi_connect(raspi_id, relay_mode, motion_mode, servo_mode):
 	logging.info("Raspberry "+str(request.remote_addr)+' connected.')
-	print("Raspberry "+str(request.remote_addr)+' connected.')
 	newRaspi = {}
 	newRaspi['sid'] = request.sid
 	newRaspi['address'] = request.remote_addr
@@ -20,15 +19,14 @@ def raspi_connect(raspi_id, relay_mode, motion_mode, servo_mode):
 	newRaspi['motion_mode'] = motion_mode
 	newRaspi['servo_mode'] = servo_mode
 	raspies.append(newRaspi)
-	get_raspies();
+	get_raspies()
 
 @socketio.on('disconnect', namespace='/raspi')
 def raspi_disconnect():
     global raspies
     logging.info("Raspberry "+str(request.remote_addr)+' disconnected.')
-    print("Raspberry "+str(request.remote_addr)+' disconnected.')
     raspies = [r for r in raspies if r['sid'] != request.sid]
-    get_raspies();
+    get_raspies()
 
 
 
