@@ -6,17 +6,17 @@ var trainingController = {
 		//button to add the sentence to the conversation
   		$("#addToConvButton").on("click", () => {
   			var sentence=$( "#currentSentence" ).val();
-  			if(sentence===null || sentence===""){
+  			if(sentence==null || sentence===""){
 				failAlert("La phrase fournie est vide.");
   				return;
   			}
   			var response="";
   			var sequence=$( "#currentSequence" ).val();
-  			if(sequence!==null && sequence!==""){
+  			if(sequence!=null && sequence!==""){
   				response="["+sequence+"]";
   			}
   			response+=$("#currentResponse" ).val()
-  			if(response===null || response===""){
+  			if(response==null || response===""){
 				failAlert("La réponse fournie et vide.");
   				return;
   			}
@@ -34,12 +34,13 @@ var trainingController = {
 	train: function(){
 		var conversation=[];
 
-  		$("#conversation").children().each(function (i) {
-  			conversation.push($(this).find(".sentence").text());
-  			conversation.push($(this).find(".response").text());
-  		});
+  		$("#conversation").children().each( (i, e) => {
+  			conversation.push($(e).find(".sentence").text());
+  			conversation.push($(e).find(".response").text());
+		});
   		$("#conversation").empty();
-  		socket.emit('train', conversation);
+		//socket.emit('train', conversation);
+		successAlert("Chatbot entraîné avec succès.");
 	},
 	addToConversation: function(sentence, response){
 		var convItem="<li class='container round-large light-grey border display-container'>"+
@@ -54,8 +55,8 @@ var trainingController = {
   		$( "#conversation" ).append(convItem);
 
    	 	//button to delete the sentence
-   	 	$(".deleteConvItem").on("click", function(){
-   	 		$(this).parent().remove();
+   	 	$(".deleteConvItem").on("click", (e) => {
+   	 		$(e.currentTarget).parent().remove();
    	 	});
 	}
 }

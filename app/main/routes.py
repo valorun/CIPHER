@@ -6,16 +6,17 @@ from flask import Flask, Response, flash, redirect, render_template, request, se
 from os import listdir, makedirs
 from os.path import isfile, join, exists
 from . import main
-from .. import SOUNDS_LOCATION, SCRIPTS_LOCATION
-from app.model import db, Sequence, Relay
+from app.constants import SOUNDS_LOCATION, SCRIPTS_LOCATION
+from app.model import db, Sequence, Relay, config
 
 @main.route('/')
 @main.route('/index')
 def index():
-	if not session.get('logged_in'):
-		return render_template('login.html')
-	else:
-		return render_template('index.html')
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        cameraUrl=config.getCameraUrl()
+        return render_template('index.html', cameraUrl=cameraUrl)
 
 @main.route('/debug')
 def debug():
@@ -63,7 +64,10 @@ def settings():
         return render_template('login.html')
     else:
         relays=Relay.query.all()
-        return render_template('settings.html', relays=relays)
+        cameraUrl=config.getCameraUrl()
+        wheelsMode=config.getWheelsMode()
+        chatbotReadOnlyMode=config.getChatbotReadOnlyMode()
+        return render_template('settings.html', relays=relays, cameraUrl=cameraUrl, wheelsMode=wheelsMode, chatbotReadOnlyMode=chatbotReadOnlyMode)
 
 
 @main.route('/login', methods=['POST'])
@@ -82,7 +86,7 @@ def logout():
 
 
 @main.errorhandler(400)
-def page_not_found(e):
+def invalid_page(e):
     return "La requête est invalide", 400
 
 @main.errorhandler(404)
@@ -96,14 +100,17 @@ def method_not_allowed(e):
 
 @main.route("/play_sound/<sound_name>", methods=['GET'])
 def play_sound(sound_name):
-    def generate():
-        with open(join(SOUNDS_LOCATION,sound_name), "rb") as fwav:
-            data = fwav.read(1024)
-            while data:
-                yield data
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        def generate():
+            with open(join(SOUNDS_LOCATION,sound_name), "rb") as fwav:
                 data = fwav.read(1024)
-    return Response(generate(), mimetype="audio/x-wav")
+                while data:
+                    yield data
+                    data = fwav.read(1024)
+        return Response(generate(), mimetype="audio/x-wav")
 
 @main.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(main.root_path, 'static'), 'favicon.ico',mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(join(main.root_path, 'static'), 'favicon.ico',mimetype='image/vnd.microsoft.icon')

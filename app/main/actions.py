@@ -8,9 +8,10 @@ import importlib.util
 import os
 from flask import current_app
 from flask_socketio import SocketIO, emit
-from .. import socketio, chatbot, SCRIPTS_LOCATION
+from .. import socketio
+from app.constants import SCRIPTS_LOCATION
 import asyncio
-from app.model import db, Relay, Sequence
+from app.model import db, Relay, Sequence, chatbot
 
 #classe permettant de lire une sequence ou d'executer une action
 class SequenceReader:
@@ -109,7 +110,7 @@ sequence_reader = SequenceReader()
 @socketio.on('speech_detected', namespace='/client')
 def speech_detected(transcript):
 	logging.info("Received data: " + transcript)
-	response = chatbot.get_response(transcript)
+	response = chatbot.getResponse(transcript)
 	response_text = response.text
 
 	if(len(response_text.split("]"))>1):

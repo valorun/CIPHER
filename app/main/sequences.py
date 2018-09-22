@@ -5,6 +5,7 @@ import logging
 from flask import Flask, redirect, render_template, request, session, abort
 from . import main
 from app.model import db, Sequence
+import json
 import re
 
 @main.route('/save_sequence', methods=['POST'])
@@ -30,11 +31,12 @@ def enable_sequence():
         return render_template('login.html')
     else:
         seq_name = request.form.get("seq_name")
+        value = json.loads(request.form.get("value"))
         if re.match(r"^$|\s+", seq_name):
             return "Un nom de séquence ne doit pas être vide ou contenir d'espace.", 400
         logging.info("Updating "+seq_name)
         db_seq = Sequence.query.filter_by(id=seq_name).first()
-        db_seq.enabled = not db_seq.enabled
+        db_seq.enabled = value
         db.session.commit()
         return render_template('sequences.html')
 

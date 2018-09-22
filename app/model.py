@@ -1,12 +1,14 @@
+#!/usr/bin/python
+# coding: utf-8
+
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
+from .chatbot.chatbot import ChatBotWrapper
+from .constants import CONFIG_FILE, CHATBOT_DATABASE
 import os
+import json
 
 db = SQLAlchemy()
-#app = Flask(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.path.dirname(__file__), 'server_data.db')
-#db = SQLAlchemy(app)
-
 
 class Sequence(db.Model):
 	id = db.Column(db.String(50), primary_key=True)
@@ -25,3 +27,78 @@ class Relay(db.Model):
 
 	def __repr__(self):
 		return '<Relay %r : >' % self.label
+
+class ConfigFile():
+	def saveOption(self, key: str, data):
+		try:
+			with open(CONFIG_FILE, 'r') as f:
+				content = json.load(f)
+		except IOError: #si aucun fichier n'existe, ou si la donnée lue n'est pas en json
+			with open(CONFIG_FILE, 'w') as f:
+				f.write("") #on créer un nouveau 
+			content = {}
+		except ValueError:
+			content = {}
+		content[key] = data
+		with open(CONFIG_FILE, 'w') as f:
+			json.dump(content, f)
+
+	def loadOption(self, key: str):
+		try:
+			with open(CONFIG_FILE, 'r') as f:
+				content = json.load(f)
+				option = content[key]
+		except (IOError):
+			with open(CONFIG_FILE, 'w') as f:
+				f.write("")
+			option = None
+		except (KeyError, ValueError):
+			option = None
+		return option
+
+	# CAMERA URL
+	def setCameraUrl(self, url: str):
+		self.saveOption("camera_url", url)
+
+	def getCameraUrl(self) -> str:
+		return self.loadOption("camera_url")
+
+	# KEYWORD DATASET
+	def setKeywordDataset(self, dataset: {}):
+		self.saveOption("keyword_dataset", dataset)
+
+	def getKeywordDataset(self) -> {}:
+		return self.loadOption("keyword_dataset")
+
+	# COMMANDS GRID
+	def setCommandsGrid(self, grid: {}):
+		self.saveOption("commands_grid", grid)
+
+	def getCommandsGrid(self) -> {}:
+		return self.loadOption("commands_grid")
+	
+	# WHEELS MODE
+	def setWheelsMode(self, mode: bool):
+		self.saveOption("wheels_mode", mode)
+
+	def getWheelsMode(self) -> bool:
+		mode = self.loadOption("wheels_mode")
+		if mode == None:
+			mode = False # default mode is for caterpillars
+		return mode
+
+	# CHATBOT LEARNING MODE
+	def setChatbotReadOnlyMode(self, mode: bool):
+		self.saveOption("chatbot_read_only_mode", mode)
+
+	def getChatbotReadOnlyMode(self) -> bool:
+		mode = self.loadOption("chatbot_read_only_mode")
+		if mode == None:
+			mode = False
+		return mode
+
+config = ConfigFile()
+
+
+chatbot = ChatBotWrapper(CHATBOT_DATABASE)
+chatbot.instantiateChatBot(config.getChatbotReadOnlyMode())

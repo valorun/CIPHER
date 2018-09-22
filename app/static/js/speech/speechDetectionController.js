@@ -55,9 +55,11 @@ var speechDetectionController = {
 
     },
     loadModel: function(dataset){
-        this.speechRec.model=dataset[0];
-        this.speechRec.wordBuffer=dataset[1];
-        this.speechRec.modelBuffer=dataset[2];
+        if(dataset.length > 0){
+            this.speechRec.model=dataset[0];
+            this.speechRec.wordBuffer=dataset[1];
+            this.speechRec.modelBuffer=dataset[2];
+        }
         console.log(this.speechRec.model);
         console.log(this.speechRec.wordBuffer);
         console.log(this.speechRec.modelBuffer);

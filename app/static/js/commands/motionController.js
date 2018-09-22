@@ -1,15 +1,26 @@
 var motionController = {
-	init: function(){
-		this.bind();
+	wheelsMode: false, //set to true if the robot is on wheels
+	init: function() {
+		$.ajax({
+			type: 'POST',
+			url: '/get_motion_mode',
+			success: (data) =>{
+				this.wheelsMode = data;
+				this.bind();
+			},
+			error: (request, status, error) =>{
+				failAlert(request.responseText);
+			}
+		});
 	},
-	bind: function(){
+	bind: function() {
 		$( "#motion_slider" ).slider({
 			orientation: "vertical",
 			range: "min",
 			min: 0,
 			max: 2047,
 			value: 0,
-			slide: function( event, ui ) {
+			slide: ( event, ui ) => {
 				$( "#amount" ).val( ui.value );
 			}
 		});
@@ -23,8 +34,8 @@ var motionController = {
 		}
 
 		//carriage controller
-		$(".motion-direction").on(startActionEvent, function(){
-			var dir=$(this).attr('value');
+		$(".motion-direction").on(startActionEvent, (e) => {
+			var dir=$(e.currentTarget).attr('value');
 			var value=$( "#motion_slider" ).slider( "value" );
 			var command="motion:";
 			if(dir=="motion_up"){
@@ -34,13 +45,20 @@ var motionController = {
 				command+="-"+value+",-"+value;
 			}
 			else if(dir=="motion_left"){
-				command+="-"+value+","+value;
+				if (this.wheelsMode)
+					command+="0,"+value;
+				else
+					command+="-"+value+","+value;
 			}
 			else if(dir=="motion_right"){
-				command+=value+",-"+value;
+				if (this.wheelsMode)
+					command+=value+",0";
+				else
+					command+=value+",-"+value;
 			}
+			console.log(command);
 			socket.emit('command', command);
-		}).on(stopActionEvent, function() {
+		}).on(stopActionEvent, () => {
 			var command="motion:0,0";
 			socket.emit('command', command);
 		});

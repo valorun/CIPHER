@@ -8,7 +8,7 @@
 </header>
 
 <div class="panel">
-	<div class="card tertiary">
+	<div class="card round-large tertiary">
 		<button class="btn container primary block left-align accordion-header">
 			<h4><i class="accordion-icon"></i> Ajouter un relai</h4>
 		</button>
@@ -41,7 +41,7 @@
 
 
 <div class="panel">
-	<div class="card tertiary">
+	<div class="card round-large tertiary">
 		<button class="btn container primary block left-align accordion-header">
 			<h4><i class="accordion-icon"></i> Relais enregistrés</h4>
 		</button>
@@ -86,16 +86,43 @@
 </div>
 
 <div class="panel">
-	<div class="card tertiary">
+	<div class="card round-large tertiary">
 		<button class="btn container primary block left-align accordion-header">
-			<h4><i class="accordion-icon"></i> Voix</h4>
+			<h4><i class="accordion-icon"></i> Autre</h4>
 		</button>
 		<div  class="accordion-content">
+		
 			<div class="container">
 				<p>
+					<label for="voices">Voix: </label>
 					<select class="select border" name="voices" id="voices">
 
 					</select>
+				</p>
+				<p>
+					<form id="cameraUrlForm">
+						<label for="cameraUrl">URL de la caméra: </label>
+						<div class="row">
+							<input id="cameraUrl" type="text" class="input border col" style="width: 80%" placeholder="ex: http://ma-camera-ip.com" value="{{ cameraUrl }}">
+							<button type="submit" class="button secondary col" style="width:20%"><i class="fa fa-check"></i></button>
+						</div>
+					</form>
+				</p>
+				<p>
+					{% if wheelsMode==True %}
+					<input id="wheelsMode" type="checkbox" name="wheelsMode" checked="checked" class="check">
+					{% else %}
+					<input id="wheelsMode" type="checkbox" name="wheelsMode" class="check">
+					{% endif %}
+					<label for="wheelsMode">Mode roues</label>
+				</p>
+				<p>
+					{% if chatbotReadOnlyMode==True %}
+					<input id="chatbotReadOnlyMode" type="checkbox" name="chatbotMode" checked="checked" class="check">
+					{% else %}
+					<input id="chatbotReadOnlyMode" type="checkbox" name="chatbotMode" class="check">
+					{% endif %}
+					<label for="chatbotReadOnlyMode">ChatBot en lecture seule</label>
 				</p>
 			</div>
 		</div>

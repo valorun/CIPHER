@@ -10,7 +10,7 @@ var connectionManager = {
 		this.bind();
 	},
 	bind: function(){
-		socket.on('command', function(msg) {
+		socket.on('command', (msg) => {
 			console.log('Message from server: ', msg);
 		});
 
@@ -19,18 +19,24 @@ var connectionManager = {
 			console.log('Message from server:', msg);
 			this.speak(msg);
 		});
-		socket.on('play_sound', function(sound_name) {
+		socket.on('play_sound', (sound_name) => {
 			var audio = new Audio(window.location.origin+'/play_sound/'+sound_name);
 			audio.play();
+		});
+		socket.on('connect', () => {
+			$("#socketErrorModal").hide()
+		});
+		socket.on('disconnect', () => {
+			$("#socketErrorModal").show()
 		});
 	},
 
 	speak: function(msg){
 		if ('speechSynthesis' in window) {
 			let to_speak = new SpeechSynthesisUtterance(msg);
-			$.each(this.voices,function(){
-				if(Cookies.get("voice") === this.name){
-					to_speak.voice = this;
+			$.each(this.voices, (i, e) =>{
+				if(Cookies.get("voice") === e.name){
+					to_speak.voice = e;
 				}
 			});
 			window.speechSynthesis.speak(to_speak);
