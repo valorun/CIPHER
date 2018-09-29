@@ -14,6 +14,7 @@ def save_buttons():
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
+        logging.info("Saving buttons grid")
         data=request.form.get("data")
         try:
             data = json.loads(data)
@@ -28,5 +29,6 @@ def load_buttons():
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
+        logging.info("Loading buttons grid")
         grid = config.getCommandsGrid()
         return jsonify(grid)

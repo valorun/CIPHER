@@ -124,7 +124,7 @@ def speech_detected(transcript):
 			entities=None
 			if hasattr(response, 'entities'): #Si des entités sont détectées, on les passera à la séquence
 				entities=response.entities
-				print("\n"+str(entities)+"\n")
+				logging.info("\n"+str(entities)+"\n")
 			sequence_reader.readSequence(current_app._get_current_object(), json.loads(seq_data), entities)
 	emit("response", response_text)
 
@@ -140,5 +140,4 @@ def play_sequence(seq_name):
 @socketio.on('command', namespace='/client')
 def command(label):
     logging.info("Received command: "+label)
-    print("Received command: "+label)
     sequence_reader.executeAction(current_app._get_current_object(), label);

@@ -13,6 +13,7 @@ class ChatBotWrapper():
 
     def instantiateChatBot(self, readOnly: bool, corpusTrainer: bool=False):
         self._readOnly = readOnly
+        logging.info("Instantiating new chatbot")
         if corpusTrainer:
             selectedTrainer = 'chatterbot.trainers.ChatterBotCorpusTrainer'
         else:

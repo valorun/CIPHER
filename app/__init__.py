@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # coding: utf-8
 
-import logging
 from os import urandom
+import logging
+from logging.handlers import RotatingFileHandler
 from flask import Flask
 from flask_socketio import SocketIO
 from .model import db
@@ -18,8 +19,6 @@ def create_app(debug=False):
     app.debug = debug
     app.secret_key = urandom(12)
 
-    logging.basicConfig(filename='app.log', level=logging.DEBUG)
-    
     app.config['SQLALCHEMY_DATABASE_URI'] = SERVER_DATABASE
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
@@ -31,3 +30,14 @@ def create_app(debug=False):
 
     socketio.init_app(app)
     return app
+
+def create_logger():
+    file_handler = RotatingFileHandler('app.log', maxBytes=1000)
+    formatter = logging.Formatter("%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s")
+    file_handler.setFormatter(formatter)
+    root_logger=logging.getLogger()
+    logging.getLogger('engineio').propagate = False # hide engineio logs to avoid flood
+    root_logger.handlers = []
+    root_logger.addHandler(file_handler)
+    root_logger.setLevel(logging.DEBUG)
+    return root_logger
