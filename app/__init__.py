@@ -7,7 +7,7 @@ from logging.handlers import RotatingFileHandler
 from flask import Flask
 from flask_socketio import SocketIO
 from .model import db
-from .constants import SERVER_DATABASE
+from .constants import SERVER_DATABASE, LOG_FILE
 
 socketio = SocketIO()
 
@@ -32,7 +32,7 @@ def create_app(debug=False):
     return app
 
 def create_logger():
-    file_handler = RotatingFileHandler('app.log', maxBytes=1000)
+    file_handler = RotatingFileHandler(LOG_FILE, maxBytes=1000)
     formatter = logging.Formatter("%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s")
     file_handler.setFormatter(formatter)
     root_logger=logging.getLogger()
