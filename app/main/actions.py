@@ -12,6 +12,7 @@ from .. import socketio
 from app.constants import SCRIPTS_LOCATION
 import asyncio
 from app.model import db, Relay, Sequence, chatbot
+from app.chatbot.entity_adapter import ENTITY_PATTERN
 
 #classe permettant de lire une sequence ou d'executer une action
 class SequenceReader:
@@ -29,17 +30,20 @@ class SequenceReader:
 
 	#execute une action suivant un label donné, par exemple 'sleep:100ms'
 	def executeAction(self, app, label, args=None):
-		if(len(label.split(":"))<2):
+		if(len(label.split(":", 1))<2):
 			return
-		action=label.split(":")[0]
-		option=label.split(":")[1]
+		action=label.split(":", 1)[0]
+		option=label.split(":", 1)[1]
 
 		if(action=="pause"):
 			#si c'est une pause, l'execution du script se met en pause
 			socketio.sleep( int(option.split("ms")[0])/1000 )
 		elif(action=="speech"):
 			#si c'est une parole, on retourne le tout directement au client
-			socketio.emit("response", option.split('"')[0], namespace="/client")
+			speech=option.split('"')[0]
+			if args != None:
+				speech=speech.replace(ENTITY_PATTERN, args[0])
+			socketio.emit("response", speech, namespace="/client")
 		elif(action=="relay"):
 			#si c'est un relai, cherche d'abord le pin associé, reconstitue la requete
 			rel_label = option.rsplit(',',1)[0]
@@ -120,11 +124,11 @@ def speech_detected(transcript):
 		#Si une séquence existe et est activée, on la lance
 		if(seq!=None and seq.enabled):
 			seq_data = seq.value
-			logging.info('Command received: '+seq_name)
+			logging.info('Executing sequence: '+seq_name)
 			entities=None
 			if hasattr(response, 'entities'): #Si des entités sont détectées, on les passera à la séquence
 				entities=response.entities
-				logging.info("\n"+str(entities)+"\n")
+				logging.info("Detected entities: "+str(entities))
 			sequence_reader.readSequence(current_app._get_current_object(), json.loads(seq_data), entities)
 	emit("response", response_text)
 
@@ -140,4 +144,4 @@ def play_sequence(seq_name):
 @socketio.on('command', namespace='/client')
 def command(label):
     logging.info("Received command: "+label)
-    sequence_reader.executeAction(current_app._get_current_object(), label);
+    sequence_reader.executeAction(current_app._get_current_object(), label)

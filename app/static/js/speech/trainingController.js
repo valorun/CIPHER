@@ -39,7 +39,7 @@ var trainingController = {
   			conversation.push($(e).find(".response").text());
 		});
   		$("#conversation").empty();
-		//socket.emit('train', conversation);
+		socket.emit('train', conversation);
 		successAlert("Chatbot entraîné avec succès.");
 	},
 	addToConversation: function(sentence, response){

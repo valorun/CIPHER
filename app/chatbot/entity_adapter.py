@@ -2,8 +2,9 @@ from chatterbot.logic import BestMatch
 from chatterbot.conversation import Statement
 import re
 
+ENTITY_PATTERN='{entity}'
+
 class EntityAdapter(BestMatch):
-    ENTITY_PATTERN='{entity}'
 
     def __init__(self, **kwargs):
         super(EntityAdapter, self).__init__(**kwargs)
@@ -16,7 +17,7 @@ class EntityAdapter(BestMatch):
 
         if statement_list:
             for s in statement_list: #pour toutes les phrases
-                if(self.ENTITY_PATTERN in s.text): #si il s'agit d'une phrase a trou
+                if(ENTITY_PATTERN in s.text): #si il s'agit d'une phrase a trou
                     pattern=self.get_pattern(s.text)
                     if(pattern.match(statement.text)): #et si la phrase en entrée correspond à son pattern
                         entities=re.search(pattern, statement.text).groups()
@@ -29,11 +30,11 @@ class EntityAdapter(BestMatch):
         return response
 
     def get_pattern(self, statement):
-        st_list=re.split("("+self.ENTITY_PATTERN+")", statement)
+        st_list=re.split("("+ENTITY_PATTERN+")", statement)
         pattern="^"
         for s in st_list:
-            if(s==self.ENTITY_PATTERN):
-                pattern=pattern+"(.*)"
+            if(s==ENTITY_PATTERN):
+                pattern=pattern+"(.*?)"
             else:
                 pattern=pattern+s
         return re.compile(pattern+"$", re.IGNORECASE)

@@ -23,6 +23,5 @@ def load_keywords_dataset():
 
 @socketio.on('train', namespace='/client')
 def train_chatbot(conversation):
-	print(conversation)
 	logging.info("Chatbot trained with: ".join(conversation))
 	chatbot.train(conversation)
