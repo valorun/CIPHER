@@ -21,13 +21,15 @@ var gridPanelView = {
 		//update status information about a specified relay
 		socket.on('update_relay_state', function(relay) {
 			$( "div[data-action='relay:"+relay.label+"']" ).each((i, e) => {
+				$(e).addClass('border');
 				if(relay.state===1){
-					$(e).addClass('green');
-					$(e).removeClass('dark-red');
+					$(e).addClass('border-green');
+					$(e).removeClass('border-dark-red');
 				}
 				else if(relay.state===0){
-					$(e).addClass('dark-red');
-					$(e).removeClass('green');
+
+					$(e).addClass('border-dark-red');
+					$(e).removeClass('border-green');
 				}
 			})
 		})
