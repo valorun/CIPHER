@@ -12,6 +12,7 @@ certfile=os.path.join(os.path.dirname(__file__), 'cert.pem')
 keyfile=os.path.join(os.path.dirname(__file__), 'key.pem')
 
 if __name__ == '__main__':
+    logging.info("Application started")
+    print("Application started")
     #socketio.run(app, host = "0.0.0.0", port = 5000, certfile=certfile, keyfile=keyfile, log=logger)
     socketio.run(app, host = "0.0.0.0", port = 5000, log=logger)
-    logging.info("Application started")

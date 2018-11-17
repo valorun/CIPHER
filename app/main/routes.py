@@ -67,7 +67,8 @@ def settings():
         cameraUrl=config.getCameraUrl()
         wheelsMode=config.getWheelsMode()
         chatbotReadOnlyMode=config.getChatbotReadOnlyMode()
-        return render_template('settings.html', relays=relays, cameraUrl=cameraUrl, wheelsMode=wheelsMode, chatbotReadOnlyMode=chatbotReadOnlyMode)
+        audioOnServer=config.getAudioOnServer()
+        return render_template('settings.html', relays=relays, cameraUrl=cameraUrl, wheelsMode=wheelsMode, chatbotReadOnlyMode=chatbotReadOnlyMode, audioOnServer=audioOnServer)
 
 
 @main.route('/login', methods=['POST'])

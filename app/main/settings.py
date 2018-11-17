@@ -83,12 +83,29 @@ def update_motion_mode():
         config.setWheelsMode(value)
         return render_template('settings.html')
 
+@main.route('/update_audio_source', methods=['POST'])
+def update_audio_source():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        value = json.loads(request.form.get("value"))
+        logging.info("Updating audio source")
+        config.setAudioOnServer(value)
+        return render_template('settings.html')
+
 @main.route('/get_motion_mode', methods=['POST'])
 def get_wheels_mode():
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
         return jsonify(config.getWheelsMode())
+
+@main.route('/get_audio_source', methods=['POST'])
+def get_audio_mode():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return jsonify(config.getAudioOnServer())
 
 @main.route('/update_chatbot_learning_mode', methods=['POST'])
 def update_chatbot_learning_mode():

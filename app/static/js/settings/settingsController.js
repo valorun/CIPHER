@@ -89,7 +89,22 @@ var settingsController = {
 			});
 		});
 
-		//motion mode
+		//audio on server mode
+		$("#audioOnServer").on("change", (e) => {
+			$.ajax({
+				type: 'POST',
+				url: '/update_audio_source',
+				data: { value: $(e.currentTarget).prop("checked") },
+				success: function () {
+					successAlert("La source audio a été mise à jour");
+				},
+				error: function (request, status, error) {
+					failAlert(request.responseText);
+				}
+			});
+		});
+
+		//chatbot readd only mode
 		$("#chatbotReadOnlyMode").on("change", (e) => {
 			$.ajax({
 				type: 'POST',

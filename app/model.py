@@ -30,6 +30,9 @@ class Relay(db.Model):
 
 class ConfigFile():
 	def saveOption(self, key: str, data):
+		"""
+		Sauvegarde une option dans le fichier de configuration.
+		"""
 		try:
 			with open(CONFIG_FILE, 'r') as f:
 				content = json.load(f)
@@ -44,6 +47,9 @@ class ConfigFile():
 			json.dump(content, f)
 
 	def loadOption(self, key: str):
+		"""
+		Charge une option depuis le fichier de configuration.
+		"""
 		try:
 			with open(CONFIG_FILE, 'r') as f:
 				content = json.load(f)
@@ -87,6 +93,16 @@ class ConfigFile():
 			mode = False # default mode is for caterpillars
 		return mode
 
+	# AUDIO SOURCE
+	def setAudioOnServer(self, mode: bool):
+		self.saveOption("audio_on_server", mode)
+
+	def getAudioOnServer(self) -> bool:
+		mode = self.loadOption("audio_on_server")
+		if mode == None:
+			mode = False
+		return mode
+
 	# CHATBOT LEARNING MODE
 	def setChatbotReadOnlyMode(self, mode: bool):
 		self.saveOption("chatbot_read_only_mode", mode)
@@ -98,7 +114,6 @@ class ConfigFile():
 		return mode
 
 config = ConfigFile()
-
 
 chatbot = ChatBotWrapper(CHATBOT_DATABASE)
 chatbot.instantiateChatBot(config.getChatbotReadOnlyMode())

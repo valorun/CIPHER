@@ -22,6 +22,7 @@ var gridPanelView = {
 		socket.on('update_relay_state', function(relay) {
 			$( "div[data-action='relay:"+relay.label+"']" ).each((i, e) => {
 				$(e).addClass('border');
+				$(e).css({"border-width":"2px"})
 				if(relay.state===1){
 					$(e).addClass('border-green');
 					$(e).removeClass('border-dark-red');

@@ -117,6 +117,14 @@
 					<label for="wheelsMode">Mode roues</label>
 				</p>
 				<p>
+					{% if audioOnServer==True %}
+					<input id="audioOnServer" type="checkbox" name="audioOnServer" checked="checked" class="check">
+					{% else %}
+					<input id="audioOnServer" type="checkbox" name="audioOnServer" class="check">
+					{% endif %}
+					<label for="audioOnServer">Son sur le serveur</label>
+				</p>
+				<p>
 					{% if chatbotReadOnlyMode==True %}
 					<input id="chatbotReadOnlyMode" type="checkbox" name="chatbotMode" checked="checked" class="check">
 					{% else %}

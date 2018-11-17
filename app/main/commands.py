@@ -7,10 +7,11 @@ from app.model import config
 import json
 from . import main
 
-
-#sauvegarde la grille de boutons sur le serveur
 @main.route('/save_buttons', methods=['POST'])
 def save_buttons():
+    """
+    Sauvegarde la grille de boutons sur le serveur.
+    """
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
@@ -23,9 +24,11 @@ def save_buttons():
         config.setCommandsGrid(data)
         return "Grille sauvegardée.", 200
 
-#charge la grille de boutons depuis le serveur
 @main.route('/load_buttons', methods=['POST'])
 def load_buttons():
+    """
+    Charge la grille de boutons depuis le serveur.
+    """
     if not session.get('logged_in'):
         return render_template('login.html')
     else:

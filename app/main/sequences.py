@@ -10,6 +10,9 @@ import re
 
 @main.route('/save_sequence', methods=['POST'])
 def save_sequence():
+    """
+    Sauvegarde une séquence dans la base de données.
+    """
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
@@ -27,6 +30,9 @@ def save_sequence():
 
 @main.route('/enable_sequence', methods=['POST'])
 def enable_sequence():
+    """
+    Active ou désactive une séquence enregistrée dans la base de données.
+    """
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
@@ -42,6 +48,9 @@ def enable_sequence():
 
 @main.route('/delete_sequence', methods=['POST'])
 def delete_sequence():
+    """
+    Supprime une séquence enregistrée dans la base de données.
+    """
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
