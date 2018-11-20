@@ -87,8 +87,8 @@ class SequenceReader:
 		elif(action=="sound"):
 			#si c'est un son, execute le son demandé
 			if config.getAudioOnServer:
-				os.system("pkill mpg123")
-				os.system("mpg123 "+join(SOUNDS_LOCATION,option))
+				os.system("pkill mplayer")
+				os.system("mplayer "+join(SOUNDS_LOCATION,option))
 			else:
 				socketio.emit("play_sound", option, namespace="/client")
 		else:
