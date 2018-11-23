@@ -12,6 +12,9 @@ class ChatBotWrapper():
         self.database=database
 
     def instantiateChatBot(self, readOnly: bool, corpusTrainer: bool=False):
+        """
+        Instanciate the chatbot.
+        """
         self._readOnly = readOnly
         logging.info("Instantiating new chatbot")
         if corpusTrainer:
@@ -36,18 +39,25 @@ class ChatBotWrapper():
         )
     
     def getResponse(self, statement):
+        """
+        Get the best response to a given statement.
+        """
         return self.chatbot.get_response(statement)
     
-    #train the chatbot on a already existing corpus
     def trainOnCorpus(self, corpusPath):
+        """
+        Train the chatbot on an already existing corpus.
+        """
         logging.info("Chatbot trained with corpus: ".join(corpusPath))
         readOnly=self._readOnly
         self.instantiateChatBot(False, True)
         self.chatbot.train(corpusPath)
         self.instantiateChatBot(readOnly)
 
-    #train the chatbot on a conversation represented as a list of sentences
     def train(self, conversation: []):
+        """
+        Train the chatbot on a conversation represented as a list of sentences.
+        """
         logging.info("Chatbot trained with conversation: ".join(conversation))
         readOnly=self._readOnly
         self.instantiateChatBot(False)

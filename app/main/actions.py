@@ -11,31 +11,30 @@ from flask import current_app
 from flask_socketio import SocketIO, emit
 from .. import socketio
 from app.constants import SCRIPTS_LOCATION, SOUNDS_LOCATION
-import asyncio
 from app.model import db, Relay, Sequence, chatbot, config
 from app.chatbot.entity_adapter import ENTITY_PATTERN
 
 class SequenceReader:
 	"""
-	Classe permettant de lire une sequence ou d'executer une action.
+	Classe reading sequences and executing actions.
 	"""
 	def __init__(self):
 		#nombre d'actions en cours, qu'il faut donc attendre avant d'executer une autre séquence
 		self.threads = 0
 
-	def executeSequence(self, app, startNode, nodes, edges, args=None):
+	def _executeSequence(self, app, startNode, nodes, edges, args=None):
 		"""
-		Lance l'execution de la séquence,place chaque nouvelle branche dans un thread différent.
+		Launch the sequence execution, place each new branch in another thread.
 		"""
 		self.threads+=1
-		self.executeAction(app, self.getNodeLabel(startNode, nodes), args)
-		for c in self.getChildren(startNode, edges):
-			socketio.start_background_task(self.executeSequence, app, c, nodes, edges, args)
+		self.executeAction(app, self._getNodeLabel(startNode, nodes), args)
+		for c in self._getChildren(startNode, edges):
+			socketio.start_background_task(self._executeSequence, app, c, nodes, edges, args)
 		self.threads-=1
 
 	def executeAction(self, app, label, args=None):
 		"""
-		Execute une action suivant un label donné, par exemple 'sleep:100ms'.
+		Execute an action based on a label, for exemple 'sleep:100ms'.
 		"""
 		if(len(label.split(":", 1))<2):
 			return
@@ -87,8 +86,9 @@ class SequenceReader:
 		elif(action=="sound"):
 			#si c'est un son, execute le son demandé
 			if config.getAudioOnServer:
-				os.system("pkill mplayer")
-				os.system("mplayer "+join(SOUNDS_LOCATION,option))
+				os.system("sudo pkill mplayer")
+				os.system("mplayer "+join(SOUNDS_LOCATION,option).replace(" ", "\\ "))
+				logging.info("Playing sound \'" + join(SOUNDS_LOCATION,option) + "\' on server")			
 			else:
 				socketio.emit("play_sound", option, namespace="/client")
 		else:
@@ -97,9 +97,9 @@ class SequenceReader:
 			socketio.emit("command", option, namespace="/"+action)
 		logging.info(label)
 
-	def getChildren(self, id, edges):
+	def _getChildren(self, id, edges):
 		"""
-		Retourne la liste des id des noeuds enfants.
+		Return the list of the child nodes.
 		"""
 		children=[]
 		for e in edges:
@@ -107,9 +107,9 @@ class SequenceReader:
 				children.append(e["to"])
 		return children
 
-	def getNodeLabel(self, id, nodes):
+	def _getNodeLabel(self, id, nodes):
 		"""
-		Retourne le label du noeud avec l'id donné.
+		Return the label of the node with the given id.
 		"""
 		for n in nodes:
 			if(n["id"]==id):
@@ -117,13 +117,13 @@ class SequenceReader:
 
 	def readSequence(self, app, json, args=None):
 		"""
-		Lance l'execution d'une sequence cntenue dans un objet JSON.
+		Launch the sequence execution from a JSON object.
 		"""
 		if(self.threads>0): #on attend que la séquence en cours soit achevée pour en lancer une nouvelle
 			return
 		nodes=json[0]
 		edges=json[1]
-		self.executeSequence(app, "start", nodes, edges, args)
+		self._executeSequence(app, "start", nodes, edges, args)
 
 
 sequence_reader = SequenceReader()
@@ -132,7 +132,7 @@ sequence_reader = SequenceReader()
 @socketio.on('speech_detected', namespace='/client')
 def speech_detected(transcript):
 	"""
-	Fonction appelée lors de la détection d'une parole sur le client.
+	Function called when a sentence is detected on the client.
 	"""
 	logging.info("Received data: " + transcript)
 	response = chatbot.getResponse(transcript)
@@ -157,7 +157,7 @@ def speech_detected(transcript):
 @socketio.on('play_sequence', namespace='/client')
 def play_sequence(seq_name):
 	"""
-	Fonction appelée lorsque le client demande l'execution d'une sequence.
+	Function called when the client want to execute a sequence.
 	"""
 	seq = Sequence.query.filter_by(id=seq_name).first()
 	if(seq!=None and seq.enabled):
@@ -168,7 +168,7 @@ def play_sequence(seq_name):
 @socketio.on('command', namespace='/client')
 def command(label):
 	"""
-	Fonction appelée lorsque le client demande l'execution d'une commande simple.
+	Function called when the client want to execute a simple command.
 	"""
 	logging.info("Received command: "+label)
 	sequence_reader.executeAction(current_app._get_current_object(), label)
