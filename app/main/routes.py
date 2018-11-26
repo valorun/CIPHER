@@ -30,10 +30,11 @@ def commands():
     else:
         sequences=Sequence.query.all()
         relays=Relay.query.all()
+        cameraUrl=config.getCameraUrl()
         if not exists(SOUNDS_LOCATION):
             makedirs(SOUNDS_LOCATION)
         sounds=[f for f in listdir(SOUNDS_LOCATION) if isfile(join(SOUNDS_LOCATION, f))]
-        return render_template('commands.html', sequences=sequences, relays=relays, sounds=sounds)
+        return render_template('commands.html', sequences=sequences, relays=relays, sounds=sounds, cameraUrl=cameraUrl)
 
 @main.route('/sequences')
 def sequences():
@@ -101,6 +102,9 @@ def method_not_allowed(e):
 
 @main.route("/play_sound/<sound_name>", methods=['GET'])
 def play_sound(sound_name):
+    """
+    Stream the specified sound to the client.
+    """
     if not session.get('logged_in'):
         return render_template('login.html')
     else:

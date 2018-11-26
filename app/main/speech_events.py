@@ -7,15 +7,19 @@ from app.model import config, chatbot
 import json
 from .. import socketio
 
-#Sauvegarde l'entrainement à la reconnaissance de mots clés
 @socketio.on('save_keywords_dataset', namespace='/client')
 def save_keywords_dataset(dataset):
+	"""
+	Save the training to keyword recognition.
+	"""
 	logging.info("Saving keywords dataset")
 	config.setKeywordDataset(json.loads(dataset))
 
-#Charge l'entrainement à la reconnaissance de mots clés
 @socketio.on('load_keywords_dataset', namespace='/client')
 def load_keywords_dataset():
+	"""
+	Load the training to keyword recognition.
+	"""
 	dataset = config.getKeywordDataset()
 	if dataset == None:
 		dataset = []

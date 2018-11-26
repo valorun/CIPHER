@@ -16,13 +16,13 @@ class EntityAdapter(BestMatch):
         statement_list = self.chatbot.storage.get_response_statements()
 
         if statement_list:
-            for s in statement_list: #pour toutes les phrases
-                if(ENTITY_PATTERN in s.text): #si il s'agit d'une phrase a trou
+            for s in statement_list: # for each sentences
+                if(ENTITY_PATTERN in s.text): #if the sentence has a 'gap'
                     pattern=self.get_pattern(s.text)
-                    if(pattern.match(statement.text)): #et si la phrase en entrée correspond à son pattern
+                    if(pattern.match(statement.text)): #and if the input sentence correspond to its pattern
                         entities=re.search(pattern, statement.text).groups()
                         response=super(EntityAdapter, self).process(s)
-                        response.entities=entities #on ajoute les entités à la réponse
+                        response.entities=entities #add entities to the answer
                         response.confidence=1.0
                         return response
         response=super(EntityAdapter, self).process(statement)

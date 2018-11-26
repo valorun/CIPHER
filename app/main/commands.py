@@ -10,7 +10,7 @@ from . import main
 @main.route('/save_buttons', methods=['POST'])
 def save_buttons():
     """
-    Sauvegarde la grille de boutons sur le serveur.
+    Save the grid of buttons on the server.
     """
     if not session.get('logged_in'):
         return render_template('login.html')
@@ -26,8 +26,8 @@ def save_buttons():
 
 @main.route('/load_buttons', methods=['POST'])
 def load_buttons():
-    """
-    Charge la grille de boutons depuis le serveur.
+    """  
+    Load the grid of buttons from the server.
     """
     if not session.get('logged_in'):
         return render_template('login.html')

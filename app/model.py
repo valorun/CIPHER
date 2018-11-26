@@ -31,7 +31,7 @@ class Relay(db.Model):
 class ConfigFile():
 	def saveOption(self, key: str, data):
 		"""
-		Sauvegarde une option dans le fichier de configuration.
+		Save an option into the config file.
 		"""
 		try:
 			with open(CONFIG_FILE, 'r') as f:
@@ -48,7 +48,7 @@ class ConfigFile():
 
 	def loadOption(self, key: str):
 		"""
-		Charge une option depuis le fichier de configuration.
+		Load an option from the config file.
 		"""
 		try:
 			with open(CONFIG_FILE, 'r') as f:

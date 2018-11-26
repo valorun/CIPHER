@@ -19,7 +19,7 @@ class SequenceReader:
 	Classe reading sequences and executing actions.
 	"""
 	def __init__(self):
-		#nombre d'actions en cours, qu'il faut donc attendre avant d'executer une autre séquence
+		#number of actions in progress, to wait before executing another sequence.
 		self.threads = 0
 
 	def _executeSequence(self, app, startNode, nodes, edges, args=None):
@@ -42,19 +42,19 @@ class SequenceReader:
 		option=label.split(":", 1)[1]
 
 		if(action=="pause"):
-			#si c'est une pause, l'execution du script se met en pause
+			#if it's a pause, the executed script is paused
 			socketio.sleep( int(option.split("ms")[0])/1000 )
 		elif(action=="speech"):
-			#si c'est une parole, on retourne le tout directement au client
+			#if it'a a speech, return it directly to the client
 			speech=option.split('"')[0]
 			if args != None:
 				speech=speech.replace(ENTITY_PATTERN, args[0])
 			socketio.emit("response", speech, namespace="/client")
 		elif(action=="relay"):
-			#si c'est un relai, cherche d'abord le pin associé, reconstitue la requete
+			#if it's a relay, first look for the associated pin, restore the request
 			rel_label = option.rsplit(',',1)[0]
 			rel_state=""
-			#si un état est spécifié (0 ou 1)
+			#if the state is specified (0 or 1)
 			if(len(option.rsplit(',',1))>1):
 				rel_state=option.rsplit(',',1)[1]
 			with app.app_context():
@@ -65,9 +65,9 @@ class SequenceReader:
 				parity = db_rel.parity
 				raspi_id = db_rel.raspi_id
 
-				#si le relai est appairé
+				#if the relay is paired
 				if(parity!=""):
-					#on récupère tout les relais pairs
+					#recover all the peer relays
 					peers_rel = Relay.query.filter(Relay.parity==parity, Relay.label!=rel_label)
 					peers=[]
 					for peer in peers_rel:
@@ -78,13 +78,13 @@ class SequenceReader:
 				else:
 					socketio.emit("activate_relay", (pin, rel_state, raspi_id), namespace="/relay")
 		elif(action=="script"):
-			#si c'est un script, execute importe le script demandé et execute sa methode start
+			#if it's a script, import the requested script and execute its start method
 			spec = importlib.util.spec_from_file_location("script", os.path.join(SCRIPTS_LOCATION, option))
 			script = importlib.util.module_from_spec(spec)
 			spec.loader.exec_module(script)
 			socketio.emit("response", script.start(args), namespace="/client")
 		elif(action=="sound"):
-			#si c'est un son, execute le son demandé
+			#if it's a sound, execute the requested sound
 			if config.getAudioOnServer:
 				os.system("sudo pkill mplayer")
 				os.system("mplayer "+join(SOUNDS_LOCATION,option).replace(" ", "\\ "))
@@ -92,7 +92,7 @@ class SequenceReader:
 			else:
 				socketio.emit("play_sound", option, namespace="/client")
 		else:
-			#envoie de la commande aux raspberries
+			#sends the command to the raspberries
 			logging.info("Sending "+action+" to rasperries.")
 			socketio.emit("command", option, namespace="/"+action)
 		logging.info(label)
@@ -119,7 +119,7 @@ class SequenceReader:
 		"""
 		Launch the sequence execution from a JSON object.
 		"""
-		if(self.threads>0): #on attend que la séquence en cours soit achevée pour en lancer une nouvelle
+		if(self.threads>0): #wait for the current sequence to be completed to launch a new one
 			return
 		nodes=json[0]
 		edges=json[1]
@@ -142,12 +142,12 @@ def speech_detected(transcript):
 		seq_name=response_text.split("[")[1].split("]")[0]
 		seq = Sequence.query.filter_by(id=seq_name).first()
 		response_text = response_text.split("]")[1]
-		#Si une séquence existe et est activée, on la lance
+		#if a sequence exists and is activated, launch it
 		if(seq!=None and seq.enabled):
 			seq_data = seq.value
 			logging.info('Executing sequence: '+seq_name)
 			entities=None
-			if hasattr(response, 'entities'): #Si des entités sont détectées, on les passera à la séquence
+			if hasattr(response, 'entities'): #if entities are detected, we will pass them to the sequence
 				entities=response.entities
 				logging.info("Detected entities: "+str(entities))
 			sequence_reader.readSequence(current_app._get_current_object(), json.loads(seq_data), entities)
