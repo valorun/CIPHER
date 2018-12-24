@@ -8,7 +8,9 @@ import importlib.util
 import os
 from os.path import join
 from flask_socketio import SocketIO, emit
+from flask_mqtt import Mqtt
 from .. import socketio
+from .. import mqtt
 from app.constants import SCRIPTS_LOCATION, SOUNDS_LOCATION
 from app.model import db, Relay, Sequence, config
 
@@ -34,12 +36,24 @@ class ActionManager:
 				peers=[]
 				for peer in peers_rel:
 					peers.append(peer.pin)
-
-				socketio.emit("activate_paired_relay", (pin, rel_state, peers, raspi_id), namespace="/relay", broadcast=True)
+				#activate the relay on the corresponding raspberry
+				mqtt.publish('raspi/'+raspi_id+'/relay/activate', {'gpio':pin, 'state':rel_state, 'peers':peers})
+				#socketio.emit("activate_paired_relay", (pin, rel_state, peers, raspi_id), namespace="/relay", broadcast=True)
 
 			else:
-				socketio.emit("activate_relay", (pin, rel_state, raspi_id), namespace="/relay")
-		
+				mqtt.publish('raspi/'+raspi_id+'/relay/activate', {'gpio':pin, 'state':rel_state, 'peers':None})
+				#socketio.emit("activate_relay", (pin, rel_state, raspi_id), namespace="/relay")
+
+	def motion(self, m1, m2):
+		if config.getMotionRaspiId() == None:
+			return
+		mqtt.publish('raspi/'+config.getMotionRaspiId()+'/motion', {'m1':m1, 'm2':m2})
+	
+	def servo(self, index):
+		if config.getServoRaspiId() == None:
+			return
+		mqtt.publish('raspi/'+config.getServoRaspiId()+'/servo', {'index':index})
+
 	def sound(self, sound_name):
 		if config.getAudioOnServer():
 			os.system("sudo pkill mplayer")

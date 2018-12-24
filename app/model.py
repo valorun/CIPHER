@@ -113,6 +113,20 @@ class ConfigFile():
 			mode = False
 		return mode
 
+	# MOTION RASPI ID
+	def setMotionRaspiId(self, raspi_id: str):
+		self.saveOption("motion_raspi_id", raspi_id)
+
+	def getMotionRaspiId(self) -> str:
+		return self.loadOption("motion_raspi_id")
+	
+	# SERVO RASPI ID
+	def setServoRaspiId(self, raspi_id: str):
+		self.saveOption("servo_raspi_id", raspi_id)
+
+	def getServoRaspiId(self) -> str:
+		return self.loadOption("servo_raspi_id")
+
 config = ConfigFile()
 
 chatbot = ChatBotWrapper(CHATBOT_DATABASE)

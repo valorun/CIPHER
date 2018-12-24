@@ -117,3 +117,23 @@ def update_chatbot_learning_mode():
         config.setChatbotReadOnlyMode(value)
         chatbot.instantiateChatBot(config.getChatbotReadOnlyMode())
         return render_template('settings.html')
+
+@main.route('/update_motion_raspi_id', methods=['POST'])
+def update_motion_raspi_id():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        id = request.form.get("raspi_id")
+        logging.info("Updating motion raspi id: "+id)
+        config.setMotionRaspiId(id)
+        return render_template('settings.html')
+
+@main.route('/update_servo_raspi_id', methods=['POST'])
+def update_servo_raspi_id():
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        id = request.form.get("raspi_id")
+        logging.info("Updating servo raspi id: "+id)
+        config.setServoRaspiId(id)
+        return render_template('settings.html')

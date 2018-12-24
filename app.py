@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding: utf-8
 
-from app import create_app, create_logger, socketio
+from app import create_app, create_logger, socketio, mqtt
 import os
 import logging
 

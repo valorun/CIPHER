@@ -4,8 +4,10 @@
 import logging
 import json
 from flask_socketio import SocketIO, emit
+from flask_mqtt import Mqtt
 from .action_manager import action_manager
 from .. import socketio
+from .. import mqtt
 from app.model import db, Sequence, chatbot, config
 from app.chatbot.entity_adapter import ENTITY_PATTERN
 
@@ -59,10 +61,15 @@ class SequenceReader:
 		elif(action=="sound"):
 			#if it's a sound, execute the requested sound
 			action_manager.sound(option)
-		else:
-			#sends the command to the raspberries
-			logging.info("Sending "+action+" to rasperries.")
-			socketio.emit("command", option, namespace="/"+action)
+		elif(action=="motion"):
+			#if it is a motion command, activate the motors with the specified speed
+			m1Speed = option.split(",")[0]
+			m2Speed = option.split(",")[1]
+			action_manager.motion(m1Speed, m2Speed)
+		elif(action=="servo"):
+			#if it is a servo sequence, launch the one with the specified index
+			action_manager.servo(option)
+		logging.info("Sending "+action+" to rasperries.")
 		logging.info(label)
 
 	def _getChildren(self, id, edges):

@@ -104,7 +104,7 @@ var settingsController = {
 			});
 		});
 
-		//chatbot readd only mode
+		//chatbot read only mode
 		$("#chatbotReadOnlyMode").on("change", (e) => {
 			$.ajax({
 				type: 'POST',
@@ -118,6 +118,39 @@ var settingsController = {
 				}
 			});
 		});
+
+		//motion raspi id modification
+		$("#motionRaspiIdForm").on("submit", (e) => {
+			e.preventDefault();
+			$.ajax({
+				type: 'POST',
+				url: '/update_motion_raspi_id',
+				data: { camera_url: $("#motionRaspiId").val() },
+				success: function () {
+					successAlert("L'id du raspberry chargé des déplacements a été mis à jour");
+				},
+				error: function (request, status, error) {
+					failAlert(request.responseText);
+				}
+			});
+		});
+
+		//servo raspi id modification
+		$("#servoRaspiIdForm").on("submit", (e) => {
+			e.preventDefault();
+			$.ajax({
+				type: 'POST',
+				url: '/update_servo_raspi_id',
+				data: { raspi_id: $("#servoRaspiId").val() },
+				success: function () {
+					successAlert("L'id du raspberry chargé des mouvements des servo-moteurs a été mis à jour");
+				},
+				error: function (request, status, error) {
+					failAlert(request.responseText);
+				}
+			});
+		});
+
 
 	},
 

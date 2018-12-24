@@ -5,11 +5,13 @@ from os import urandom
 import logging
 from logging.handlers import RotatingFileHandler
 from flask import Flask
+from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from .model import db
 from .constants import SERVER_DATABASE, LOG_FILE
 
 socketio = SocketIO()
+mqtt = Mqtt()
 
 raspies = []
 
@@ -21,6 +23,9 @@ def create_app(debug=False):
 
     app.config['SQLALCHEMY_DATABASE_URI'] = SERVER_DATABASE
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['MQTT_BROKER_URL'] = '169.254.0.1'
+    app.config['MQTT_BROKER_PORT'] = 1883
+    app.config['MQTT_KEEPALIVE'] = 5
     db.app = app
     db.init_app(app)
     db.create_all()
@@ -29,6 +34,7 @@ def create_app(debug=False):
     app.register_blueprint(main_blueprint)
 
     socketio.init_app(app)
+    mqtt.init_app(app)
     return app
 
 def create_logger():
