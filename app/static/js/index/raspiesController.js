@@ -20,7 +20,6 @@ var raspiesController = {
 		$("#raspberries").empty();
 		$.each(raspies, function(i, raspi){
 			console.log(raspi);
-			let action = "<h4>Modes: </h4>";
 			let card = "<div class='container cell pale-green topbar bottombar border-green'>"+
 					"<h3>"+ raspi.id + " | " + raspi.address+"</h3>"+
 				"</div>";

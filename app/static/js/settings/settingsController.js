@@ -53,10 +53,12 @@ var settingsController = {
 
 		socket.on('get_raspies', (raspies) => {
 			raspies = raspies.map(r => r.id);
-			$("#newRaspiId").autocomplete({
+			$("#newRaspiId,#motionRaspiId,#servoRaspiId").autocomplete({
 				source: raspies
 			});
+
 		});
+		
 
 		//camera url modification
 		$("#cameraUrlForm").on("submit", (e) => {
@@ -125,7 +127,7 @@ var settingsController = {
 			$.ajax({
 				type: 'POST',
 				url: '/update_motion_raspi_id',
-				data: { camera_url: $("#motionRaspiId").val() },
+				data: { raspi_id: $("#motionRaspiId").val() },
 				success: function () {
 					successAlert("L'id du raspberry chargé des déplacements a été mis à jour");
 				},

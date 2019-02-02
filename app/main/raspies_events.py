@@ -3,37 +3,43 @@
 
 import logging
 import json
-from flask import request
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
-from .. import socketio, raspies
-from .. import mqtt
+from .. import socketio, raspies, mqtt
 
-@mqtt.on_message()
-def handle_mqtt_message(client, userdata, msg):
-    topic = msg.topic
-    data = msg.payload
-    if topic == 'server/raspi_connect':
-        on_raspi_connect(data['id'], data['address'])
-    logging.info(data)
-    print(data)
+@mqtt.on_connect()
+def on_server_connect(client, userdata, flags, rc):
+    mqtt.publish("server/connect")
 
-mqtt.subscribe('server/#')
-
-def on_raspi_connect(raspi_id, address):
-    logging.info("Raspberry "+str(request.remote_addr)+' connected.')
+@mqtt.on_topic('server/raspi_connect')
+def on_raspi_connect(client, userdata, msg):
+    """
+    Function called when a raspberry client connects.
+    """
+    global raspies
+    data = json.loads(msg.payload)
+    raspi_id = data['id']
+    logging.info("Raspberry "+raspi_id+' connected.')
     newRaspi = {}
     newRaspi['id'] = raspi_id
-    newRaspi['address'] = address
+    #newRaspi['address'] = address
+    mqtt.subscribe("raspi/"+raspi_id+"/#")
+    raspies = [r for r in raspies if r['id'] != raspi_id] #delete already existing one with the same id
     raspies.append(newRaspi)
-    get_raspies()
+    socketio.emit("get_raspies", raspies, namespace="/client", broadcast=True)
 
-def on_raspi_disconnect(raspi_id):
+@mqtt.on_topic('server/raspi_disconnect')
+def on_raspi_disconnect(client, userdata, msg):
+    """
+    Function called when a raspberry client disconnects.
+    """
     global raspies
-    logging.info("Raspberry "+str(request.remote_addr)+' disconnected.')
+    data = json.loads(msg.payload)
+    raspi_id = data['id']
+    logging.info("Raspberry "+raspi_id+' disconnected.')
     raspies = [r for r in raspies if r['id'] != raspi_id]
-    get_raspies()
-
+    mqtt.unsubscribe("raspi/"+raspi_id+"/#")
+    socketio.emit("get_raspies", raspies, namespace="/client", broadcast=True)
 
 
 @socketio.on('shutdown', namespace='/client')

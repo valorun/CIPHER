@@ -6,7 +6,7 @@ import os
 import logging
 
 app = create_app(debug=False)
-logger = create_logger()
+logger = create_logger(debug=True)
 
 certfile=os.path.join(os.path.dirname(__file__), 'cert.pem')
 keyfile=os.path.join(os.path.dirname(__file__), 'key.pem')
