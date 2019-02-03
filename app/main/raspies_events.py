@@ -38,6 +38,7 @@ def on_raspi_disconnect(client, userdata, msg):
     raspi_id = data['id']
     logging.info("Raspberry "+raspi_id+' disconnected.')
     raspies = [r for r in raspies if r['id'] != raspi_id]
+    print(raspies)
     mqtt.unsubscribe("raspi/"+raspi_id+"/#")
     socketio.emit("get_raspies", raspies, namespace="/client", broadcast=True)
 

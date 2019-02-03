@@ -11,6 +11,7 @@ var raspiesController = {
     		socket.emit("reboot");
     	});
     	socket.on('get_raspies', (raspies) => {
+			console.log(raspies);
     		this.updateRaspies(raspies);
     	});
 
@@ -20,7 +21,7 @@ var raspiesController = {
 		$("#raspberries").empty();
 		$.each(raspies, function(i, raspi){
 			console.log(raspi);
-			let card = "<div class='container cell pale-green topbar bottombar border-green'>"+
+			let card = "<div class='container cell pale-green topbar bottombar border-green margin-left'>"+
 					"<h3>"+ raspi.id + " | " + raspi.address+"</h3>"+
 				"</div>";
 			$("#raspberries").append(card);
