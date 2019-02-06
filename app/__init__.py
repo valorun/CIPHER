@@ -13,8 +13,6 @@ from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_P
 socketio = SocketIO() # socketio server used to communicate with web client
 mqtt = Mqtt() # mqtt client, need to be connected to a brocker (in local)
 
-raspies = []
-
 def create_app(debug=False):
     app = Flask(__name__)
 
@@ -31,7 +29,20 @@ def create_app(debug=False):
     db.create_all()
 
     from .main import main as main_blueprint
+    from .dashboard import dashboard as dashboard_blueprint
+    from .commands import commands as commands_blueprint
+    from .sequences import sequences as sequences_blueprint
+    from .speech import speech as speech_blueprint
+    from .settings import settings as settings_blueprint
+    from .debug import debug as debug_blueprint
+
     app.register_blueprint(main_blueprint)
+    app.register_blueprint(dashboard_blueprint)
+    app.register_blueprint(commands_blueprint)
+    app.register_blueprint(sequences_blueprint)
+    app.register_blueprint(speech_blueprint)
+    app.register_blueprint(settings_blueprint)
+    app.register_blueprint(debug_blueprint)
 
     socketio.init_app(app)
     mqtt.init_app(app)

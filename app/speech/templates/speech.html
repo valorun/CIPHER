@@ -1,12 +1,12 @@
 {% extends 'template.html' %}
 {% block content %}
-<script src="/static/js/connection.js"></script>
+<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
 <!-- Include the WebRTC adapter -->
-<script src="/static/vendor/JsSpeechRecognizer/adapter.js"></script>
-<script src="/static/vendor/JsSpeechRecognizer/JsSpeechRecognizer.js"></script>
-<script src="/static/js/speech/trainingController.js"></script>
-<script src="/static/js/speech/dictationController.js"></script>
-<script src="/static/js/speech/speechDetectionController.js"></script>
+<script src="{{ url_for('speech.static', filename='vendor/JsSpeechRecognizer/adapter.js') }}"></script>
+<script src="{{ url_for('speech.static', filename='vendor/JsSpeechRecognizer/JsSpeechRecognizer.js') }}"></script>
+<script src="{{ url_for('speech.static', filename='js/trainingController.js') }}"></script>
+<script src="{{ url_for('speech.static', filename='js/dictationController.js') }}"></script>
+<script src="{{ url_for('speech.static', filename='js/speechDetectionController.js') }}"></script>
 
 <header class="container padding-16">
 	<h2><b><i class="fa fa-comments"></i> Actions vocales</b></h2>

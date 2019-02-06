@@ -33,7 +33,7 @@ var graphPanelView = {
 			fr: {
 				edit: 'Editer',
 				del: 'Supprimer la sélection',
-				back: 'Retout',
+				back: 'Retour',
 				addNode: 'Ajouter un noeud',
 				addEdge: 'Ajouter une transition',
 				editNode: 'Editer le noeud',

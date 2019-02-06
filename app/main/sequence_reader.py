@@ -3,19 +3,17 @@
 
 import logging
 import json
-from flask_socketio import SocketIO, emit
-from flask_mqtt import Mqtt
-from .action_manager import action_manager
-from .. import socketio
-from .. import mqtt
-from app.model import db, Sequence, chatbot, config
+from flask_socketio import SocketIO
+from app import socketio
+from app.model import Sequence
 from app.chatbot.entity_adapter import ENTITY_PATTERN
 
 class SequenceReader:
 	"""
 	Classe reading sequences and executing actions.
 	"""
-	def __init__(self):
+	def __init__(self, action_manager):
+		self.action_manager=action_manager
 		#number of actions in progress, to wait before executing another sequence.
 		self.threads = 0
 
@@ -46,7 +44,7 @@ class SequenceReader:
 			speech=option.split('"')[0]
 			if args != None:
 				speech=speech.replace(ENTITY_PATTERN, args[0])
-			action_manager.speech(speech)
+			self.action_manager.speech(speech)
 		elif(action=="relay"):
 			#if it's a relay, first look for the associated pin, restore the request
 			rel_label = option.rsplit(',',1)[0]
@@ -54,21 +52,21 @@ class SequenceReader:
 			#if the state is specified (0 or 1)
 			if(len(option.rsplit(',',1))>1):
 				rel_state=option.rsplit(',',1)[1]
-			action_manager.relay(rel_label, rel_state)
+			self.action_manager.relay(rel_label, rel_state)
 		elif(action=="script"):
 			#if it's a script, import the requested script and execute its start method
-			action_manager.script(option, args)
+			self.action_manager.script(option, args)
 		elif(action=="sound"):
 			#if it's a sound, execute the requested sound
-			action_manager.sound(option)
+			self.action_manager.sound(option)
 		elif(action=="motion"):
 			#if it is a motion command, activate the motors with the specified speed
 			m1Speed = option.split(",")[0]
 			m2Speed = option.split(",")[1]
-			action_manager.motion(m1Speed, m2Speed)
+			self.action_manager.motion(m1Speed, m2Speed)
 		elif(action=="servo"):
 			#if it is a servo sequence, launch the one with the specified index
-			action_manager.servo(option)
+			self.action_manager.servo(option)
 		logging.info("Sending "+action+" to rasperries.")
 		logging.info(label)
 
@@ -99,51 +97,3 @@ class SequenceReader:
 		nodes=json[0]
 		edges=json[1]
 		self._executeSequence("start", nodes, edges, args)
-
-
-sequence_reader = SequenceReader()
-
-
-@socketio.on('speech_detected', namespace='/client')
-def speech_detected(transcript):
-	"""
-	Function called when a sentence is detected on the client.
-	"""
-	logging.info("Received data: " + transcript)
-	response = chatbot.getResponse(transcript)
-	response_text = response.text
-
-	if(len(response_text.split("]"))>1):
-		seq_name=response_text.split("[")[1].split("]")[0]
-		seq = Sequence.query.filter_by(id=seq_name).first()
-		response_text = response_text.split("]")[1]
-		#if a sequence exists and is activated, launch it
-		if(seq!=None and seq.enabled):
-			seq_data = seq.value
-			logging.info('Executing sequence: '+seq_name)
-			entities=None
-			if hasattr(response, 'entities'): #if entities are detected, we will pass them to the sequence
-				entities=response.entities
-				logging.info("Detected entities: "+str(entities))
-			sequence_reader.readSequence(json.loads(seq_data), entities)
-	emit("response", response_text)
-
-
-@socketio.on('play_sequence', namespace='/client')
-def play_sequence(seq_name):
-	"""
-	Function called when the client want to execute a sequence.
-	"""
-	seq = Sequence.query.filter_by(id=seq_name).first()
-	if(seq!=None and seq.enabled):
-		seq_data = seq.value
-		logging.info('Executing sequence '+seq_name)
-		sequence_reader.readSequence(json.loads(seq_data))
-
-@socketio.on('command', namespace='/client')
-def command(label):
-	"""
-	Function called when the client want to execute a simple command.
-	"""
-	logging.info("Received command: "+label)
-	sequence_reader.executeAction(label)

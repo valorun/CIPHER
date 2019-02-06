@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from .chatbot.chatbot import ChatBotWrapper
 from .constants import CONFIG_FILE, CHATBOT_DATABASE
-import os
 import json
 
 db = SQLAlchemy()

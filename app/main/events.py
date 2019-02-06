@@ -4,7 +4,7 @@
 import logging
 from flask import request
 from flask_socketio import SocketIO, emit
-from .. import socketio
+from app import socketio
 
 @socketio.on('connect', namespace='/client')
 def client_connect():

@@ -1,16 +1,16 @@
 {% extends 'template.html' %}
 {% block content %}
-<script src="/static/vendor/gridstack/lodash.js"></script>
-<script src="/static/vendor/gridstack/gridstack.js"></script>
-<script src="/static/vendor/gridstack/gridstack.jQueryUI.js"></script>
-<link rel="stylesheet" href="/static/vendor/gridstack/gridstack.css">
+<script src="{{ url_for('commands.static', filename='vendor/gridstack/lodash.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='vendor/gridstack/gridstack.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='vendor/gridstack/gridstack.jQueryUI.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('commands.static', filename='vendor/gridstack/gridstack.css') }}">
 
-<script src="/static/js/connection.js"></script>
-<script src="/static/js/commands/colorpicker.js"></script>
-<script src="/static/js/commands/gridPanelView.js"></script>
-<script src="/static/js/commands/gridPanelController.js"></script>
-<script src="/static/js/commands/motionController.js"></script>
-<script src="/static/js/commands/sequenceController.js"></script>
+<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/colorpicker.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/gridPanelView.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/gridPanelController.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/motionController.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/sequenceController.js') }}"></script>
 
 
 <style type="text/css">

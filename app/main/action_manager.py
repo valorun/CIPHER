@@ -2,17 +2,15 @@
 # coding: utf-8
 
 import logging
-import time
 import json
 import importlib.util
 import os
 from os.path import join
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
-from .. import socketio
-from .. import mqtt
+from app import socketio, mqtt
 from app.constants import SCRIPTS_LOCATION, SOUNDS_LOCATION
-from app.model import db, Relay, Sequence, config
+from app.model import db, Relay, config
 
 class ActionManager:
 	def speech(self, speech):
@@ -67,5 +65,3 @@ class ActionManager:
 		script = importlib.util.module_from_spec(spec)
 		spec.loader.exec_module(script)
 		socketio.emit("response", script.main(args), namespace="/client")
-
-action_manager = ActionManager()

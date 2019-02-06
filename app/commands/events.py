@@ -3,7 +3,7 @@
 
 import logging
 from flask_socketio import SocketIO, emit
-from .. import socketio
+from app import socketio
 from app.model import Relay
 
 @socketio.on('update_relays_state', namespace='/client')

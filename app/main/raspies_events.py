@@ -5,10 +5,15 @@ import logging
 import json
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
-from .. import socketio, raspies, mqtt
+from app import socketio, mqtt
+
+raspies = []
 
 @mqtt.on_connect()
 def on_server_connect(client, userdata, flags, rc):
+    """
+    Function called when the server connects to the broker.
+    """
     mqtt.publish("server/connect")
 
 @mqtt.on_topic('server/raspi_connect')
@@ -47,13 +52,11 @@ def on_raspi_disconnect(client, userdata, msg):
 def shutdown():
     logging.info("Shutdown rasperries")
     mqtt.publish('raspi/shutdown', 'shutdown')
-    #emit("shutdown", namespace="/raspi", broadcast=True)
 
 @socketio.on('reboot', namespace='/client')
 def reboot():
     logging.info("Reboot rasperries")
     mqtt.publish('raspi/reboot', 'reboot')
-    #emit("reboot", namespace="/raspi", broadcast=True)
 
 @socketio.on('get_raspies', namespace='/client')
 def get_raspies():
