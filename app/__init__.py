@@ -3,6 +3,7 @@
 
 from os import urandom
 import logging
+import importlib
 from logging.handlers import RotatingFileHandler
 from flask import Flask
 from flask_mqtt import Mqtt
@@ -12,6 +13,8 @@ from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_P
 
 socketio = SocketIO() # socketio server used to communicate with web client
 mqtt = Mqtt() # mqtt client, need to be connected to a brocker (in local)
+
+plugins = [ 'dashboard', 'commands', 'speech', 'debug', 'sequences', 'settings' ] # all the different  page available in the navbar
 
 def create_app(debug=False):
     app = Flask(__name__)
@@ -29,20 +32,24 @@ def create_app(debug=False):
     db.create_all()
 
     from .main import main as main_blueprint
-    from .dashboard import dashboard as dashboard_blueprint
-    from .commands import commands as commands_blueprint
-    from .sequences import sequences as sequences_blueprint
-    from .speech import speech as speech_blueprint
-    from .settings import settings as settings_blueprint
-    from .debug import debug as debug_blueprint
+    from .security import security as security_blueprint
 
     app.register_blueprint(main_blueprint)
-    app.register_blueprint(dashboard_blueprint)
-    app.register_blueprint(commands_blueprint)
-    app.register_blueprint(sequences_blueprint)
-    app.register_blueprint(speech_blueprint)
-    app.register_blueprint(settings_blueprint)
-    app.register_blueprint(debug_blueprint)
+    app.register_blueprint(security_blueprint)
+
+    loaded_plugins = []
+    # load all specified plugins
+    for p_name in plugins:
+        try:
+            # find the plugin object ...
+            module = importlib.import_module('.plugins.'+p_name, package='app')
+            p = getattr(module, p_name)
+            loaded_plugins.append(p)
+            # then register its blueprint
+            p.register(app, loaded_plugins)
+        except Exception:
+            print('Failed to load plugin \'' + p_name + '\'')
+            exit(1)
 
     socketio.init_app(app)
     mqtt.init_app(app)

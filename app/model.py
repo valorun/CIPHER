@@ -3,7 +3,6 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
-from .chatbot.chatbot import ChatBotWrapper
 from .constants import CONFIG_FILE, CHATBOT_DATABASE
 import json
 
@@ -13,6 +12,7 @@ class Sequence(db.Model):
 	id = db.Column(db.String(50), primary_key=True)
 	value = db.Column(db.Text, nullable=False)
 	enabled = db.Column(db.Boolean, nullable=False)
+	intents = db.relationship('Intent', backref='sequence', lazy=True)
 
 	def __repr__(self):
 		return '<Sequence %r>' % self.id
@@ -26,6 +26,15 @@ class Relay(db.Model):
 
 	def __repr__(self):
 		return '<Relay %r : >' % self.label
+
+class Intent(db.Model):
+	intent = db.Column(db.String(50), primary_key=True)
+	response = db.Column(db.String(50))
+	sequence_id = db.Column(db.String(50), db.ForeignKey('sequence.id'))
+	enabled = db.Column(db.Boolean, nullable=False)
+
+	def __repr__(self):
+		return '<Intent %r : >' % self.intent
 
 class ConfigFile():
 	def saveOption(self, key: str, data):
@@ -68,13 +77,6 @@ class ConfigFile():
 	def getCameraUrl(self) -> str:
 		return self.loadOption("camera_url")
 
-	# KEYWORD DATASET
-	def setKeywordDataset(self, dataset: {}):
-		self.saveOption("keyword_dataset", dataset)
-
-	def getKeywordDataset(self) -> {}:
-		return self.loadOption("keyword_dataset")
-
 	# COMMANDS GRID
 	def setCommandsGrid(self, grid: {}):
 		self.saveOption("commands_grid", grid)
@@ -102,16 +104,6 @@ class ConfigFile():
 			mode = False
 		return mode
 
-	# CHATBOT LEARNING MODE
-	def setChatbotReadOnlyMode(self, mode: bool):
-		self.saveOption("chatbot_read_only_mode", mode)
-
-	def getChatbotReadOnlyMode(self) -> bool:
-		mode = self.loadOption("chatbot_read_only_mode")
-		if mode == None:
-			mode = False
-		return mode
-
 	# MOTION RASPI ID
 	def setMotionRaspiId(self, raspi_id: str):
 		self.saveOption("motion_raspi_id", raspi_id)
@@ -127,6 +119,3 @@ class ConfigFile():
 		return self.loadOption("servo_raspi_id")
 
 config = ConfigFile()
-
-chatbot = ChatBotWrapper(CHATBOT_DATABASE)
-chatbot.instantiateChatBot(config.getChatbotReadOnlyMode())

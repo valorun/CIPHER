@@ -1,0 +1,43 @@
+{% extends 'template.html' %}
+{% block content %}
+<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
+<script src="{{ url_for('debug.static', filename='js/debugController.js') }}"></script>
+
+<div class="panel">
+	<div class="card round-large tertiary">
+		<button class="btn container primary block left-align accordion-header">
+			<h4><i class="accordion-icon"></i> Commande</h4>
+		</button>
+		<div  class="accordion-content">
+			<div class="container padding-16">
+
+				<input type="text" id="command" value="" class="input border margin-bottom" placeholder="Exemple: motion:0,0">
+				<input class="button secondary" id="sendCommandButton" type="button" value="Envoyer">
+
+			</div>
+		</div>
+	</div>
+</div>
+<div class="panel">
+	<div class="card round-large tertiary">
+		<button class="btn container primary block left-align accordion-header">
+			<h4><i class="accordion-icon"></i> Phrase</h4>
+		</button>
+		<div  class="accordion-content">
+			<div class="container padding-16">
+				<input type="text" id="statement" value="" class="input border margin-bottom" placeholder="Exemple: 'Ceci est un exemple'">
+				<input class="button secondary" id="sendStatementButton" type="button" value="Envoyer">
+
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function() {
+	connectionManager.init();
+
+	debugController.init();
+});
+
+</script>
+{% endblock %}

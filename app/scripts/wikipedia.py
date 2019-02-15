@@ -6,6 +6,8 @@ import requests
 
 
 def main(args):
+	if args == None or args[0] == None:
+		return ""
 	response = requests.get("https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles="+args[0]+"&exintro&exlimit=1&exsentences=1")
 	content=json.loads(response.content)
 	extract=""

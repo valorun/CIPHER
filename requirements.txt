@@ -1,6 +1,5 @@
 flask
 flask-socketio
-chatterbot
 flask_sqlalchemy
 eventlet
 flask-mqtt

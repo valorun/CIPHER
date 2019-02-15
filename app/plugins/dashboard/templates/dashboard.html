@@ -1,0 +1,44 @@
+{% extends 'template.html' %}
+{% block content %}
+<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
+<script src="{{ url_for('dashboard.static', filename='js/raspiesController.js') }}"></script>
+
+<div class="panel">
+	<div class="card tertiary">
+		<div class="container row" id="raspberries">
+
+		</div>
+	</div>
+</div>
+
+<div class="panel">
+	<div class="card tertiary">
+		<div class="container">
+			<p>
+				<i class="xxlarge secondary button fa fa-power-off" id="shutdownButton"></i>
+				<i class="xxlarge secondary button fa fa-redo" id="rebootButton"></i>
+			</p>
+		</div>
+	</div>
+</div>
+
+<div class="panel">
+	<div class="card tertiary">
+		<div class="container">
+			<p>
+				<iframe src="{{ cameraUrl }}" width="100%" height="500px">
+					<!-- Fallback here -->
+				</iframe>
+			</p>
+		</div>
+	</div>
+</div>
+<script>
+	$(document).ready(function() {
+		connectionManager.init();
+
+		raspiesController.init();
+	});
+</script>
+
+{% endblock %}

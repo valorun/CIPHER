@@ -47,13 +47,16 @@
 		<div class="container">
 			<h4>Navigation</h4>
 		</div>
-		<div class="bar-block">
+		<div class="bar-block"><!--
 			<a href="/" class="bar-item button padding"><i class="fas fa-tachometer-alt"></i>  Tableau de bord</a>
 			<a href="/commands" class="bar-item button padding"><i class="fas fa-terminal"></i>  Commandes manuelles</a>
 			<a href="/speech" class="bar-item button padding"><i class="fas fa-comments"></i>  Actions vocales</a>
 			<a href="/sequences" class="bar-item button padding"><i class="fas fa-project-diagram"></i>  Séquences</a>
 			<a href="/debug" class="bar-item button padding"><i class="fas fa-bug"></i>  Debug</a>
-			<a href="/settings" class="bar-item button padding"><i class="fas fa-cog"></i>  Paramètres</a>
+			<a href="/settings" class="bar-item button padding"><i class="fas fa-cog"></i>  Paramètres</a>-->
+			{% for p in plugins %}
+			<a href="/{{ p.name }}" class="bar-item button padding"><i class="fas {{ p.icon }}"></i>  {{ p.label }}</a>
+			{% endfor %}
 			<a href="#" class="bar-item button padding-16 hide-large dark-grey hover-black" title="fermer le menu" id="close_sidebar_button"><i class="fa fa-chevron-left"></i></a>
 		</div>
 	</nav>
@@ -81,7 +84,9 @@
 
 	<!-- !PAGE CONTENT! -->
 	<div class="main" style="margin-left:300px;">
-
+		<header class="container padding-16">
+			<h2><b><i class="fa {{ icon }}"></i> {{ label }}</b></h2>
+		</header>
 		{% block content %}
 		{% endblock %}
 
