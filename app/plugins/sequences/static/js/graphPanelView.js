@@ -22,7 +22,7 @@ var graphPanelView = {
 
 		// create an array with edges
 		this.edges = new vis.DataSet();
-
+		
 		// create a network
 		let container = document.getElementById('network');
 		let data = {
@@ -90,10 +90,11 @@ var graphPanelView = {
 			}
 		};
 		this.network = new vis.Network(container, data, options);
+		this.network.focus("start");
 	},
 
 	/**
-	* check if all nodes have at least one parent node
+	* Check if all nodes have at least one parent node
 	* @return {boolean}
 	*/
 	graphIsValid: function() {
@@ -107,7 +108,7 @@ var graphPanelView = {
 	},
 
 	/**
-	* update the form to display the options corresponding to the type of button chosen
+	* Update the form to display the options corresponding to the type of button chosen
 	*/
 	updateForm: function() {
 		$("#motionOptions").addClass("hide");
@@ -135,36 +136,54 @@ var graphPanelView = {
 	},
 
 	/**
-	* create a specific node corresponding to the option chosen
+	* Create a specific node corresponding to the option chosen
 	* @param {Object} nodeData the data of the node to add
 	* @return {boolean}
 	*/
 	handleNodeToAdd: function(nodeData) {
-		let action = "";
+		let label = "";
+		let action = {};
 		nodeData.shape = 'box';
 		if ($("#motionChoice").prop("checked") == true) {
-			action += "motion:" + $("#left").val() + "," + $("#right").val();
+			label += "motion:" + $("#left").val() + "," + $("#right").val();
+			action.type = "motion";
+			action.left = $("#left").val();
+			action.right = $("#right").val();
 		} else if ($("#servoChoice").prop("checked") == true) {
-			action += "servo:" + $("#sequence").val();
+			label += "servo:" + $("#sequence").val();
+			action.type = "servo";
+			action.sequence = $("#sequence").val();
 		} else if ($("#relayChoice").prop("checked") == true) {
 			if($("#relay").val() == null)
 				return false;
-			action += "relay:" + $("#relay").val()+","+($("#relayOnOff").prop("checked")?1:0);
+			label += "relay:" + $("#relay").val()+","+($("#relayOnOff").prop("checked")?1:0);
+			action.type = "relay";
+			action.relay = $("#relay").val();
+			action.state = ($("#relayOnOff").prop("checked")?1:0)
 		} else if ($("#speechChoice").prop("checked") == true) {
-			action += "speech:\'" + $("#sentence").val() + "\'";
+			label += "speech:\'" + $("#sentence").val() + "\'";
+			action.type = "speech";
+			action.speech = $("#sentence").val();
 		} else if ($("#scriptChoice").prop("checked") == true) {
 			if($("#script").val() == null)
 				return false;
-			action += "script:" + $("#script").val();
+			label += "script:" + $("#script").val();
+			action.type = "script";
+			action.script = $("#script").val();
 		} else if ($("#soundChoice").prop("checked") == true) {
 			if($("#sound").val() == null)
 				return false;
-			action += "sound:" + $("#sound").val();
+			label += "sound:" + $("#sound").val();
+			action.type = "sound";
+			action.sound = $("#sound").val();
 		} else if ($("#pauseChoice").prop("checked") == true) {
-			action += "pause:" + $("#pause").val() + "ms";
+			label += "pause:" + $("#pause").val() + "ms";
 			nodeData.shape = "circle"
+			action.type = "pause";
+			action.time = $("#pause").val();
 		}
-		nodeData.label = action;
+		nodeData.label = label;
+		nodeData.action = action;
 		return true;
 	}
 

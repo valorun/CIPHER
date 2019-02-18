@@ -6,7 +6,7 @@ import requests
 
 
 def main(**kwargs):
-	if kwargs == None or kwargs['word'] == None:
+	if kwargs == None or 'words' not in kwargs or kwargs['word'] == None:
 		return ""
 	response = requests.get("https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles="+kwargs['word']+"&exintro&exlimit=1&exsentences=1")
 	content=json.loads(response.content)

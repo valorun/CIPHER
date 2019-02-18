@@ -25,10 +25,9 @@ var graphPanelController = {
 	},
 
 	/**
-	* save the graph on the server
+	* Save the graph on the server
 	*/
 	saveGraph: function(){
-	  	//get the input value
 	  	let sequence = [];
 	  	sequence.push(this.view.nodes.get());
 	  	sequence.push(this.view.edges.get());
@@ -49,7 +48,7 @@ var graphPanelController = {
 	},
 
 	/**
-	* edit the specified sequence
+	* Edit the specified sequence
 	* @param {string} seq_name the name of the sequence to edit
 	*/
 	editSequence: function(seq_name){
