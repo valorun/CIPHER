@@ -5,13 +5,14 @@ from os import urandom
 import logging
 import importlib
 from logging.handlers import RotatingFileHandler
+from logging.config import dictConfig
 from flask import Flask
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from .model import db
 from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_PORT
 
-socketio = SocketIO() # socketio server used to communicate with web client
+socketio = SocketIO(logger=True) # socketio server used to communicate with web client
 mqtt = Mqtt() # mqtt client, need to be connected to a brocker (in local)
 
 plugins = [ 'dashboard', 'commands', 'speech', 'debug', 'sequences', 'settings' ] # all the different  page available in the navbar
@@ -31,10 +32,10 @@ def create_app(debug=False):
     db.init_app(app)
     db.create_all()
 
-    from .main import main as main_blueprint
+    from .core import core as core_blueprint
     from .security import security as security_blueprint
 
-    app.register_blueprint(main_blueprint)
+    app.register_blueprint(core_blueprint)
     app.register_blueprint(security_blueprint)
 
     loaded_plugins = []
@@ -58,17 +59,38 @@ def create_app(debug=False):
     
     return app
 
-def create_logger(debug=False):
+def setup_logger(debug=False):
     if debug:
-        debug_level = logging.DEBUG
+        log_level = 'DEBUG'
     else:
-        debug_level = logging.ERROR
-    file_handler = RotatingFileHandler(LOG_FILE, maxBytes=1000)
-    formatter = logging.Formatter("%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s")
-    file_handler.setFormatter(formatter)
-    root_logger=logging.getLogger()
-    logging.getLogger('engineio').propagate = False # hide engineio logs to avoid flood
-    root_logger.handlers = []
-    root_logger.addHandler(file_handler)
-    root_logger.setLevel(debug_level)
-    return root_logger
+        log_level = 'INFO'
+
+    dictConfig({
+        'version': 1,
+        'formatters': {'default': {
+            'format': '%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s',
+        }},
+        'handlers': { 
+            'default': { 
+                'formatter': 'default',
+                'class': 'logging.StreamHandler',
+                'stream': 'ext://sys.stdout',  # Default is stderr
+            },
+            'file': { 
+                'formatter': 'default',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': LOG_FILE,
+                'maxBytes': 1024
+            }
+        },
+
+        'root': {
+            'level': log_level,
+            'handlers': ['default', 'file']
+        },
+        'loggers': {
+            'socketio': {},
+            'flask': {},
+            'sqlalchemy': {},
+        }
+    })

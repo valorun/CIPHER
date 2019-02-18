@@ -1,12 +1,9 @@
-#!/usr/bin/python
-# coding: utf-8
-
 import logging
 from app.model import db, Intent
 import json
 from app import mqtt
-from app.main.action_events import sequence_reader
-from app.main.action_manager import speech
+from app.core.action_events import sequence_reader
+from app.core.action_manager import speech
 
 @mqtt.on_topic('hermes/intent/#')
 def handle_intents(client, userdata, message):

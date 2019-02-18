@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# coding: utf-8
-
 import logging
 from flask_socketio import SocketIO, emit
 from app import socketio

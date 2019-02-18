@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# coding: utf-8
-
 import logging
 from flask import Flask, session, redirect
 from . import dashboard

@@ -17,9 +17,9 @@ Une fois correctement installé et lancé, le serveur peut ensuite être accéd�
 # Bibliothèques utilisées
 ## Python
 - flask (http://flask.pocoo.org/)
-- flask-socketio (https://flask-socketio.readthedocs.io/en/latest/)
-- ChatterBot (https://github.com/gunthercox/ChatterBot)
-- flask_sqlalchemy (http://flask-sqlalchemy.pocoo.org/2.3/)
+- flask-SocketIO (https://flask-socketio.readthedocs.io/en/latest/)
+- flask-SQLAlchemy (http://flask-sqlalchemy.pocoo.org/2.3/)
+- flask-MQTT (https://flask-mqtt.readthedocs.io/en/latest/)
 
 ## JavaScript
 - jQuery (https://jquery.com/)

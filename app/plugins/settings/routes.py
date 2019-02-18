@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# coding: utf-8
-
 import logging
 from flask import Flask, flash, redirect, request, session, jsonify
 from . import settings

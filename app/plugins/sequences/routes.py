@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# coding: utf-8
-
 import logging
 from flask import Flask, session, request, redirect
 import json
@@ -16,14 +13,14 @@ from app.security import login_required
 @login_required
 def sequences_page():
     relays=Relay.query.all()
-    sequences=Sequence.query.all()
+    sequences_list=Sequence.query.all()
     if not exists(SOUNDS_LOCATION):
         makedirs(SOUNDS_LOCATION)
     if not exists(SCRIPTS_LOCATION):
         makedirs(SCRIPTS_LOCATION)
     sounds=[f for f in listdir(SOUNDS_LOCATION) if isfile(join(SOUNDS_LOCATION, f))]
     scripts=[f for f in listdir(SCRIPTS_LOCATION) if isfile(join(SCRIPTS_LOCATION, f))]
-    return sequences.render_page('sequences.html', sequences=sequences, relays=relays, sounds=sounds, scripts=scripts)
+    return sequences.render_page('sequences.html', sequences=sequences_list, relays=relays, sounds=sounds, scripts=scripts)
 
 @sequences.route('/save_sequence', methods=['POST'])
 @login_required

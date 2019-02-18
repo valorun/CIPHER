@@ -59,5 +59,6 @@ var graphPanelController = {
 		this.view.edges.clear();
 		this.view.nodes.update(json[0]);
 		this.view.edges.update(json[1]);
+		this.view.network.focus("start");
 	}
 }
