@@ -43,17 +43,18 @@ class SequenceReader:
 		elif(action == "relay"):
 			relay(actionData["relay"], actionData["relay"])
 		elif(action == "script"):
-			script(actionData["script"], **kwargs)
+			#pass the kwargs to the script (can be altered)
+			kwargs = script(actionData["script"], **kwargs)
 		elif(action=="sound"):
 			sound(actionData["sound"])
 		elif(action=="motion"):
 			motion(actionData["left"], actionData["right"])
 		elif(action=="servo"):
 			servo(actionData["sequence"])
-		#elif(action=="if"):
-		#	val1 = option.split("=")[0]
-		#	val2 = option.split("==")[0]
-		#	val
+		elif(action=="condition"):
+			if( "flags" not in kwargs or actionData["flag"] not in kwargs["flags"]):
+				#if there is no flag, or the specified flag is missing, stop the execution
+				return False
 		return True
 
 	def _getChildren(self, id, edges):

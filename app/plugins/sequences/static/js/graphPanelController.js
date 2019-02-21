@@ -14,7 +14,7 @@ var graphPanelController = {
 			}
 		});
 
-		$('input[type=radio][name=choice]').on("change", () => {
+		$('select[name=newNodeTypeChoice]').on("change", () => {
 			this.view.updateForm();
 		});
 

@@ -1,0 +1,34 @@
+<script src="{{ url_for('commands.static', filename='js/motionController.js') }}"></script>
+
+<div class="panel">
+    <div class="card round-large tertiary">
+        <button class="btn container primary block left-align accordion-header">
+            <h4><i class="accordion-icon"></i> Chariot</h4>
+        </button>
+        <div  class="accordion-content">
+            <div class="container padding-16 cell">
+
+                <table class="container cell">
+                    <tr>
+                        <td></td>
+                        <td><i class="button secondary fas fa-arrow-up motion-direction" value="motion_up"></i></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><i class="button secondary fas fa-arrow-left motion-direction" value="motion_left"></i></td>
+                        <td></td>
+                        <td><i class="button secondary fas fa-arrow-right motion-direction" value="motion_right"></i></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><i class="button secondary fas fa-arrow-down motion-direction" value="motion_down"></i></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="container cell">
+                    <div id="motion_slider" style="height:100px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+<script src="{{ url_for('commands.static', filename='js/sequenceController.js') }}"></script>
+
+<div class="panel">
+    <div class="card round-large tertiary">
+        <button class="btn container primary block left-align accordion-header">
+            <h4><i class="accordion-icon"></i> Execution de séquence</h4>
+        </button>
+        <div  class="accordion-content">
+            <div class="container padding-16">
+                <select class="select border margin-bottom" name="sequence" id="sequence">
+                    <option value="" disabled selected>Choisir une séquence</option>
+                    {% for s in sequences %}
+                    {% if s.enabled %}
+                    <option value="{{ s.id }}" >{{ s.id }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <input id="seq_flags" type="text" value="" class="input border half" placeholder="Drapeaux (ex1 ex2 ...)">
+                <input class="button secondary" id="playSeqButton" type="button" value="Executer la séquence">
+            </div>
+        </div>
+    </div>
+</div>

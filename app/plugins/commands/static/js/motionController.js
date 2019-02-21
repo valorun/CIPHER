@@ -35,32 +35,39 @@ var motionController = {
 
 		//carriage controller
 		$(".motion-direction").on(startActionEvent, (e) => {
-			var dir=$(e.currentTarget).attr('value');
-			var value=$( "#motion_slider" ).slider( "value" );
-			var command="motion:";
+			let dir=$(e.currentTarget).attr('value');
+			let value=$( "#motion_slider" ).slider( "value" );
+			let left = 0;
+			let right = 0;
 			if(dir=="motion_up"){
-				command+=value+","+value;
+				left = value;
+				right = value;
 			}
 			else if(dir=="motion_down"){
-				command+="-"+value+",-"+value;
+				left = -value;
+				right = -value
 			}
 			else if(dir=="motion_left"){
 				if (this.wheelsMode)
-					command+="0,"+value;
-				else
-					command+="-"+value+","+value;
+					right = value;
+				else{
+					left = -value;
+					right = value;
+				}
 			}
 			else if(dir=="motion_right"){
 				if (this.wheelsMode)
-					command+=value+",0";
-				else
-					command+=value+",-"+value;
+					left = value;
+				else{
+					left = value;
+					right = -value;
+				}
 			}
-			console.log(command);
-			socket.emit('command', command);
+			console.log(left + ", " + right);
+			socket.emit('move', left, right);
 		}).on(stopActionEvent, () => {
-			var command="motion:0,0";
-			socket.emit('command', command);
+			console.log("0, 0");
+			socket.emit('move', 0, 0);
 		});
 	}
 }

@@ -35,7 +35,7 @@ var sequencesController = {
 	},
 
 	/**
-	* completely delete a sequence
+	* Completely delete a sequence
 	* @param {string} seq_name the name of the sequence to delete
 	*/
 	deleteSequence: function(seq_name){

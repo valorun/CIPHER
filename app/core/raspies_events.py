@@ -21,7 +21,7 @@ def on_raspi_connect(client, userdata, msg):
     global raspies
     data = json.loads(msg.payload)
     raspi_id = data['id']
-    logging.info("Raspberry "+raspi_id+' connected.')
+    logging.info('Raspberry '+raspi_id+' connected.')
     newRaspi = {}
     newRaspi['id'] = raspi_id
     #newRaspi['address'] = address
@@ -38,7 +38,7 @@ def on_raspi_disconnect(client, userdata, msg):
     global raspies
     data = json.loads(msg.payload)
     raspi_id = data['id']
-    logging.info("Raspberry "+raspi_id+' disconnected.')
+    logging.info('Raspberry '+raspi_id+' disconnected.')
     raspies = [r for r in raspies if r['id'] != raspi_id]
     mqtt.unsubscribe("raspi/"+raspi_id+"/#")
     socketio.emit("get_raspies", raspies, namespace="/client", broadcast=True)

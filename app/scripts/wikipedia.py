@@ -1,20 +1,19 @@
-#!/usr/bin/python
-# coding: utf-8
-
 import json
 import requests
-
+from app.core.action_manager import speech
 
 def main(**kwargs):
-	if kwargs == None or 'words' not in kwargs or kwargs['word'] == None:
-		return ""
-	response = requests.get("https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles="+kwargs['word']+"&exintro&exlimit=1&exsentences=1")
-	content=json.loads(response.content)
-	extract=""
-	try:
-		pages=content['query']['pages']
-		for page in pages.values():
-			extract=page['extract']
-	except Exception:
-		print("not found")
-	return extract
+    if('flags' not in kwargs or len(kwargs['flags']) < 1):
+        return
+
+    response = requests.get("https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles="+kwargs['flags'][0]+"&exintro&exlimit=1&exsentences=1")
+    content=json.loads(response.content)
+    extract=""
+    try:
+        pages=content['query']['pages']
+        for page in pages.values():
+            extract=page['extract']
+    except Exception:
+        print("not found")
+    speech(extract)
+    return kwargs

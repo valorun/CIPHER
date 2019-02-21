@@ -28,7 +28,6 @@ var gridPanelView = {
 					$(e).removeClass('border-dark-red');
 				}
 				else if(relay.state===0){
-
 					$(e).addClass('border-dark-red');
 					$(e).removeClass('border-green');
 				}
@@ -37,7 +36,7 @@ var gridPanelView = {
 	},
 
 	/**
-	 * enable edition mode, the buttons can not be clicked, but can be moved
+	 * Enable edition mode, the buttons can not be clicked, but can be moved
 	 */
 	enableEditionMode: function(){
 		this.editionMode=true;
@@ -49,7 +48,7 @@ var gridPanelView = {
 	},
 
 	/**
-	 * disable edition mode, the buttons can not be moved, but can be clicked
+	 * Disable edition mode, the buttons can not be moved, but can be clicked
 	 */
 	disableEditionMode: function(){
 		this.editionMode=false;
@@ -62,7 +61,7 @@ var gridPanelView = {
 
 
 	/**
-	 * delete all buttons on the grid
+	 * Delete all buttons on the grid
 	 */
 	clearGrid: function() {
 		this.grid.removeAll();
@@ -70,36 +69,34 @@ var gridPanelView = {
 	},
 
 	/**
-	 * add a button to the grid
-	 * an action or a sequence can be associated if desired. if not, these values must be null
+	 * Add a button to the grid
+	 * An action can be associated if desired. Additional parameters can be specified
 	 */
-	addButton: function(label, action, sequence, color, x, y, width, height){
-		var actionLabel="";
-		if(action!=null)
-			actionLabel="data-action='"+action+"' ";
+	addButton: function(label, actionType, actionParameter, actionFlags, color, x, y, width, height){
+		let dataType = 'data-type="' + actionType + '" ';
+		let dataParameter = 'data-parameter="' + actionParameter + '" ';
+		let dataFlags = 'data-flags="' + actionFlags.join(' ') + '" ';
 
-		var sequenceLabel="";
-		if(sequence!=null)
-			sequenceLabel="data-sequence='"+sequence+"'";
-
-		var colorData="";
+		var dataColor="";
 		if(color!=null)
-			colorData="data-color='"+color+"'";
+		dataColor='data-color="'+color+'"';
 
-		var el= $('<div><div class="grid-stack-item-content btn '+ color +'" '+ colorData + actionLabel+sequenceLabel+'><strong class="display-middle">'+label+'</strong></div><div/>');
+		var el= $('<div><div class="grid-stack-item-content btn '+ color +'" ' + dataType + dataParameter + dataFlags + dataColor+ '><strong class="display-middle">' + label + '</strong></div><div/>');
 		if(this.editionMode){
 			el.children().first().addClass('disabled');
 		}
 		el.on("click", () =>{
 			if(!this.editionMode){
-				if(action!=null) {
-					console.log(action);
-					socket.emit('command', action);
+				if(actionType == "relay") {
+					socket.emit('activate_relay', actionParameter);
 				}
-				if(sequence!=null) {
-					console.log(sequence);
-					socket.emit('play_sequence', sequence);
+				if(actionType == "sequence") {
+					socket.emit('play_sequence', actionParameter, actionFlags);
 				}
+				if(actionType == "sound") {
+					socket.emit('play_sound', actionParameter);
+				}
+				console.log(actionType + ", " + actionParameter + ", " + actionFlags);
 			}
 		});
 		this.grid.addWidget(el, x, y, width, height);
@@ -107,7 +104,7 @@ var gridPanelView = {
 	},
 
 	/**
-	 * update the display to match the selected mode
+	 * Update the display to match the selected mode
 	 */
 	updateMode: function(){
 		if(this.editionMode){
@@ -121,18 +118,17 @@ var gridPanelView = {
 	},
 
 	/**
-	 * update the form to match selected options
+	 * Update the form to match selected options
 	 */
 	updateForm: function() {
-		$("#relays").addClass("hide");
-		$("#sequences").addClass("hide");
-		$("#sounds").addClass("hide");
-		if ($("#relayChoice").prop("checked") == true) {
-			$("#relays").removeClass("hide");
-		} else if ($("#sequenceChoice").prop("checked") == true) {
-			$("#sequences").removeClass("hide");
-		} else if ($("#soundChoice").prop("checked") == true) {
-			$("#sounds").removeClass("hide");
+		$("#relayOptions").addClass("hide");
+		$("#sequenceOptions").addClass("hide");
+		$("#soundOptions").addClass("hide");
+		if($('select[name=newButtonTypeChoice]').val()!==""){
+			$("#" +$('select[name=newButtonTypeChoice]').val()+ "Options").removeClass("hide");
+		}
+		else{
+			failAlert("Aucun type de bouton n'a été selectionné !");
 		}
 	}
 }

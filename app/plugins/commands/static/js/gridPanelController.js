@@ -14,46 +14,48 @@ var gridPanelController = {
 			let buttonLabel=$("#buttonLabel").val();
 			let color=$("#color").data("color");
 
-			let action=null;
-			let sequence=null;
-			if ($("#relayChoice").prop("checked") == true) {
+			let actionType = $('select[name=newButtonTypeChoice]').val();
+			let actionParam=null;
+			let actionFlags=null;
+			if (actionType == "relay") {
 				if($("#relays").val() == null){
 					failAlert("Aucun relai n'a été selectionné.");
 					return;
 				}
-				action="relay:"+$("#relays").val();
+				actionParam=$("#relays").val();
 				//if the relay isn't already used
-				if(this.actionAlreadyUsed(action)){
+				if(this.actionAlreadyUsed(actionParam, "relay")){
 					failAlert("Un bouton correspondant au même relai existe déjà.");
 					return;
 				}
-			} else if ($("#sequenceChoice").prop("checked") == true) {
+			} else if (actionType == "sequence") {
 				if($("#sequences").val() == null){
 					failAlert("Aucune séquence n'a été selectionnée.");
 					return;
 				}
-				sequence=$("#sequences").val();
-				if(this.sequenceAlreadyUsed(sequence)){
+				actionParam=$("#sequences").val();
+				if(this.actionAlreadyUsed(actionParam, "sequence")){
 					failAlert("Un bouton correspondant à la même sequence existe déjà.");
 					return;
 				}
-			} else if ($("#soundChoice").prop("checked") == true) {
+				actionFlags=$("#flags").val().split(' ');
+			} else if (actionType == "sound") {
 				if($("#sounds").val() == null){
 					failAlert("Aucun son n'a été selectionné.");
 					return;
 				}
-				action="sound:"+$("#sounds").val();
+				actionParam=$("#sounds").val();
 				//if the sound isn't already used
-				if(this.actionAlreadyUsed(action)){
+				if(this.actionAlreadyUsed(actionParam)){
 					failAlert("Un bouton correspondant au même son existe déjà.");
 					return;
 				}
 			}
 
-			this.gridPanelView.addButton(buttonLabel, action, sequence, color, 1, 1, 1, 1);
+			this.gridPanelView.addButton(buttonLabel, actionType, actionParam, actionFlags, color, 1, 1, 1, 1);
 		});
 
-		$('input[type=radio][name=choice]').on("change", () => {
+		$('select[name=newButtonTypeChoice]').on("change", () => {
 			this.gridPanelView.updateForm();
 		});
 
@@ -64,12 +66,12 @@ var gridPanelController = {
 	},
 
 	/**
-	 * check if a button with the same action already exists
+	 * Check if a button with the same action already exists
 	 */
-	actionAlreadyUsed: function(label){
+	actionAlreadyUsed: function(label, type){
 		let found=false;
 		$('.grid-stack-item-content').each(function() {
-			if($(this).data("action")===label){
+			if($(this).data(type)===label){
 				found=true;
 				return false;
 			}
@@ -78,21 +80,7 @@ var gridPanelController = {
 	},
 
 	/**
-	 * check if a button with the same sequence already exists
-	 */
-	sequenceAlreadyUsed: function(label){
-		let found=false;
-		$('.grid-stack-item-content').each(function(){
-			if($(this).data("sequence")===label){
-				found=true;
-				return false;
-			}
-		});
-		return found;
-	},
-
-	/**
-	 * load the grid from the server
+	 * Load the grid from the server
 	 */
 	loadGrid: function(){
 		this.gridPanelView.clearGrid();
@@ -102,7 +90,7 @@ var gridPanelController = {
 			success: (result) =>{
 				let items = GridStackUI.Utils.sort(result);
 				_.each(items, (node) => {
-					this.gridPanelView.addButton(node.label, node.action, node.sequence, node.color, node.x, node.y, node.width, node.height);
+					this.gridPanelView.addButton(node.label, node.action.type, node.action.parameter, node.action.flags.split(' '), node.color, node.x, node.y, node.width, node.height);
 				}, this);
 				socket.emit('update_relays_state');
 			},
@@ -115,21 +103,25 @@ var gridPanelController = {
 	},
 
 	/**
-	 * save the grid on the server
+	 * Save the grid on the server
 	 */
 	saveGrid: function() {
 		let serializedData = _.map($('.grid-stack > .grid-stack-item:visible'), function (el) {
 			el = $(el);
 			let node = el.data('_gridstack_node');
 			let child= el.children().first();
+			let action = {};
+			action.type = child.data('type');
+			action.parameter = child.data('parameter');
+			action.flags = child.data('flags')
+
 			return {
 				x: node.x,
 				y: node.y,
 				width: node.width,
 				height: node.height,
 				label: el.text(),
-				action: child.data('action'),
-				sequence: child.data('sequence'),
+				action: action,
 				color: child.data('color')
 			};
 		}, this);

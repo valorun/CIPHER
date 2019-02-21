@@ -15,6 +15,7 @@ def speech(speech):
 	"""
 	if(speech == None):
 		return
+	logging.info("Pronouncing \'" + speech + "\'")
 	socketio.emit("response", speech, namespace="/client")
 
 def relay(rel_label, rel_state=None):
@@ -30,6 +31,8 @@ def relay(rel_label, rel_state=None):
 		pin = db_rel.pin
 		parity = db_rel.parity
 		raspi_id = db_rel.raspi_id
+
+		logging.info("Activating relay \'" + rel_label + "\'")
 
 		#if the relay is paired
 		if(parity!=""):
@@ -52,6 +55,7 @@ def motion(m1, m2):
 	"""
 	if config.getMotionRaspiId() == None:
 		return
+	logging.info("Moving with values " + m1 + ", " + m2)
 	mqtt.publish('raspi/'+config.getMotionRaspiId()+'/motion', json.dumps({'m1':m1, 'm2':m2}))
 	
 def servo(index):
@@ -60,6 +64,7 @@ def servo(index):
 	"""
 	if config.getServoRaspiId() == None:
 		return
+	logging.info("Executing servo sequence \'" + index + "\'")
 	mqtt.publish('raspi/'+config.getServoRaspiId()+'/servo', json.dumps({'index':index}))
 
 def sound(sound_name):
@@ -67,10 +72,11 @@ def sound(sound_name):
 	Execute the requested sound from the 'sounds' directory
 	"""
 	if config.getAudioOnServer():
+		logging.info("Playing sound \'" + join(SOUNDS_LOCATION, sound_name) + "\' on server")			
 		os.system("sudo pkill mplayer")
 		os.system("mplayer "+join(SOUNDS_LOCATION, sound_name).replace(" ", "\\ "))
-		logging.info("Playing sound \'" + join(SOUNDS_LOCATION, sound_name) + "\' on server")			
 	else:
+		logging.info("Playing sound \'" + sound_name + "\' on client")			
 		socketio.emit("play_sound", sound_name, namespace="/client")
 
 def script(script_name, **kwargs):
@@ -79,5 +85,8 @@ def script(script_name, **kwargs):
 	"""
 	spec = importlib.util.spec_from_file_location("script", os.path.join(SCRIPTS_LOCATION, script_name))
 	script = importlib.util.module_from_spec(spec)
+	logging.info("Executing script \'" + script_name + "\'")			
 	spec.loader.exec_module(script)
-	socketio.emit("response", script.main(**kwargs), namespace="/client")
+	result = script.main(**kwargs)
+	if(result != None and type(result) == dict):
+		return result

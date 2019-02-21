@@ -1,11 +1,8 @@
 import logging
 from flask import Flask, request, jsonify
 import json
-from os import listdir, makedirs
-from os.path import isfile, join, exists
 from . import commands
-from app.constants import SOUNDS_LOCATION, SCRIPTS_LOCATION
-from app.model import Sequence, Relay, config
+from app.model import Sequence, Relay, config, resources
 from app.security import login_required
 
 @commands.route('/commands')
@@ -14,9 +11,7 @@ def commands_page():
     sequences=Sequence.query.all()
     relays=Relay.query.all()
     cameraUrl=config.getCameraUrl()
-    if not exists(SOUNDS_LOCATION):
-        makedirs(SOUNDS_LOCATION)
-    sounds=[f for f in listdir(SOUNDS_LOCATION) if isfile(join(SOUNDS_LOCATION, f))]
+    sounds=resources.getSounds()
     return commands.render_page('commands.html', sequences=sequences, relays=relays, sounds=sounds, cameraUrl=cameraUrl)
 
 

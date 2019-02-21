@@ -13,7 +13,9 @@ def settings_page():
     cameraUrl=config.getCameraUrl()
     wheelsMode=config.getWheelsMode()
     audioOnServer=config.getAudioOnServer()
-    return settings.render_page('settings.html', relays=relays, cameraUrl=cameraUrl, wheelsMode=wheelsMode, audioOnServer=audioOnServer)
+    motionRaspiId=config.getMotionRaspiId()
+    servoRaspiId=config.getServoRaspiId()
+    return settings.render_page('settings.html', relays=relays, cameraUrl=cameraUrl, wheelsMode=wheelsMode, audioOnServer=audioOnServer, motionRaspiId=motionRaspiId, servoRaspiId=servoRaspiId)
 
 @settings.route('/save_relay', methods=['POST'])
 @login_required

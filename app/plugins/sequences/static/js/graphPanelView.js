@@ -118,20 +118,12 @@ var graphPanelView = {
 		$("#scriptOptions").addClass("hide");
 		$("#soundOptions").addClass("hide");
 		$("#pauseOptions").addClass("hide");
-		if ($("#motionChoice").prop("checked") == true) {
-			$("#motionOptions").removeClass("hide");
-		} else if ($("#servoChoice").prop("checked") == true) {
-			$("#servoOptions").removeClass("hide");
-		} else if ($("#relayChoice").prop("checked") == true) {
-			$("#relayOptions").removeClass("hide");
-		} else if ($("#speechChoice").prop("checked") == true) {
-			$("#speechOptions").removeClass("hide");
-		} else if ($("#pauseChoice").prop("checked") == true) {
-			$("#pauseOptions").removeClass("hide");
-		} else if ($("#scriptChoice").prop("checked") == true) {
-			$("#scriptOptions").removeClass("hide");
-		} else if ($("#soundChoice").prop("checked") == true) {
-			$("#soundOptions").removeClass("hide");
+		$("#conditionOptions").addClass("hide");
+		if($('select[name=newNodeTypeChoice]').val()!==""){
+			$("#" +$('select[name=newNodeTypeChoice]').val()+ "Options").removeClass("hide");
+		}
+		else{
+			failAlert("Aucune action n'a été selectionnée !");
 		}
 	},
 
@@ -143,44 +135,56 @@ var graphPanelView = {
 	handleNodeToAdd: function(nodeData) {
 		let label = "";
 		let action = {};
+		let selectedAction = $('select[name=newNodeTypeChoice]').val();
 		nodeData.shape = 'box';
-		if ($("#motionChoice").prop("checked") == true) {
+		if (selectedAction == 'motion') {
 			label += "motion:" + $("#left").val() + "," + $("#right").val();
 			action.type = "motion";
 			action.left = $("#left").val();
 			action.right = $("#right").val();
-		} else if ($("#servoChoice").prop("checked") == true) {
+		} else if (selectedAction == 'servo') {
 			label += "servo:" + $("#sequence").val();
 			action.type = "servo";
 			action.sequence = $("#sequence").val();
-		} else if ($("#relayChoice").prop("checked") == true) {
+		} else if (selectedAction == 'relay') {
 			if($("#relay").val() == null)
 				return false;
 			label += "relay:" + $("#relay").val()+","+($("#relayOnOff").prop("checked")?1:0);
 			action.type = "relay";
 			action.relay = $("#relay").val();
 			action.state = ($("#relayOnOff").prop("checked")?1:0)
-		} else if ($("#speechChoice").prop("checked") == true) {
+		} else if (selectedAction == 'speech') {
 			label += "speech:\'" + $("#sentence").val() + "\'";
 			action.type = "speech";
 			action.speech = $("#sentence").val();
-		} else if ($("#scriptChoice").prop("checked") == true) {
+		} else if (selectedAction == 'script') {
 			if($("#script").val() == null)
 				return false;
 			label += "script:" + $("#script").val();
 			action.type = "script";
 			action.script = $("#script").val();
-		} else if ($("#soundChoice").prop("checked") == true) {
+		} else if (selectedAction == 'sound') {
 			if($("#sound").val() == null)
 				return false;
 			label += "sound:" + $("#sound").val();
 			action.type = "sound";
 			action.sound = $("#sound").val();
-		} else if ($("#pauseChoice").prop("checked") == true) {
+		} else if (selectedAction == 'pause') {
 			label += "pause:" + $("#pause").val() + "ms";
 			nodeData.shape = "circle"
 			action.type = "pause";
 			action.time = $("#pause").val();
+		} else if (selectedAction == 'condition'){
+			if($("#flag").val() == null)
+				return false;
+			if($("#flag").val().split(' ').length > 1){
+				failAlert("Un seul drapeau peut être ajouté à la fois et ne doit pas contenir d'espaces.");
+				return false;
+			}
+			label += "condition:" + $("#flag").val();
+			nodeData.shape = "diamond"
+			action.type = "condition";
+			action.flag = $("#flag").val().split(' ')[0];
 		}
 		nodeData.label = label;
 		nodeData.action = action;

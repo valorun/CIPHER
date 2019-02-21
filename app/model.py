@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
-from .constants import CONFIG_FILE, CHATBOT_DATABASE
+from os import listdir, makedirs, remove
+from os.path import isfile, join, exists
+from .constants import CONFIG_FILE, CHATBOT_DATABASE, SCRIPTS_LOCATION, SOUNDS_LOCATION
 import json
 
 db = SQLAlchemy()
@@ -115,4 +117,32 @@ class ConfigFile():
 	def getServoRaspiId(self) -> str:
 		return self.loadOption("servo_raspi_id")
 
+class Resources():
+	def getScripts(self):
+		if not exists(SCRIPTS_LOCATION):
+			makedirs(SCRIPTS_LOCATION)
+		return [f for f in listdir(SCRIPTS_LOCATION) if isfile(join(SCRIPTS_LOCATION, f))]
+
+	def deleteScript(self, script_name):
+		path = join(SCRIPTS_LOCATION, script_name)
+		if isfile(path):
+			remove(path)
+	
+	def saveScript(self, script_name, data):
+		path = join(SCRIPTS_LOCATION, script_name)
+		with open(path, encoding='utf-8', mode='w+') as file:
+			file.write(data)
+			
+	def readScript(self, script_name):
+		path = join(SCRIPTS_LOCATION, script_name)
+		with open(path, encoding='utf-8', mode='r') as file:
+			return file.read()
+
+	def getSounds(self):
+		if not exists(SOUNDS_LOCATION):
+			makedirs(SOUNDS_LOCATION)
+		return [f for f in listdir(SOUNDS_LOCATION) if isfile(join(SOUNDS_LOCATION, f))]
+
+
 config = ConfigFile()
+resources = Resources()

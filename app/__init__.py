@@ -15,7 +15,7 @@ from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_P
 socketio = SocketIO(logger=True) # socketio server used to communicate with web client
 mqtt = Mqtt() # mqtt client, need to be connected to a brocker (in local)
 
-plugins = [ 'dashboard', 'commands', 'speech', 'debug', 'sequences', 'settings' ] # all the different  page available in the navbar
+plugins = [ 'dashboard', 'commands', 'speech', 'editor', 'debug', 'sequences', 'settings' ] # all the different  page available in the navbar
 
 def create_app(debug=False):
     app = Flask(__name__)

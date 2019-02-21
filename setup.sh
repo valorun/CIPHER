@@ -26,6 +26,8 @@ else
     install_program "python3-pip"
 fi
 
+install_program "mplayer"
+
 APP_PATH=$(cd $(dirname "$0") && pwd)
 
 echo "Application path: $APP_PATH"

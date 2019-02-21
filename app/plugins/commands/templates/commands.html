@@ -9,9 +9,6 @@
 <script src="{{ url_for('commands.static', filename='js/colorpicker.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/gridPanelView.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/gridPanelController.js') }}"></script>
-<script src="{{ url_for('commands.static', filename='js/motionController.js') }}"></script>
-<script src="{{ url_for('commands.static', filename='js/sequenceController.js') }}"></script>
-
 
 <style type="text/css">
 
@@ -37,27 +34,7 @@
 
 </style>
 <div class="cell mobile">
-	<div class="panel">
-		<div class="card round-large tertiary">
-			<button class="btn container primary block left-align accordion-header">
-				<h4><i class="accordion-icon"></i> Execution de séquence</h4>
-			</button>
-			<div  class="accordion-content">
-				<div class="container padding-16">
-					<select class="select border margin-bottom" name="sequence" id="sequence">
-						<option value="" disabled selected>Choisir une séquence</option>
-						{% for s in sequences %}
-						{% if s.enabled %}
-						<option value="{{ s.id }}" >{{ s.id }}</option>
-						{% endif %}
-						{% endfor %}
-					</select>
-					<input class="button secondary" id="playSeqButton" type="button" value="Executer la séquence">
-
-				</div>
-			</div>
-		</div>
-	</div>
+	{% include 'sequencePanel.html' %}
 </div>
 <div class="cell mobile">
 	<div class="panel">
@@ -78,92 +55,66 @@
 	</div>
 </div>
 <div class="cell mobile">
-	<div class="panel">
-		<div class="card round-large tertiary">
-			<button class="btn container primary block left-align accordion-header">
-				<h4><i class="accordion-icon"></i> Chariot</h4>
-			</button>
-			<div  class="accordion-content">
-				<div class="container padding-16 cell">
-
-					<table class="container cell">
-						<tr>
-							<td></td>
-							<td><i class="button secondary fas fa-arrow-up motion-direction" value="motion_up"></i></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><i class="button secondary fas fa-arrow-left motion-direction" value="motion_left"></i></td>
-							<td></td>
-							<td><i class="button secondary fas fa-arrow-right motion-direction" value="motion_right"></i></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td><i class="button secondary fas fa-arrow-down motion-direction" value="motion_down"></i></td>
-							<td></td>
-						</tr>
-					</table>
-					<div class="container cell">
-						<div id="motion_slider" style="height:100px;"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	{% include 'motionPanel.html' %}
 </div>
 
 
 <div class="container">
 	<i class="button secondary fas fa-edit" id="editPanelButton"></i>
 	<div id="newButtonPanel" class="tertiary border hide">
-		<div id="newButtonTypeChoice" class="row margin-bottom container">
-			<div class="third">
-				<input type="radio" id="relayChoice" name="choice" value="relay" class="radio" checked>
-				<label for="relayChoice">Relai</label>
-			</div>
-			<div class="third">
-				<input type="radio" id="sequenceChoice" name="choice" value="sequence" class="radio">
-				<label for="sequenceChoice">Séquence</label>
-			</div>
-			<div class="third">
-				<input type="radio" id="soundChoice" name="choice" value="sound" class="radio">
-				<label for="soundChoice">Son</label>
-			</div>
-		</div>
+
+		<select class="select border margin-bottom" name="newButtonTypeChoice">
+			<option value="" disabled selected>Choisir une action</option>
+			<option value="relay">Relai</option>
+			<option value="sequence">Séquence</option>
+			<option value="sound">Son</option>
+		</select>
+
 		<div id="newButtonOptions" class="row container">
-			<select class="select border quarter" name="relays" id="relays">
-				<option value="" disabled selected>Choisir un relai</option>
-				{% for r in relays %}
-				{% if r.enabled %}
-				<option value="{{ r.label }}" >{{ r.label }}</option>
-				{% endif %}
-				{% endfor %}
-			</select>
-			<select class="select border quarter hide" name="sequences" id="sequences">
-				<option value="" disabled selected>Choisir une séquence</option>
-				{% for s in sequences %}
-				{% if s.enabled %}
-				<option value="{{ s.id }}" >{{ s.id }}</option>
-				{% endif %}
-				{% endfor %}
-			</select>
-			<select class="select border quarter hide" name="sounds" id="sounds">
-				<option value="" disabled selected>Choisir un son</option>
-				{% for s in sounds %}
-				<option value="{{ s }}" >{{ s }}</option>
-				{% endfor %}
-			</select>
+			<div>
+				<div id="relayOptions" class="hide">
+					<select class="select border half" name="relays" id="relays">
+						<option value="" disabled selected>Choisir un relai</option>
+						{% for r in relays %}
+						{% if r.enabled %}
+						<option value="{{ r.label }}" >{{ r.label }}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
+				</div>
+				<div id="sequenceOptions" class="hide">
+					<select class="select border half" name="sequences" id="sequences">
+						<option value="" disabled selected>Choisir une séquence</option>
+						{% for s in sequences %}
+						{% if s.enabled %}
+						<option value="{{ s.id }}" >{{ s.id }}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
+					<input id="flags" type="text" value="" class="input border half" placeholder="Drapeaux (ex1 ex2 ...)">
+				</div>
+				<div id="soundOptions" class="hide">
+					<select class="select border half" name="sounds" id="sounds">
+						<option value="" disabled selected>Choisir un son</option>
+						{% for s in sounds %}
+						<option value="{{ s }}" >{{ s }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
 
-			<!--<input id="color" type="color" value="Ajouter" class="button light-grey border quarter" style="height: 40px">-->
-			<a id="color" type="button" value="Couleur" class="border quarter button grey" data-color="grey">
-				<i class="fas fa-palette"></i>
-			</a>
+			<div class="row">
+				<!--<input id="color" type="color" value="Ajouter" class="button light-grey border quarter" style="height: 40px">-->
+				<a id="color" type="button" value="Couleur" class="border button grey third" data-color="grey">
+					<i class="fas fa-palette"></i>
+				</a>
 
-
-			<input id="buttonLabel" type="text" value="" class="input quarter border" placeholder="Nom du bouton">
-			<input id="addButton" type="button" value="Ajouter" class="border button secondary quarter">
+				<input id="buttonLabel" type="text" value="" class="input border third" placeholder="Nom du bouton">
+				<input id="addButton" type="button" value="Ajouter" class="border button secondary third">
+			</div>
 		</div>
 	</div>
+
 	<div id="panel" class="border container white" style="width:100%">
 		<div class="row-padding">
 			<div class="trash center text-white row">
