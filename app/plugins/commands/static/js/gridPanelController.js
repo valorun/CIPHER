@@ -90,7 +90,10 @@ var gridPanelController = {
 			success: (result) =>{
 				let items = GridStackUI.Utils.sort(result);
 				_.each(items, (node) => {
-					this.gridPanelView.addButton(node.label, node.action.type, node.action.parameter, node.action.flags.split(' '), node.color, node.x, node.y, node.width, node.height);
+					flags = [];
+					if(node.action.flags != null)
+						flags = node.action.flags.split(' ');
+					this.gridPanelView.addButton(node.label, node.action.type, node.action.parameter, flags, node.color, node.x, node.y, node.width, node.height);
 				}, this);
 				socket.emit('update_relays_state');
 			},
