@@ -75,8 +75,10 @@ var gridPanelView = {
 	addButton: function(label, actionType, actionParameter, actionFlags, color, x, y, width, height){
 		let dataType = 'data-type="' + actionType + '" ';
 		let dataParameter = 'data-parameter="' + actionParameter + '" ';
-		let dataFlags = 'data-flags="' + actionFlags.join(' ') + '" ';
-
+		let dataFlags = "";
+		if(actionFlags != null)
+			dataFlags = 'data-flags="' + actionFlags.join(' ') + '" ';
+		
 		var dataColor="";
 		if(color!=null)
 		dataColor='data-color="'+color+'"';
