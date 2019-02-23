@@ -1,6 +1,8 @@
 import logging
+import json
 from flask_socketio import SocketIO, emit
-from app import socketio
+from flask_mqtt import Mqtt
+from app import socketio, mqtt
 from app.model import Relay
 
 @socketio.on('update_relays_state', namespace='/client')
@@ -13,11 +15,15 @@ def update_relays_state():
 		pin=relay.pin
 		emit("update_state", pin, namespace="/relay", broadcast=True)
 
-@socketio.on('update_state_for_client', namespace='/relay')
-def update_state_for_client(pin, state, raspi_id):
+@mqtt.on_topic('server/update_relay')
+def update_state_for_client(client, userdata, msg):
 	"""
 	Update the state of the relays on the client side at the request of a raspberry.
 	"""
+	data = json.loads(msg.payload.decode('utf-8'))
+	raspi_id = data['id']
+	pin = data['gpio']
+	state = data['state']
 	logging.info("Updating relay status on client")
 	for relay in Relay.query.filter_by(pin=pin, raspi_id=raspi_id):
 		label=relay.label
