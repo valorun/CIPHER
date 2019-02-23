@@ -26,7 +26,11 @@ else
     install_program "python3-pip"
 fi
 
+echo "Installing mplayer ..."
 install_program "mplayer"
+echo "Installing mosquitto mqtt broker ..."
+install_program "-y mosquitto mosquitto-clients"
+
 
 APP_PATH=$(cd $(dirname "$0") && pwd)
 
