@@ -15,7 +15,7 @@ def client_disconnect():
     """
     Function called when a client disconnects.
     """
-    logging.info('Client '+ str(request.remote_addr) +' disconnected')
+    logging.info('Client '+ str(request.remote_addr) +' disconnected.')
     emit("stop", namespace="/motion", broadcast=True)
 
 @socketio.on_error_default

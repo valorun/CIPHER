@@ -7,7 +7,7 @@ from app.core.action_manager import speech
 
 @mqtt.on_topic('hermes/intent/#')
 def handle_intents(client, userdata, message):
-    intent = message.rsplit('/',1)[1]
+    intent = message.payload.decode('utf-8').rsplit('/',1)[1]
     db_intent = Intent.query.filter_by(intent=intent).first()
     slots = {}
     if(db_intent != None):

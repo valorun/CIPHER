@@ -19,7 +19,7 @@ def on_raspi_connect(client, userdata, msg):
     Function called when a raspberry client connects.
     """
     global raspies
-    data = json.loads(msg.payload)
+    data = json.loads(msg.payload.decode('utf-8'))
     raspi_id = data['id']
     logging.info('Raspberry '+raspi_id+' connected.')
     newRaspi = {}
@@ -36,7 +36,7 @@ def on_raspi_disconnect(client, userdata, msg):
     Function called when a raspberry client disconnects.
     """
     global raspies
-    data = json.loads(msg.payload)
+    data = json.loads(msg.payload.decode('utf-8'))
     raspi_id = data['id']
     logging.info('Raspberry '+raspi_id+' disconnected.')
     raspies = [r for r in raspies if r['id'] != raspi_id]

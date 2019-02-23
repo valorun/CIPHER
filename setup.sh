@@ -28,9 +28,10 @@ fi
 
 echo "Installing mplayer ..."
 install_program "mplayer"
-echo "Installing mosquitto mqtt broker ..."
-install_program "-y mosquitto mosquitto-clients"
-
+echo "Installing mosquitto ..."
+install_program "mosquitto"
+echo "Installing mosquitto-clients ..."
+install_program "mosquitto-clients"
 
 APP_PATH=$(cd $(dirname "$0") && pwd)
 
@@ -75,14 +76,14 @@ fi
 ### add to startup ###
 if [ -e /etc/rc.local ]
 then
-    if grep -q "nohup $APP_PATH/app.py &" /etc/rc.local
+    if grep -q "nohup sudo $APP_PATH/app.py &" /etc/rc.local
     then
         echo "Program already added on startup."
     else
         while true; do
             read -p "Do you wish to add this program on startup ? " yn
             case $yn in
-                [Yy]* ) sed -i -e "\$i \\nohup $APP_PATH/app.py &\\n" /etc/rc.local; break;;
+                [Yy]* ) sed -i -e "\$i \\nohup sudo $APP_PATH/app.py &\\n" /etc/rc.local; break;;
                 #[Yy]* ) sed -i -e "\$i \\sudo python3 $APP_PATH/app.py &\\n" ./test; break;;
                 [Nn]* ) exit;;
                 * ) echo "Please answer yes or no.";;
