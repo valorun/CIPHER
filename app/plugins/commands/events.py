@@ -21,7 +21,7 @@ def update_state_for_client(client, userdata, msg):
 	Update the state of the relays on the client side at the request of a raspberry.
 	"""
 	data = json.loads(msg.payload.decode('utf-8'))
-	raspi_id = data['id']
+	raspi_id = data['raspi_id']
 	pin = data['gpio']
 	state = data['state']
 	logging.info("Updating relay status on client")
