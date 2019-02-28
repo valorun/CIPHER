@@ -36,21 +36,26 @@ class Intent(db.Model):
 		return '<Intent %r : >' % self.intent
 
 class ConfigFile():
+	"""
+	Class used to generate and manage a config file
+	"""
+	def __init__(self, filepath):
+		self.filepath=filepath
 	def saveOption(self, key: str, data):
 		"""
 		Save an option into the config file.
 		"""
 		try:
-			with open(CONFIG_FILE, 'r') as f:
+			with open(self.filepath, 'r') as f:
 				content = json.load(f)
 		except IOError: #si aucun fichier n'existe, ou si la donnée lue n'est pas en json
-			with open(CONFIG_FILE, 'w') as f:
+			with open(self.filepath, 'w') as f:
 				f.write("") #on créer un nouveau 
 			content = {}
 		except ValueError:
 			content = {}
 		content[key] = data
-		with open(CONFIG_FILE, 'w') as f:
+		with open(self.filepath, 'w') as f:
 			json.dump(content, f)
 
 	def loadOption(self, key: str):
@@ -58,11 +63,11 @@ class ConfigFile():
 		Load an option from the config file.
 		"""
 		try:
-			with open(CONFIG_FILE, 'r') as f:
+			with open(self.filepath, 'r') as f:
 				content = json.load(f)
 				option = content[key]
 		except (IOError):
-			with open(CONFIG_FILE, 'w') as f:
+			with open(self.filepath, 'w') as f:
 				f.write("")
 			option = None
 		except (KeyError, ValueError):
@@ -118,31 +123,38 @@ class ConfigFile():
 		return self.loadOption("servo_raspi_id")
 
 class Resources():
+	"""
+	Class used to store and manage ressources such as sounds or scripts
+	"""
+	def __init__(self, scriptsPath, soundsPath):
+		self.scriptsPath=scriptsPath
+		self.soundsPath=soundsPath
+
 	def getScripts(self):
-		if not exists(SCRIPTS_LOCATION):
-			makedirs(SCRIPTS_LOCATION)
-		return [f for f in listdir(SCRIPTS_LOCATION) if isfile(join(SCRIPTS_LOCATION, f))]
+		if not exists(self.scriptsPath):
+			makedirs(self.scriptsPath)
+		return [f for f in listdir(self.scriptsPath) if isfile(join(self.scriptsPath, f))]
 
 	def deleteScript(self, script_name):
-		path = join(SCRIPTS_LOCATION, script_name)
+		path = join(self.scriptsPath, script_name)
 		if isfile(path):
 			remove(path)
 	
 	def saveScript(self, script_name, data):
-		path = join(SCRIPTS_LOCATION, script_name)
+		path = join(self.scriptsPath, script_name)
 		with open(path, encoding='utf-8', mode='w+') as file:
 			file.write(data)
 			
 	def readScript(self, script_name):
-		path = join(SCRIPTS_LOCATION, script_name)
+		path = join(self.scriptsPath, script_name)
 		with open(path, encoding='utf-8', mode='r') as file:
 			return file.read()
 
 	def getSounds(self):
-		if not exists(SOUNDS_LOCATION):
-			makedirs(SOUNDS_LOCATION)
-		return [f for f in listdir(SOUNDS_LOCATION) if isfile(join(SOUNDS_LOCATION, f))]
+		if not exists(self.soundsPath):
+			makedirs(self.soundsPath)
+		return [f for f in listdir(self.soundsPath) if isfile(join(self.soundsPath, f))]
 
 
-config = ConfigFile()
-resources = Resources()
+config = ConfigFile(CONFIG_FILE)
+resources = Resources(SCRIPTS_LOCATION, SOUNDS_LOCATION)
