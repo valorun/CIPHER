@@ -20,7 +20,8 @@ var gridPanelView = {
 	bind: function(){
 		//update status information about a specified relay
 		socket.on('update_relay_state', function(relay) {
-			$( "div[data-action='relay:"+relay.label+"']" ).each((i, e) => {
+			//get the relays and their parameter (the relay specified), and update the associated state
+			$( "div[data-type='relay' data-parameter='"+relay.label+"']" ).each((i, e) => {
 				$(e).addClass('border');
 				$(e).css({"border-width":"2px"})
 				if(relay.state===1){

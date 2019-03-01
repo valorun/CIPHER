@@ -13,7 +13,8 @@ def update_relays_state():
 	logging.info("Updating relay status on client")
 	for relay in Relay.query.distinct(Relay.pin):
 		pin=relay.pin
-		emit("update_state", pin, namespace="/relay", broadcast=True)
+		raspi_id=relay.raspi_id
+		mqtt.publish('raspi/'+raspi_id+'/relay/update_state', json.dumps({'gpio':pin}))
 
 @mqtt.on_topic('server/update_relay')
 def update_state_for_client(client, userdata, msg):
