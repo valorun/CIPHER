@@ -1,6 +1,7 @@
 import logging
 from flask import request
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
+from .action_manager import motion
 from app import socketio
 
 @socketio.on('connect', namespace='/client')
@@ -16,7 +17,7 @@ def client_disconnect():
     Function called when a client disconnects.
     """
     logging.info('Client '+ str(request.remote_addr) +' disconnected.')
-    emit("stop", namespace="/motion", broadcast=True)
+    motion(0, 0)
 
 @socketio.on_error_default
 def default_error_handler(e):

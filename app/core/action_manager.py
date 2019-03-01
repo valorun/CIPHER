@@ -1,7 +1,7 @@
 import logging
 import json
 import importlib.util
-import os
+from subprocess import Popen
 from os.path import join
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
@@ -73,8 +73,8 @@ def sound(sound_name):
 	"""
 	if config.getAudioOnServer():
 		logging.info("Playing sound \'" + join(SOUNDS_LOCATION, sound_name) + "\' on server")			
-		os.system("sudo pkill mplayer")
-		os.system("mplayer "+join(SOUNDS_LOCATION, sound_name).replace(" ", "\\ "))
+		Popen(['sudo', 'pkill', 'mplayer'])
+		Popen(['mplayer', join(SOUNDS_LOCATION, sound_name).replace(" ", "\\ ")])
 	else:
 		logging.info("Playing sound \'" + sound_name + "\' on client")			
 		socketio.emit("play_sound", sound_name, namespace="/client")
@@ -83,7 +83,7 @@ def script(script_name, **kwargs):
 	"""
 	Import the requested script from the 'scripts' directory and execute its 'main' method
 	"""
-	spec = importlib.util.spec_from_file_location("script", os.path.join(SCRIPTS_LOCATION, script_name))
+	spec = importlib.util.spec_from_file_location("script", join(SCRIPTS_LOCATION, script_name))
 	script = importlib.util.module_from_spec(spec)
 	logging.info("Executing script \'" + script_name + "\'")			
 	spec.loader.exec_module(script)
