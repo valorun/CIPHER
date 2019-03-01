@@ -19,19 +19,21 @@ var gridPanelView = {
 
 	bind: function(){
 		//update status information about a specified relay
-		socket.on('update_relay_state', function(relay) {
-			//get the relays and their parameter (the relay specified), and update the associated state
-			$( "div[data-type='relay' data-parameter='"+relay.label+"']" ).each((i, e) => {
-				$(e).addClass('border');
-				$(e).css({"border-width":"2px"})
-				if(relay.state===1){
-					$(e).addClass('border-green');
-					$(e).removeClass('border-dark-red');
-				}
-				else if(relay.state===0){
-					$(e).addClass('border-dark-red');
-					$(e).removeClass('border-green');
-				}
+		socket.on('update_relays_state', function(relays_list) {
+			$( relays_list ).each((i, relay) => {
+				//get the relays and their parameter (the relay specified), and update the associated state
+				$( "div[data-type='relay' data-parameter='"+relay.label+"']" ).each((i, e) => {
+					$(e).addClass('border');
+					$(e).css({"border-width":"3px"})
+					if(relay.state===1){
+						$(e).addClass('border-green');
+						$(e).removeClass('border-dark-red');
+					}
+					else if(relay.state===0){
+						$(e).addClass('border-dark-red');
+						$(e).removeClass('border-green');
+					}
+				})
 			})
 		})
 	},
@@ -103,7 +105,7 @@ var gridPanelView = {
 			}
 		});
 		this.grid.addWidget(el, x, y, width, height);
-		socket.emit('update_relays_state');
+		socket.emit('update_all_relays_state');
 	},
 
 	/**
