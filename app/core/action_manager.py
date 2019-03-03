@@ -9,6 +9,7 @@ from app import socketio, mqtt
 from app.constants import SCRIPTS_LOCATION, SOUNDS_LOCATION
 from app.model import db, Relay, config
 
+current_sound = None
 def speech(speech):
 	"""
 	Speak on the client from the client or from the raspberry, according to the parameter
@@ -72,9 +73,11 @@ def sound(sound_name):
 	Execute the requested sound from the 'sounds' directory
 	"""
 	if config.getAudioOnServer():
-		logging.info("Playing sound \'" + join(SOUNDS_LOCATION, sound_name) + "\' on server")			
-		Popen(['sudo', 'pkill', 'mplayer'])
-		Popen(['mplayer', join(SOUNDS_LOCATION, sound_name).replace(" ", "\\ ")])
+		logging.info("Playing sound \'" + join(SOUNDS_LOCATION, sound_name) + "\' on server")
+		if current_sound == None or current_sound.poll() == None: #if no sound is played or the current sound ended
+			curent_sound = Popen(['mplayer', join(SOUNDS_LOCATION, sound_name).replace(" ", "\\ ")])	
+		else:
+			curent_sound.terminate()
 	else:
 		logging.info("Playing sound \'" + sound_name + "\' on client")			
 		socketio.emit("play_sound", sound_name, namespace="/client")
