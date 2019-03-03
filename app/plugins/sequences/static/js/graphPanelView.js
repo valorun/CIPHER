@@ -9,7 +9,9 @@ var graphPanelView = {
 		this.render();
 	},
 	bind: function(){
-
+		$("#creation").on("show", () => {
+			this.network.focus("start");
+		});
 	},
 	render: function(){
 		// create an array with nodes
