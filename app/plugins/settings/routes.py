@@ -11,11 +11,10 @@ from app.security import login_required
 def settings_page():
     relays=Relay.query.all()
     cameraUrl=config.getCameraUrl()
-    wheelsMode=config.getWheelsMode()
     audioOnServer=config.getAudioOnServer()
     motionRaspiId=config.getMotionRaspiId()
     servoRaspiId=config.getServoRaspiId()
-    return settings.render_page('settings.html', relays=relays, cameraUrl=cameraUrl, wheelsMode=wheelsMode, audioOnServer=audioOnServer, motionRaspiId=motionRaspiId, servoRaspiId=servoRaspiId)
+    return settings.render_page('settings.html', relays=relays, cameraUrl=cameraUrl, audioOnServer=audioOnServer, motionRaspiId=motionRaspiId, servoRaspiId=servoRaspiId)
 
 @settings.route('/save_relay', methods=['POST'])
 @login_required
@@ -74,14 +73,6 @@ def update_camera_url():
     config.setCameraUrl(url)
     return settings.render_page('settings.html')
 
-@settings.route('/update_motion_mode', methods=['POST'])
-@login_required
-def update_motion_mode():
-    value = json.loads(request.form.get("value"))
-    logging.info("Updating wheels mode")
-    config.setWheelsMode(value)
-    return settings.render_page('settings.html')
-
 @settings.route('/update_audio_source', methods=['POST'])
 @login_required
 def update_audio_source():
@@ -89,11 +80,6 @@ def update_audio_source():
     logging.info("Updating audio source")
     config.setAudioOnServer(value)
     return settings.render_page('settings.html')
-
-@settings.route('/get_motion_mode', methods=['POST'])
-@login_required
-def get_wheels_mode():
-    return jsonify(config.getWheelsMode())
 
 @settings.route('/get_audio_source', methods=['POST'])
 @login_required

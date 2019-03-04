@@ -12,7 +12,8 @@ def commands_page():
     relays=Relay.query.all()
     cameraUrl=config.getCameraUrl()
     sounds=resources.getSounds()
-    return commands.render_page('commands.html', sequences=sequences, relays=relays, sounds=sounds, cameraUrl=cameraUrl)
+    motionRaspiId=config.getMotionRaspiId() # used to check if a raspi is specified, if not, then hide the motion panel
+    return commands.render_page('commands.html', sequences=sequences, relays=relays, sounds=sounds, cameraUrl=cameraUrl, motionRaspiId=motionRaspiId)
 
 
 @commands.route('/save_buttons', methods=['POST'])

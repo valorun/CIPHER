@@ -9,7 +9,7 @@ var graphPanelView = {
 		this.render();
 	},
 	bind: function(){
-		$("#creation").on("show", () => {
+		$("#creation").on("open", () => {
 			this.network.focus("start");
 		});
 	},
@@ -140,10 +140,10 @@ var graphPanelView = {
 		let selectedAction = $('select[name=newNodeTypeChoice]').val();
 		nodeData.shape = 'box';
 		if (selectedAction == 'motion') {
-			label += "motion:" + $("#left").val() + "," + $("#right").val();
+			label += "motion:" + $("#motion_direction").val() + "," + $("#motion_speed").val();
 			action.type = "motion";
-			action.left = $("#left").val();
-			action.right = $("#right").val();
+			action.direction = $("#motion_direction").val();
+			action.speed = $("#motion_speed").val();
 		} else if (selectedAction == 'servo') {
 			label += "servo:" + $("#sequence").val();
 			action.type = "servo";

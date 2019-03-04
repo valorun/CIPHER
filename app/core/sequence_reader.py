@@ -48,7 +48,7 @@ class SequenceReader:
 		elif(action=="sound"):
 			sound(actionData["sound"])
 		elif(action=="motion"):
-			motion(actionData["left"], actionData["right"])
+			motion(actionData["direction"], actionData["speed"])
 		elif(action=="servo"):
 			servo(actionData["sequence"])
 		elif(action=="condition"):

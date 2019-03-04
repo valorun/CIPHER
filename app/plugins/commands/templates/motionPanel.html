@@ -1,3 +1,4 @@
+{% if motionRaspiId!=None %}
 <script src="{{ url_for('commands.static', filename='js/motionController.js') }}"></script>
 
 <div class="panel">
@@ -11,7 +12,7 @@
                 <table class="container cell">
                     <tr>
                         <td></td>
-                        <td><i class="button secondary fas fa-arrow-up motion-direction" value="motion_up"></i></td>
+                        <td><i class="button secondary fas fa-arrow-up motion-direction" value="motion_forwards"></i></td>
                         <td></td>
                     </tr>
                     <tr>
@@ -21,14 +22,15 @@
                     </tr>
                     <tr>
                         <td></td>
-                        <td><i class="button secondary fas fa-arrow-down motion-direction" value="motion_down"></i></td>
+                        <td><i class="button secondary fas fa-arrow-down motion-direction" value="motion_backwards"></i></td>
                         <td></td>
                     </tr>
                 </table>
                 <div class="container cell">
-                    <div id="motion_slider" style="height:100px;"></div>
+                    <div id="motion_speed" style="height:100px;"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endif %}

@@ -2,7 +2,7 @@ import logging
 import json
 import importlib.util
 from subprocess import Popen
-from os.path import join
+from os.path import join, exists
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
 from app import socketio, mqtt
@@ -50,14 +50,14 @@ def relay(rel_label, rel_state=None):
 			mqtt.publish('raspi/'+raspi_id+'/relay/activate', json.dumps({'gpio':pin, 'state':rel_state, 'peers':None}))
 			#socketio.emit("activate_relay", (pin, rel_state, raspi_id), namespace="/relay")
 
-def motion(m1, m2):
+def motion(direction, speed):
 	"""
 	Activate the motors with the specified speed
 	"""
 	if config.getMotionRaspiId() == None:
 		return
-	logging.info("Moving with values " + m1 + ", " + m2)
-	mqtt.publish('raspi/'+config.getMotionRaspiId()+'/motion', json.dumps({'m1':m1, 'm2':m2}))
+	logging.info("Moving with values " + direction + ", " + speed)
+	mqtt.publish('raspi/'+config.getMotionRaspiId()+'/motion', json.dumps({'direction':direction, 'speed':speed}))
 	
 def servo(index):
 	"""
@@ -72,6 +72,10 @@ def sound(sound_name):
 	"""
 	Execute the requested sound from the 'sounds' directory
 	"""
+	if not exists(join(SOUNDS_LOCATION, sound_name)):
+		logging.error("Cannot load sound \'" + sound_name + "\'")
+		return
+
 	if config.getAudioOnServer():
 		logging.info("Playing sound \'" + join(SOUNDS_LOCATION, sound_name) + "\' on server")
 		if current_sound == None or current_sound.poll() == None: # if no sound is played or the current sound ended
@@ -86,6 +90,9 @@ def script(script_name, **kwargs):
 	"""
 	Import the requested script from the 'scripts' directory and execute its 'main' method
 	"""
+	if not exists(join(SCRIPTS_LOCATION, script_name)):
+		logging.error("Cannot load script \'" + script_name + "\'")
+		return
 	spec = importlib.util.spec_from_file_location("script", join(SCRIPTS_LOCATION, script_name))
 	script = importlib.util.module_from_spec(spec)
 	logging.info("Executing script \'" + script_name + "\'")			

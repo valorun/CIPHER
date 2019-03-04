@@ -34,13 +34,13 @@ var templateController = {
 					icon.addClass("fa-angle-right");
 					icon.removeClass("fa-angle-down");
 					content.hide();
-					$(e).parent().trigger("show");
+					$(e).parent().trigger("open");
 				}
 				else{
 					icon.addClass("fa-angle-down");
 					icon.removeClass("fa-angle-right");
 					content.show();
-					$(e).parent().trigger("hide");
+					$(e).parent().trigger("close");
 				}
 			});
 

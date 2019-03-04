@@ -33,9 +33,9 @@ def play_sound_event(sound_name):
 	sound(sound_name)
 
 @socketio.on('move', namespace='/client')
-def move(left, right):
+def move(direction, speed):
 	"""
 	Function called when the client want to move the robot with the 2 motors.
 	"""
-	logging.debug("Client motion: " + left + ", " + right)
-	motion(int(left), int(right))
+	logging.debug("Client motion: " + direction + ", " + speed)
+	motion(direction, int(speed))

@@ -76,6 +76,8 @@ class ConfigFile():
 
 	# CAMERA URL
 	def setCameraUrl(self, url: str):
+		if not url.strip():
+			url = None
 		self.saveOption("camera_url", url)
 
 	def getCameraUrl(self) -> str:
@@ -87,16 +89,6 @@ class ConfigFile():
 
 	def getCommandsGrid(self) -> {}:
 		return self.loadOption("commands_grid")
-	
-	# WHEELS MODE
-	def setWheelsMode(self, mode: bool):
-		self.saveOption("wheels_mode", mode)
-
-	def getWheelsMode(self) -> bool:
-		mode = self.loadOption("wheels_mode")
-		if mode == None:
-			mode = False # default mode is for caterpillars
-		return mode
 
 	# AUDIO SOURCE
 	def setAudioOnServer(self, mode: bool):
@@ -110,6 +102,8 @@ class ConfigFile():
 
 	# MOTION RASPI ID
 	def setMotionRaspiId(self, raspi_id: str):
+		if not raspi_id.strip():
+			raspi_id = None
 		self.saveOption("motion_raspi_id", raspi_id)
 
 	def getMotionRaspiId(self) -> str:
@@ -117,6 +111,8 @@ class ConfigFile():
 	
 	# SERVO RASPI ID
 	def setServoRaspiId(self, raspi_id: str):
+		if not raspi_id.strip():
+			raspi_id = None
 		self.saveOption("servo_raspi_id", raspi_id)
 
 	def getServoRaspiId(self) -> str:
