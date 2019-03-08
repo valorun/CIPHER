@@ -47,13 +47,7 @@
 		<div class="container">
 			<h4>Navigation</h4>
 		</div>
-		<div class="bar-block"><!--
-			<a href="/" class="bar-item button padding"><i class="fas fa-tachometer-alt"></i>  Tableau de bord</a>
-			<a href="/commands" class="bar-item button padding"><i class="fas fa-terminal"></i>  Commandes manuelles</a>
-			<a href="/speech" class="bar-item button padding"><i class="fas fa-comments"></i>  Actions vocales</a>
-			<a href="/sequences" class="bar-item button padding"><i class="fas fa-project-diagram"></i>  Séquences</a>
-			<a href="/debug" class="bar-item button padding"><i class="fas fa-bug"></i>  Debug</a>
-			<a href="/settings" class="bar-item button padding"><i class="fas fa-cog"></i>  Paramètres</a>-->
+		<div class="bar-block">
 			{% for p in plugins %}
 			<a href="/{{ p.name }}" class="bar-item button padding"><i class="fas {{ p.icon }}"></i>  {{ p.label }}</a>
 			{% endfor %}

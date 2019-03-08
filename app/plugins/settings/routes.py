@@ -10,10 +10,10 @@ from app.security import login_required
 @login_required
 def settings_page():
     relays=Relay.query.all()
-    cameraUrl=config.getCameraUrl()
+    cameraUrl=config.getCameraUrl() or ""
     audioOnServer=config.getAudioOnServer()
-    motionRaspiId=config.getMotionRaspiId()
-    servoRaspiId=config.getServoRaspiId()
+    motionRaspiId=config.getMotionRaspiId() or ""
+    servoRaspiId=config.getServoRaspiId() or ""
     return settings.render_page('settings.html', relays=relays, cameraUrl=cameraUrl, audioOnServer=audioOnServer, motionRaspiId=motionRaspiId, servoRaspiId=servoRaspiId)
 
 @settings.route('/save_relay', methods=['POST'])

@@ -91,6 +91,8 @@ class SequenceReader:
 		"""
 		Searches for the sequence in the database from its name, and then launches it.
 		"""
+		if(self.threads>0): #wait for the current sequence to be completed to launch a new one
+			return
 		if(name == None or name == ""):
 			return
 		seq = Sequence.query.filter_by(id=name).first()

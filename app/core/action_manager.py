@@ -10,7 +10,7 @@ from app.constants import SCRIPTS_LOCATION, SOUNDS_LOCATION
 from app.model import db, Relay, config
 
 current_sound = None
-def speech(speech):
+def speech(speech:str):
 	"""
 	Speak on the client from the client or from the raspberry, according to the parameter
 	"""
@@ -19,7 +19,7 @@ def speech(speech):
 	logging.info("Pronouncing \'" + speech + "\'")
 	socketio.emit("response", speech, namespace="/client")
 
-def relay(rel_label, rel_state=None):
+def relay(rel_label:str, rel_state=None):
 	"""
 	Activate the relay with the specified label
 	"""
@@ -50,16 +50,16 @@ def relay(rel_label, rel_state=None):
 			mqtt.publish('raspi/'+raspi_id+'/relay/activate', json.dumps({'gpio':pin, 'state':rel_state, 'peers':None}))
 			#socketio.emit("activate_relay", (pin, rel_state, raspi_id), namespace="/relay")
 
-def motion(direction, speed):
+def motion(direction:str, speed:int):
 	"""
 	Activate the motors with the specified speed
 	"""
 	if config.getMotionRaspiId() == None:
 		return
-	logging.info("Moving with values " + direction + ", " + speed)
+	logging.info("Moving with values " + direction + ", " + str(speed))
 	mqtt.publish('raspi/'+config.getMotionRaspiId()+'/motion', json.dumps({'direction':direction, 'speed':speed}))
 	
-def servo(index):
+def servo(index:int):
 	"""
 	Launch a servomotor sequence with the given id
 	"""
@@ -68,7 +68,7 @@ def servo(index):
 	logging.info("Executing servo sequence \'" + index + "\'")
 	mqtt.publish('raspi/'+config.getServoRaspiId()+'/servo', json.dumps({'index':index}))
 
-def sound(sound_name):
+def sound(sound_name:str):
 	"""
 	Execute the requested sound from the 'sounds' directory
 	"""
@@ -86,7 +86,7 @@ def sound(sound_name):
 		logging.info("Playing sound \'" + sound_name + "\' on client")			
 		socketio.emit("play_sound", sound_name, namespace="/client")
 
-def script(script_name, **kwargs):
+def script(script_name:str, **kwargs):
 	"""
 	Import the requested script from the 'scripts' directory and execute its 'main' method
 	"""

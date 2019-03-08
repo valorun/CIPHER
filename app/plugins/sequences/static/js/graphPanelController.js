@@ -21,6 +21,8 @@ var graphPanelController = {
 		$('a[name=editSeq]').on("click", (e) => {
 			let seq_name=e.currentTarget.id.substr(e.currentTarget.id.indexOf('_')+1);
 			this.editSequence(seq_name)
+			templateController.open_accordion($("#creation"));
+			window.location.hash = '#creation';
 		});
 	},
 
