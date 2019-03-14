@@ -3,7 +3,7 @@ from flask import Flask, session, request, redirect
 import json
 import re
 from . import sequences
-from app.model import Sequence, Relay, db
+from app.model import Sequence, Servo, Relay, db
 from app.security import login_required
 from app.model import resources
 
@@ -12,9 +12,10 @@ from app.model import resources
 def sequences_page():
     relays=Relay.query.all()
     sequences_list=Sequence.query.all()
+    servos=Servo.query.all()
     sounds=resources.getSounds()
     scripts=resources.getScripts()
-    return sequences.render_page('sequences.html', sequences=sequences_list, relays=relays, sounds=sounds, scripts=scripts)
+    return sequences.render_page('sequences.html', sequences=sequences_list, servos=servos, relays=relays, sounds=sounds, scripts=scripts)
 
 @sequences.route('/save_sequence', methods=['POST'])
 @login_required

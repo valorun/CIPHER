@@ -15,36 +15,6 @@ var settingsController = {
 		socket.emit("get_raspies");
 	},
 	bind: function () {
-		$("#addRelay").on("click", function () {
-			let label = $("#newLabel").val();
-			let pin = $("#newPin").val();
-			let parity = $("#newParity").val();
-			let raspi_id = $("#newRaspiId").val();
-
-			$.ajax({
-				type: 'POST',
-				url: '/save_relay',
-				data: { rel_label: label, rel_pin: pin, rel_parity: parity, raspi_id: raspi_id },
-				success: function () {
-					location.reload();
-				},
-				error: function (request, status, error) {
-					failAlert(request.responseText);
-				}
-			});
-			//location.reload();
-		});
-		//checkbox to enable or disable the relay
-		$('input[name=enableRel]').on("change", (e) => {
-			let rel_label = e.currentTarget.id.substr(e.currentTarget.id.indexOf('_') + 1)
-			this.enableRelay(rel_label, $(e.currentTarget).prop("checked"))
-		});
-
-		//button to delete the relay
-		$('a[name=deleteRel]').on("click", (e) => {
-			let rel_label = e.currentTarget.id.substr(e.currentTarget.id.indexOf('_') + 1)
-			this.deleteRelay(rel_label)
-		});
 
 		//voice selection
 		$("#voices").on("change", function () {
@@ -53,7 +23,7 @@ var settingsController = {
 
 		socket.on('get_raspies', (raspies) => {
 			raspies = raspies.map(r => r.id);
-			$("#newRaspiId,#motionRaspiId,#servoRaspiId").autocomplete({
+			$("#newRelayRaspiId,#newServoRaspiId,#motionRaspiId,#servoRaspiId").autocomplete({
 				source: raspies
 			});
 
@@ -122,63 +92,6 @@ var settingsController = {
 			});
 		});
 
-		//servo raspi id modification
-		$("#servoRaspiIdForm").on("submit", (e) => {
-			e.preventDefault();
-			$.ajax({
-				type: 'POST',
-				url: '/update_servo_raspi_id',
-				data: { raspi_id: $("#servoRaspiId").val() },
-				success: function () {
-					successAlert("L'id du raspberry chargé des mouvements des servo-moteurs a été mis à jour");
-				},
-				error: function (request, status, error) {
-					failAlert(request.responseText);
-				}
-			});
-		});
-
-
 	},
 
-	/**
- 	 *  Enable OR disable a relay
-	  *	@param	{string} rel_label relay label
-	  *	@param	{boolean} value new state for the relay
- 	 */
-	enableRelay: function (rel_label, value) {
-		$.ajax({
-			type: 'POST',
-			url: '/enable_relay',
-			data: { rel_label: rel_label, value: value },
-			success: function () {
-				console.log(rel_label + " updated");
-			},
-			error: function (request, status, error) {
-				failAlert(request.responseText);
-			}
-		});
-	},
-
-	/**
- 	 *  Delete a relay
- 	 *	@param	{string} rel_label relay label
- 	 */
-	deleteRelay: function (rel_label) {
-		var confirm = window.confirm("Etes vous sûr de vouloir supprimer le relai \'" + rel_label + "\' ?");
-		if (confirm) {
-			$.ajax({
-				type: 'POST',
-				url: '/delete_relay',
-				data: { rel_label: rel_label },
-				success: () => {
-					console.log(rel_label + " deleted");
-					$("#" + rel_label).remove();
-				},
-				error: (request, status, error) => {
-					failAlert(request.responseText);
-				}
-			});
-		}
-	}
 }

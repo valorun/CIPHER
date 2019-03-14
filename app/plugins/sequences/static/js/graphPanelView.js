@@ -140,42 +140,46 @@ var graphPanelView = {
 		let selectedAction = $('select[name=newNodeTypeChoice]').val();
 		nodeData.shape = 'box';
 		if (selectedAction == 'motion') {
-			label += "motion:" + $("#motion_direction").val() + "," + $("#motion_speed").val();
 			action.type = "motion";
 			action.direction = $("#motion_direction").val();
 			action.speed = $("#motion_speed").val();
+			label += "motion:" + action.direction + "," + action.speed;
 		} else if (selectedAction == 'servo') {
-			label += "servo:" + $("#sequence").val();
-			action.type = "servo";
-			action.sequence = $("#sequence").val();
-		} else if (selectedAction == 'relay') {
-			if($("#relay").val() == null)
+			action.servo = $("#servo").val();
+			if(action.servo == null)
 				return false;
-			label += "relay:" + $("#relay").val()+","+($("#relayOnOff").prop("checked")?1:0);
-			action.type = "relay";
+			action.type = "servo";
+			action.position = $("#servo_position").val();
+			action.speed = $("#servo_speed").val();
+			label += "servo:" + action.servo+","+action.position+","+action.speed;
+		} else if (selectedAction == 'relay') {
 			action.relay = $("#relay").val();
+			if(action.relay == null)
+				return false;
+			action.type = "relay";
 			action.state = ($("#relayOnOff").prop("checked")?1:0)
+			label += "relay:" + action.relay+","+action.state;
 		} else if (selectedAction == 'speech') {
-			label += "speech:\'" + $("#sentence").val() + "\'";
 			action.type = "speech";
 			action.speech = $("#sentence").val();
+			label += "speech:\'" + action.speech + "\'";
 		} else if (selectedAction == 'script') {
-			if($("#script").val() == null)
-				return false;
-			label += "script:" + $("#script").val();
-			action.type = "script";
 			action.script = $("#script").val();
-		} else if (selectedAction == 'sound') {
-			if($("#sound").val() == null)
+			if(action.script == null)
 				return false;
-			label += "sound:" + $("#sound").val();
-			action.type = "sound";
+			action.type = "script";
+			label += "script:" + action.script;
+		} else if (selectedAction == 'sound') {
 			action.sound = $("#sound").val();
+			if(action.sound == null)
+				return false;
+			action.type = "sound";
+			label += "sound:" + action.sound;
 		} else if (selectedAction == 'pause') {
-			label += "pause:" + $("#pause").val() + "ms";
 			nodeData.shape = "circle"
 			action.type = "pause";
 			action.time = $("#pause").val();
+			label += "pause:" + action.time + "ms";
 		} else if (selectedAction == 'condition'){
 			if($("#flag").val() == null)
 				return false;
@@ -183,10 +187,10 @@ var graphPanelView = {
 				failAlert("Un seul drapeau peut être ajouté à la fois et ne doit pas contenir d'espaces.");
 				return false;
 			}
-			label += "condition:" + $("#flag").val();
 			nodeData.shape = "diamond"
 			action.type = "condition";
 			action.flag = $("#flag").val().split(' ')[0];
+			label += "condition:" + action.flag;
 		}
 		nodeData.label = label;
 		nodeData.action = action;

@@ -41,7 +41,7 @@ class SequenceReader:
 		elif(action == "speech"):
 			speech(actionData["speech"])
 		elif(action == "relay"):
-			relay(actionData["relay"], actionData["relay"])
+			relay(actionData["relay"], actionData["state"])
 		elif(action == "script"):
 			#pass the kwargs to the script (can be altered)
 			kwargs = script(actionData["script"], **kwargs)
@@ -50,7 +50,7 @@ class SequenceReader:
 		elif(action=="motion"):
 			motion(actionData["direction"], actionData["speed"])
 		elif(action=="servo"):
-			servo(actionData["sequence"])
+			servo(actionData["servo"], actionData["position"], actionData["speed"])
 		elif(action=="condition"):
 			if( "flags" not in kwargs or actionData["flag"] not in kwargs["flags"]):
 				#if there is no flag, or the specified flag is missing, stop the execution

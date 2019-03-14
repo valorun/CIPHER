@@ -3,82 +3,8 @@
 <script src="{{ url_for('static', filename='js/connection.js') }}"></script>
 <script src="{{ url_for('settings.static', filename='js/settingsController.js') }}"></script>
 
-<div class="panel">
-	<div class="card round-large tertiary">
-		<button class="btn container primary block left-align accordion-header">
-			<h4><i class="accordion-icon"></i> Ajouter un relai</h4>
-		</button>
-		<div  class="accordion-content">
-			<div class="row-padding">
-				<div class="quarter">
-					<label for="newLabel">Label: </label>
-					<input id="newLabel" type="text" value="" class="input border">
-				</div>
-				<div class="quarter">
-					<label for="newPin">Pin: </label>
-					<input id="newPin" type="text" value="" class="input border">
-				</div>
-				<div class="quarter">
-					<label for="newParity">Parité: </label>
-					<input id="newParity" type="text" value="" class="input border">
-				</div>
-				<div class="quarter">
-					<label for="newRaspiId">Raspberry: </label>
-					<input id="newRaspiId" type="text" value="" class="input border">
-				</div>
-			</div>
-
-			<div class="container padding-16">
-				<input class="button secondary" id="addRelay" type="button" value="Ajouter">
-			</div>
-		</div>
-	</div>
-</div>
-
-
-<div class="panel">
-	<div class="card round-large tertiary">
-		<button class="btn container primary block left-align accordion-header">
-			<h4><i class="accordion-icon"></i> Relais enregistrés</h4>
-		</button>
-		<div  class="accordion-content">
-			<div class="container">
-				<p>
-					<table class="table bordered responsive">
-						<tr>
-							<th>Label</th>
-							<th>Pin</th>
-							<th>Parité</th>
-							<th>Raspberry</th>
-						</tr>
-						{% for r in relays %}
-						<tr id="{{ r.label }}">
-							<td class="tertiary"><span >{{ r.label }}</span></td>
-							<td class="tertiary"><span>{{ r.pin }}</span></td>
-							<td class="tertiary"><span>{{ r.parity }}</span></td>
-							<!-- <td><input id="label_{{ r.label }}" type="text" name="labelRel" value="{{ r.label }}" class="input"></td>-->
-							<!-- <td><input id="pin_{{ r.label }}" type="text" name="pinRel" value="{{ r.pin }}" class="input"></td>-->
-							<td class="tertiary"><span>{{ r.raspi_id }}</span></td>
-							<td>
-								{% if r.enabled==True %}
-								<input id="enable_{{ r.label }}" type="checkbox" name="enableRel" checked="checked" class="check">
-								{% else %}
-								<input id="enable_{{ r.label }}" type="checkbox" name="enableRel" class="check">
-								{% endif %}
-								<label for="enable_{{ r.label }}">activé</label>
-							</td>
-							<td>
-								<a id="delete_{{ r.label }}" type="button" name="deleteRel" class="button secondary"><i class="fas fa-trash"></i></a>
-							</td>
-						</tr>
-						{% endfor %}
-					</table>
-
-				</p>
-			</div>
-		</div>
-	</div>
-</div>
+{% include 'relaysPanel.html' %}
+{% include 'servosPanel.html' %}
 
 <div class="panel">
 	<div class="card round-large tertiary">
@@ -120,15 +46,6 @@
 						</div>
 					</form>
 				</p>
-				<p>
-					<form id="servoRaspiIdForm">
-						<label for="servoRaspiId">Id du Raspberry attribué aux servo-moteurs: </label>
-						<div class="row">
-							<input id="servoRaspiId" type="text" class="input border col" style="width: 80%" placeholder="ex: raspi_###" value="{{ servoRaspiId }}">
-							<button type="submit" class="button secondary col" style="width:20%"><i class="fa fa-check"></i></button>
-						</div>
-					</form>
-				</p>
 			</div>
 		</div>
 	</div>
@@ -138,7 +55,6 @@
 $(document).ready(function() {
 	settingsController.init();
 });
-
 </script>
 
 {% endblock %}

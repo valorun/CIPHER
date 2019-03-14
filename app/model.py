@@ -26,6 +26,15 @@ class Relay(db.Model):
 	def __repr__(self):
 		return '<Relay %r : >' % self.label
 
+class Servo(db.Model):
+	label = db.Column(db.String(50), primary_key=True)
+	pin = db.Column(db.String(4), nullable=False)
+	enabled = db.Column(db.Boolean, nullable=False)
+	raspi_id = db.Column(db.String(20), nullable=False)
+
+	def __repr__(self):
+		return '<Servo %r : >' % self.label
+
 class Intent(db.Model):
 	intent = db.Column(db.String(50), primary_key=True)
 	response = db.Column(db.String(50))
@@ -108,15 +117,7 @@ class ConfigFile():
 
 	def getMotionRaspiId(self) -> str:
 		return self.loadOption("motion_raspi_id")
-	
-	# SERVO RASPI ID
-	def setServoRaspiId(self, raspi_id: str):
-		if not raspi_id.strip():
-			raspi_id = None
-		self.saveOption("servo_raspi_id", raspi_id)
 
-	def getServoRaspiId(self) -> str:
-		return self.loadOption("servo_raspi_id")
 
 class Resources():
 	"""
