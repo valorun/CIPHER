@@ -1,6 +1,7 @@
 var templateController = {
 	sidebar: null,
 	overlayBg : null,
+	
 	init: function(){
 		this.sidebar=$("#sidebar");
 		this.overlayBg=$("#overlay");
