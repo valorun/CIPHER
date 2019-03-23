@@ -54,8 +54,7 @@ def create_app(debug=False):
 
     socketio.init_app(app)
     mqtt.init_app(app)
-    mqtt.subscribe("server/raspi_connect")
-    mqtt.subscribe("server/raspi_disconnect")
+    mqtt.subscribe("server/#")
     
     return app
 
