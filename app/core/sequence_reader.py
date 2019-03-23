@@ -37,7 +37,7 @@ class SequenceReader:
 
 		if action == "pause":
 			#if it's a pause, the executed script is paused
-			socketio.sleep( int(actionData["time"])/1000 )
+			socketio.sleep( actionData["time"]/1000 )
 		elif action == "speech":
 			speech(actionData["speech"])
 		elif action == "relay":

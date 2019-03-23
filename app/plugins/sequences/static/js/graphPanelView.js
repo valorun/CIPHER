@@ -142,7 +142,7 @@ var graphPanelView = {
 				failAlert("Aucune direction sélectionnée.");
 				return false;
 			}
-			action.speed = $("#motion_speed").val();
+			action.speed = parseInt($("#motion_speed").val());
 			if(!this.isInputNumberValid(action.speed, 0, 100)){
 				failAlert("La vitesse doit être comprise entre 0 et 100.");
 				return false;
@@ -156,12 +156,12 @@ var graphPanelView = {
 				return false;
 			}
 			action.type = "servo";
-			action.position = $("#servo_position").val();
+			action.position = parseInt($("#servo_position").val());
 			if(!this.isInputNumberValid(action.position, 0, 100)){
 				failAlert("La position doit être comprise entre 0 et 100.");
 				return false;
 			}
-			action.speed = $("#servo_speed").val();
+			action.speed = parseInt($("#servo_speed").val());
 			if(!this.isInputNumberValid(action.speed, 0, 100)){
 				failAlert("La vitesse doit être comprise entre 0 et 100.");
 				return false;
@@ -199,7 +199,7 @@ var graphPanelView = {
 		} else if (selectedAction == 'pause') {
 			nodeData.shape = "circle"
 			action.type = "pause";
-			action.time = $("#pause").val();
+			action.time = parseInt($("#pause").val());
 			label += "pause:" + action.time + "ms";
 		} else if (selectedAction == 'condition'){
 			if($("#flag").val() == null){
