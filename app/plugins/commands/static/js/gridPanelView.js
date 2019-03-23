@@ -19,9 +19,9 @@ var gridPanelView = {
 
 	bind: function(){
 		//update status information about a specified relay
-		socket.on('update_relays_state', function(relays_list) {
-			console.log(relays_list);
-			console.log(relays_list.relays);
+		socket.on('update_relays_state', function(param) {
+			console.log(param);
+			console.log(param.relays);
 			$( relays_list.relays ).each((i, relay) => {
 				//get the relays and their parameter (the relay specified), and update the associated state
 				$( "div[data-type='relay' data-parameter='"+relay.label+"']" ).each((i, e) => {
