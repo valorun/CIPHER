@@ -66,6 +66,7 @@ def servo(label:str, position:int, speed:int):
 	"""
 	Launch a servo motor to a position at a specified speed
 	"""
+	logging.info("1Moving servo \'" + label + "\' to " + str(position) + " at speed " + str(speed))
 	if position < 0 or position > 100 or speed < 0 or position > 100:
 		return
 	with db.app.app_context():
