@@ -75,8 +75,8 @@ def servo(label:str, position:int, speed:int):
 			return
 		pin = db_servo.pin
 		raspi_id = db_servo.raspi_id
-	logging.info("Moving servo \'" + label + "\' to " + str(position) + " at speed " + str(speed))
-	mqtt.publish('raspi/'+raspi_id+'/servo', json.dumps({'gpio':pin, 'position':position, 'speed':speed}))
+		logging.info("Moving servo \'" + label + "\' to " + str(position) + " at speed " + str(speed))
+		mqtt.publish('raspi/'+raspi_id+'/servo', json.dumps({'gpio':pin, 'position':position, 'speed':speed}))
 
 
 def sound(sound_name:str):
