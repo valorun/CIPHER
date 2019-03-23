@@ -20,6 +20,7 @@ var gridPanelView = {
 	bind: function(){
 		//update status information about a specified relay
 		socket.on('update_relays_state', function(relays_list) {
+			console.log(relays_list);
 			console.log(relays_list.relays);
 			$( relays_list.relays ).each((i, relay) => {
 				//get the relays and their parameter (the relay specified), and update the associated state
@@ -36,7 +37,7 @@ var gridPanelView = {
 					}
 				})
 			})
-		})
+		});
 	},
 
 	/**
