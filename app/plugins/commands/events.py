@@ -6,7 +6,7 @@ from app import socketio, mqtt
 from app.model import Relay
 
 @socketio.on('update_all_relays_state', namespace='/client')
-def update_relays_state():
+def update_all_relays_state():
 	"""
 	Update the state of the relays on the raspberry side at the request of a client.
 	"""
@@ -23,7 +23,7 @@ def update_relays_state():
 		mqtt.publish('raspi/'+raspi_id+'/relay/update_state', json.dumps({'gpios':relays_list}))
 
 @mqtt.on_topic('server/update_relays_state')
-def update_state_for_client(client, userdata, msg):
+def update_relays_state_for_client(client, userdata, msg):
 	"""
 	Update the state of the relays on the client side at the request of a raspberry.
 	"""
