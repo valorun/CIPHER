@@ -10,7 +10,7 @@ def update_relays_state():
 	"""
 	Update the state of the relays on the raspberry side at the request of a client.
 	"""
-	logging.info("Updating relay status on client")
+	logging.info("Request relay status update from client")
 	# for each known raspberry ...
 	for raspi in Relay.query.distinct(Relay.raspi_id):
 		raspi_id=raspi.raspi_id
