@@ -56,9 +56,6 @@ var graphPanelView = {
 					if(this.handleNodeToAdd(nodeData)){
 						callback(nodeData);
 					}
-					else{
-						failAlert("Le champ choisi est vide !");
-					}
 				},
 				editNode: (nodeData, callback) => {
 					if (nodeData.id !== "start") {
@@ -130,9 +127,9 @@ var graphPanelView = {
 	},
 
 	/**
-	* Create a specific node corresponding to the option chosen
+	* Create a specific node corresponding to the options chosen
 	* @param {Object} nodeData the data of the node to add
-	* @return {boolean}
+	* @return {boolean} false if the options aren't correct
 	*/
 	handleNodeToAdd: function(nodeData) {
 		let label = "";
@@ -140,22 +137,42 @@ var graphPanelView = {
 		let selectedAction = $('select[name=newNodeTypeChoice]').val();
 		nodeData.shape = 'box';
 		if (selectedAction == 'motion') {
-			action.type = "motion";
 			action.direction = $("#motion_direction").val();
+			if(action.direction == null){
+				failAlert("Aucune direction sélectionnée.");
+				return false;
+			}
 			action.speed = $("#motion_speed").val();
+			if(!this.isInputNumberValid(action.speed, 0, 100)){
+				failAlert("La vitesse doit être comprise entre 0 et 100.");
+				return false;
+			}
+			action.type = "motion";
 			label += "motion:" + action.direction + "," + action.speed;
 		} else if (selectedAction == 'servo') {
 			action.servo = $("#servo").val();
-			if(action.servo == null)
+			if(action.servo == null){
+				failAlert("Aucun servomoteur sélectionné.");
 				return false;
+			}
 			action.type = "servo";
 			action.position = $("#servo_position").val();
+			if(!this.isInputNumberValid(action.position, 0, 100)){
+				failAlert("La position doit être comprise entre 0 et 100.");
+				return false;
+			}
 			action.speed = $("#servo_speed").val();
+			if(!this.isInputNumberValid(action.speed, 0, 100)){
+				failAlert("La vitesse doit être comprise entre 0 et 100.");
+				return false;
+			}
 			label += "servo:" + action.servo+","+action.position+","+action.speed;
 		} else if (selectedAction == 'relay') {
 			action.relay = $("#relay").val();
-			if(action.relay == null)
+			if(action.relay == null){
+				failAlert("Aucun relai sélectionné.");
 				return false;
+			}
 			action.type = "relay";
 			action.state = ($("#relayOnOff").prop("checked")?1:0)
 			label += "relay:" + action.relay+","+action.state;
@@ -165,14 +182,18 @@ var graphPanelView = {
 			label += "speech:\'" + action.speech + "\'";
 		} else if (selectedAction == 'script') {
 			action.script = $("#script").val();
-			if(action.script == null)
+			if(action.script == null){
+				failAlert("Aucun script sélectionné.");
 				return false;
+			}
 			action.type = "script";
 			label += "script:" + action.script;
 		} else if (selectedAction == 'sound') {
 			action.sound = $("#sound").val();
-			if(action.sound == null)
+			if(action.sound == null){
+				failAlert("Aucun son sélectionné.");
 				return false;
+			}
 			action.type = "sound";
 			label += "sound:" + action.sound;
 		} else if (selectedAction == 'pause') {
@@ -181,8 +202,10 @@ var graphPanelView = {
 			action.time = $("#pause").val();
 			label += "pause:" + action.time + "ms";
 		} else if (selectedAction == 'condition'){
-			if($("#flag").val() == null)
+			if($("#flag").val() == null){
+				failAlert("Aucun drapeau sélectionné.");
 				return false;
+			}
 			if($("#flag").val().split(' ').length > 1){
 				failAlert("Un seul drapeau peut être ajouté à la fois et ne doit pas contenir d'espaces.");
 				return false;
@@ -195,6 +218,10 @@ var graphPanelView = {
 		nodeData.label = label;
 		nodeData.action = action;
 		return true;
-	}
+	},
 
+	isInputNumberValid: function(value, min, max){
+		console.log(!isNaN(parseInt(value)) && value <= max && value >= min);
+		return !isNaN(parseInt(value)) && value <= max && value >= min
+	}
 }

@@ -30,29 +30,29 @@ class SequenceReader:
 		"""
 		Execute an action based on an action data, for exemple 'sleep:100ms'.
 		"""
-		if(actionData == None):
+		if actionData is None:
 			return True
 		
 		action=actionData["type"]
 
-		if(action == "pause"):
+		if action == "pause":
 			#if it's a pause, the executed script is paused
 			socketio.sleep( int(actionData["time"])/1000 )
-		elif(action == "speech"):
+		elif action == "speech":
 			speech(actionData["speech"])
-		elif(action == "relay"):
+		elif action == "relay":
 			relay(actionData["relay"], actionData["state"])
-		elif(action == "script"):
+		elif action == "script":
 			#pass the kwargs to the script (can be altered)
 			kwargs = script(actionData["script"], **kwargs)
-		elif(action=="sound"):
+		elif action=="sound":
 			sound(actionData["sound"])
-		elif(action=="motion"):
+		elif action=="motion":
 			motion(actionData["direction"], actionData["speed"])
-		elif(action=="servo"):
+		elif action=="servo":
 			servo(actionData["servo"], actionData["position"], actionData["speed"])
-		elif(action=="condition"):
-			if( "flags" not in kwargs or actionData["flag"] not in kwargs["flags"]):
+		elif action=="condition":
+			if "flags" not in kwargs or actionData["flag"] not in kwargs["flags"]:
 				#if there is no flag, or the specified flag is missing, stop the execution
 				return False
 		return True
@@ -63,7 +63,7 @@ class SequenceReader:
 		"""
 		children=[]
 		for e in edges:
-			if(e["from"]==id):
+			if e["from"]==id:
 				children.append(e["to"])
 		return children
 
@@ -72,8 +72,8 @@ class SequenceReader:
 		Return the action of the node with the given id.
 		"""
 		for n in nodes:
-			if(n["id"]==id):
-				if("action" in n):
+			if n["id"]==id:
+				if "action" in n:
 					return n["action"]
 		return None
 
@@ -81,7 +81,7 @@ class SequenceReader:
 		"""
 		Launch the sequence execution from a JSON object.
 		"""
-		if(self.threads>0): #wait for the current sequence to be completed to launch a new one
+		if self.threads>0: #wait for the current sequence to be completed to launch a new one
 			return
 		nodes=json[0]
 		edges=json[1]
@@ -91,12 +91,12 @@ class SequenceReader:
 		"""
 		Searches for the sequence in the database from its name, and then launches it.
 		"""
-		if(self.threads>0): #wait for the current sequence to be completed to launch a new one
+		if self.threads>0: #wait for the current sequence to be completed to launch a new one
 			return
-		if(name == None or name == ""):
+		if name is None or name == "":
 			return
 		seq = Sequence.query.filter_by(id=name).first()
-		if(seq!=None and seq.enabled):
+		if seq is not None and seq.enabled:
 			seq_data = seq.value
 			logging.info('Executing sequence '+name)
 			self.readSequence(json.loads(seq_data), **kwargs)

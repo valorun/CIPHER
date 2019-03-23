@@ -92,6 +92,22 @@ var settingsController = {
 			});
 		});
 
+		//robot name modification
+		$("#robotNameForm").on("submit", (e) => {
+			e.preventDefault();
+			$.ajax({
+				type: 'POST',
+				url: '/update_robot_name',
+				data: { robot_name: $("#robotName").val() },
+				success: function () {
+					successAlert("Le nom du robot a été mis à jour");
+				},
+				error: function (request, status, error) {
+					failAlert(request.responseText);
+				}
+			});
+		});
+
 	},
 
 }

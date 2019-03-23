@@ -22,7 +22,7 @@ def save_intent():
     intent = request.form.get("intent")
     response = request.form.get("response")
     seq_id = request.form.get("sequence_id")
-    if re.match(r"^$|\s+", intent):
+    if not intent or ' ' in intent:
         return "Un nom d'intention ne doit pas être vide ou contenir d'espace.", 400
     logging.info("Saving intent "+intent)
     db_intent = Intent(intent=intent, response=response, sequence_id=seq_id, enabled=True)
@@ -35,7 +35,7 @@ def save_intent():
 def enable_intent():
     intent = request.form.get("intent")
     value = json.loads(request.form.get("value"))
-    if re.match(r"^$|\s+", intent):
+    if not intent or ' ' in intent:
         return "Une intention ne doit pas être vide ou contenir d'espace.", 400
     logging.info("Updating intent "+intent)
     db_intent = Intent.query.filter_by(intent=intent).first()
@@ -47,7 +47,7 @@ def enable_intent():
 @login_required
 def delete_intent():
     intent = request.form.get("intent")
-    if re.match(r"^$|\s+", intent):
+    if not intent or ' ' in intent:
         return "Une intention ne doit pas être vide ou contenir d'espace.", 400
     logging.info("Deleting intent "+intent)
     db_intent = Intent.query.filter_by(intent=intent).first()

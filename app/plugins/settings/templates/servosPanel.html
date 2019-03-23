@@ -1,0 +1,77 @@
+<script src="{{ url_for('settings.static', filename='js/servosSettingsController.js') }}"></script>
+
+<div class="panel">
+    <div class="card round-large tertiary">
+        <button class="btn container primary block left-align accordion-header">
+            <h4><i class="accordion-icon"></i> Ajouter un servomoteur</h4>
+        </button>
+        <div class="accordion-content">
+            <div class="row-padding">
+                <div class="third">
+                    <label for="newServoLabel">Label: </label>
+                    <input id="newServoLabel" type="text" value="" class="input border">
+                </div>
+                <div class="third">
+                    <label for="newServoPin">Pin: </label>
+                    <input id="newServoPin" type="text" value="" class="input border">
+                </div>
+                <div class="third">
+                    <label for="newServoRaspiId">Raspberry: </label>
+                    <input id="newServoRaspiId" type="text" value="" class="input border">
+                </div>
+            </div>
+
+            <div class="container padding-16">
+                <input class="button secondary" id="addServo" type="button" value="Ajouter">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="panel">
+    <div class="card round-large tertiary">
+        <button class="btn container primary block left-align accordion-header">
+            <h4><i class="accordion-icon"></i> Servomoteurs enregistrés</h4>
+        </button>
+        <div class="accordion-content">
+            <div class="container">
+                <p>
+                    <table class="table bordered responsive">
+                        <tr>
+                            <th>Label</th>
+                            <th>Pin</th>
+                            <th>Raspberry</th>
+                        </tr>
+                        {% for s in servos %}
+                        <tr id="{{ s.label }}">
+                            <td class="tertiary"><span>{{ s.label }}</span></td>
+                            <td class="tertiary"><span>{{ s.pin }}</span></td>
+                            <td class="tertiary"><span>{{ s.raspi_id }}</span></td>
+                            <td>
+                                {% if s.enabled==True %}
+                                <input id="enable_{{ s.label }}" type="checkbox" name="enableServo" checked="checked"
+                                    class="check">
+                                {% else %}
+                                <input id="enable_{{ s.label }}" type="checkbox" name="enableServo" class="check">
+                                {% endif %}
+                                <label for="enable_{{ s.label }}">activé</label>
+                            </td>
+                            <td>
+                                <a id="delete_{{ s.label }}" type="button" name="deleteServo" class="button secondary"><i
+                                        class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        servosSettingsController.init();
+    });
+</script>

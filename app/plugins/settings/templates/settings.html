@@ -15,6 +15,15 @@
 		
 			<div class="container">
 				<p>
+					<form id="robotNameForm">
+						<label for="robotName">Nom du robot: </label>
+						<div class="row">
+							<input id="robotName" type="text" class="input border col" style="width: 80%" placeholder="ex: r2d2" value="{{ robot_name }}">
+							<button type="submit" class="button secondary col" style="width:20%"><i class="fa fa-check"></i></button>
+						</div>
+					</form>
+				</p>
+				<p>
 					<label for="voices">Voix: </label>
 					<select class="select border" name="voices" id="voices">
 

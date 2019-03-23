@@ -35,8 +35,8 @@ var editorController = {
 			url: '/read_script/' + script_name,
 			success: function(data){
 				editor.setValue(data)
-				templateController.open_accordion($("#editor"));
-				window.location.hash = '#editor';
+				templateController.open_accordion($("#editorPanel"));
+				window.location.hash = '#editorPanel';
 			},
 			error: function(request, status, error){
 				failAlert(request.responseText);

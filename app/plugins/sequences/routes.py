@@ -1,7 +1,6 @@
 import logging
 from flask import Flask, session, request, redirect
 import json
-import re
 from . import sequences
 from app.model import Sequence, Servo, Relay, db
 from app.security import login_required
@@ -25,10 +24,12 @@ def save_sequence():
     """
     seq_name = request.form.get("seq_name")
     seq_data = request.form.get("seq_data")
-    if re.match(r"^$|\s+", seq_name):
+    if not seq_name or ' ' in seq_name:
         return "Un nom de séquence ne doit pas être vide ou contenir d'espace.", 400
-    if seq_data==None:
+    if seq_data is None:
         return "La séquence est vide.", 400
+    if Sequence.query.filter_by(id=seq_name).first() is not None:
+	    return "Une sequence portant le même nom existe déjà.", 400
     logging.info("Saving sequence "+seq_name)
     db_sequence = Sequence(id=seq_name, value=seq_data, enabled=True)
     db.session.merge(db_sequence)
@@ -43,10 +44,12 @@ def enable_sequence():
     """
     seq_name = request.form.get("seq_name")
     value = json.loads(request.form.get("value"))
-    if re.match(r"^$|\s+", seq_name):
+    if not seq_name or ' ' in seq_name:
         return "Un nom de séquence ne doit pas être vide ou contenir d'espace.", 400
     logging.info("Updating "+seq_name)
     db_seq = Sequence.query.filter_by(id=seq_name).first()
+    if db_seq is None:
+        return "La séquence est inconnue.", 400
     db_seq.enabled = value
     db.session.commit()
     return redirect('/sequences')
@@ -58,10 +61,12 @@ def delete_sequence():
     Delete a sequence stored in the database.
     """
     seq_name = request.form.get("seq_name")
-    if re.match(r"^$|\s+", seq_name):
+    if not seq_name or ' ' in seq_name:
         return "Un nom de séquence ne doit pas être vide ou contenir d'espace.", 400
     logging.info("Deleting "+seq_name)
     db_seq = Sequence.query.filter_by(id=seq_name).first()
+    if db_seq is None:
+        return "La séquence est inconnue.", 400
     db.session.delete(db_seq)
     db.session.commit()
     return redirect('/sequences')

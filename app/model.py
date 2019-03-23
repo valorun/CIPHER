@@ -105,9 +105,7 @@ class ConfigFile():
 
 	def getAudioOnServer(self) -> bool:
 		mode = self.loadOption("audio_on_server")
-		if mode == None:
-			mode = False
-		return mode
+		return mode or False
 
 	# MOTION RASPI ID
 	def setMotionRaspiId(self, raspi_id: str):
@@ -117,6 +115,16 @@ class ConfigFile():
 
 	def getMotionRaspiId(self) -> str:
 		return self.loadOption("motion_raspi_id")
+
+	# ROBOT NAME
+	def setRobotName(self, name:str):
+		if not name.strip():
+			name = "My robot"
+		self.saveOption("robot_name", name)
+	
+	def getRobotName(self) -> str:
+		name = self.loadOption("robot_name")
+		return name or "My robot"
 
 
 class Resources():

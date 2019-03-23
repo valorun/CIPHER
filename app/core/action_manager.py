@@ -14,7 +14,7 @@ def speech(speech:str):
 	"""
 	Speak on the client from the client or from the raspberry, according to the parameter
 	"""
-	if(speech == None):
+	if speech is None:
 		return
 	logging.info("Pronouncing \'" + speech + "\'")
 	socketio.emit("response", speech, namespace="/client")
@@ -27,8 +27,8 @@ def relay(label:str, state=None):
 		state=""
 	with db.app.app_context():
 		db_rel = Relay.query.filter_by(label=label).first()
-		if(not db_rel.enabled):
-				return
+		if db_rel is None or not db_rel.enabled:
+			return
 		pin = db_rel.pin
 		parity = db_rel.parity
 		raspi_id = db_rel.raspi_id
@@ -36,7 +36,7 @@ def relay(label:str, state=None):
 		logging.info("Activating relay \'" + label + "\'")
 
 		#if the relay is paired
-		if(parity!=""):
+		if parity!="":
 			#recover all the peer relays
 			peers_rel = Relay.query.filter(Relay.parity==parity, Relay.label!=label)
 			peers=[]
@@ -54,7 +54,9 @@ def motion(direction:str, speed:int):
 	"""
 	Activate the motors with the specified speed
 	"""
-	if config.getMotionRaspiId() == None:
+	if speed < 0 or speed > 100:
+		return
+	if config.getMotionRaspiId() is None:
 		return
 		
 	logging.info("Moving with values " + direction + ", " + str(speed))
@@ -64,10 +66,12 @@ def servo(label:str, position:int, speed:int):
 	"""
 	Launch a servo motor to a position at a specified speed
 	"""
+	if position < 0 or position > 100 or speed < 0 or position > 100:
+		return
 	with db.app.app_context():
 		db_servo = Servo.query.filter_by(label=label).first()
-		if(not db_servo.enabled):
-				return
+		if db_servo is None or not db_servo.enabled:
+			return
 		pin = db_servo.pin
 		raspi_id = db_servo.raspi_id
 	logging.info("Moving servo \'" + label + "\' to " + str(position) + " at speed " + str(speed))
@@ -84,7 +88,7 @@ def sound(sound_name:str):
 
 	if config.getAudioOnServer():
 		logging.info("Playing sound \'" + join(SOUNDS_LOCATION, sound_name) + "\' on server")
-		if current_sound == None or current_sound.poll() == None: # if no sound is played or the current sound ended
+		if current_sound is None or current_sound.poll() is None: # if no sound is played or the current sound ended
 			curent_sound = Popen(['mplayer', join(SOUNDS_LOCATION, sound_name).replace(" ", "\\ ")])	
 		else:
 			curent_sound.terminate()
@@ -104,5 +108,5 @@ def script(script_name:str, **kwargs):
 	logging.info("Executing script \'" + script_name + "\'")			
 	spec.loader.exec_module(script)
 	result = script.main(**kwargs)
-	if(result != None and type(result) == dict):
+	if result is not None and type(result) == dict:
 		return result

@@ -37,6 +37,7 @@
 	<!-- Sidebar/menu -->
 	<nav class="sidebar collapse primary animate-left" style="z-index:3;width:300px;" id="sidebar"><br>
 		<div class="center">
+			<h3 class="tag tertiary">{{ robot_name }}</h3>
 			{% if session.logged_in %}
 			<h3>Bienvenue {{ session['username'] }} !</h3>
 			{% endif %}
