@@ -13,20 +13,17 @@ var gridPanelView = {
 	init: function(){
 		$('#grid').gridstack(this.gridOptions);
 		this.grid = $('.grid-stack').data('gridstack');
-		this.disableEditionMode();
 		this.bind();
+		this.disableEditionMode();
 	},
 
 	bind: function(){
 		//update status information about a specified relay
-		socket.on('update_relays_state', function(relays_list) {
-			console.log(relays_list);
-			console.log(relays_list.relays);
-			$( relays_list.relays ).each((i, relay) => {
+		socket.on('update_relays_state', (relays_list) => {
+			$( relays_list ).each((i, relay) => {
 				//get the relays and their parameter (the relay specified), and update the associated state
-				$( "div[data-type='relay' data-parameter='"+relay.label+"']" ).each((i, e) => {
-					$(e).addClass('border');
-					$(e).css({"border-width":"3px"})
+				$( "div[data-type='relay'][data-parameter='"+relay.label+"']" ).each((i, e) => {
+					$(e).css({"border":"4px solid"})
 					if(relay.state===1){
 						$(e).addClass('border-green');
 						$(e).removeClass('border-dark-red');
@@ -107,7 +104,6 @@ var gridPanelView = {
 			}
 		});
 		this.grid.addWidget(el, x, y, width, height);
-		socket.emit('update_all_relays_state');
 	},
 
 	/**

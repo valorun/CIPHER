@@ -1,6 +1,6 @@
 import os
 
-MQTT_BROKER_URL="localhost"#"192.168.1.27"
+MQTT_BROKER_URL="192.168.1.27"#"localhost"
 MQTT_BROKER_PORT=1883
 
 SERVER_DATABASE='sqlite:///' + os.path.join(os.path.dirname(__file__), 'server_data.db')

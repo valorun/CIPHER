@@ -3,7 +3,7 @@ import json
 from flask_socketio import SocketIO
 from app import socketio
 from app.model import db, Sequence
-from .action_manager import speech, relay, motion, servo, sound, script
+from .action_manager import speech, relay, motion, servo, servo_sequence, sound, script
 
 class SequenceReader:
 	"""
@@ -51,6 +51,8 @@ class SequenceReader:
 			motion(actionData["direction"], actionData["speed"])
 		elif action=="servo":
 			servo(actionData["servo"], actionData["position"], actionData["speed"])
+		elif action=="servo_sequence": #COMPATIBILITY REASON
+			servo_sequence(actionData["index"])
 		elif action=="condition":
 			if "flags" not in kwargs or actionData["flag"] not in kwargs["flags"]:
 				#if there is no flag, or the specified flag is missing, stop the execution

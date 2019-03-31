@@ -20,6 +20,23 @@
                     <input id="newServoRaspiId" type="text" value="" class="input border">
                 </div>
             </div>
+            <div class="container padding">
+                Les "largeurs d'impulsions" peuvent se traduire comme "position".
+            </div>
+            <div class="row-padding">
+                <div class="third">
+                    <label for="newServoMinPulseWidth">Largeur d'impulsion minimum (µs): </label>
+                    <input type="number" id="newServoMinPulseWidth" value="544" class="input border" min="0">
+                </div>
+                <div class="third">
+                    <label for="newServoMaxPulseWidth">Largeur d'impulsion maximun (µs): </label>
+                    <input type="number" id="newServoMaxPulseWidth" value="2400" class="input border" min="0">
+                </div>
+                <div class="third">
+                    <label for="newServoDefPulseWidth">Largeur d'impulsion par défaut (µs): </label>
+                    <input type="number" id="newServoDefPulseWidth" value="544" class="input border" min="0">
+                </div>
+            </div>
 
             <div class="container padding-16">
                 <input class="button secondary" id="addServo" type="button" value="Ajouter">
@@ -41,12 +58,18 @@
                         <tr>
                             <th>Label</th>
                             <th>Pin</th>
+                            <th>Impulsion min</th>
+                            <th>Impulsion max</th>
+                            <th>Impulsion par défaut</th>
                             <th>Raspberry</th>
                         </tr>
                         {% for s in servos %}
                         <tr id="{{ s.label }}">
                             <td class="tertiary"><span>{{ s.label }}</span></td>
                             <td class="tertiary"><span>{{ s.pin }}</span></td>
+                            <td class="tertiary"><span>{{ s.min_pulse_width }}</span></td>
+                            <td class="tertiary"><span>{{ s.max_pulse_width }}</span></td>
+                            <td class="tertiary"><span>{{ s.def_pulse_width }}</span></td>
                             <td class="tertiary"><span>{{ s.raspi_id }}</span></td>
                             <td>
                                 {% if s.enabled==True %}
@@ -58,8 +81,7 @@
                                 <label for="enable_{{ s.label }}">activé</label>
                             </td>
                             <td>
-                                <a id="delete_{{ s.label }}" type="button" name="deleteServo" class="button secondary"><i
-                                        class="fas fa-trash"></i></a>
+                                <a id="delete_{{ s.label }}" type="button" name="deleteServo" class="button secondary"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                         {% endfor %}

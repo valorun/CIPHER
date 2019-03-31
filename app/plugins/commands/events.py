@@ -40,4 +40,4 @@ def update_relays_state_for_client(client, userdata, msg):
 			label=relay.label
 			relays_list.append({"label":label, "state":state})
 	# finally send the list of the relays to update on the client
-	socketio.emit("update_relays_state", {"relays":relays_list}, namespace="/client", broadcast=True)
+	socketio.emit("update_relays_state", relays_list, namespace="/client", broadcast=True)

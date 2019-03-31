@@ -73,16 +73,30 @@ def save_servo():
 	servo_label = request.form.get("servo_label")
 	servo_pin = request.form.get("servo_pin")
 	raspi_id = request.form.get("raspi_id")
+	servo_min_pulse_width = int(request.form.get("min_pulse_width"))
+	servo_max_pulse_width = int(request.form.get("max_pulse_width"))
+	servo_def_pulse_width = int(request.form.get("def_pulse_width"))
+
 	if not servo_label or ' ' in servo_label:
 		return "Un label de servo moteur ne doit pas être vide ou contenir d'espace.", 400
 	if not servo_pin or ' ' in servo_pin:
 		return "Un pin ne doit pas être vide ou contenir d'espace.", 400
+	if not servo_min_pulse_width:
+		return "La largeur d'impulsion minimale n'est pas valide.", 400
+	if not servo_max_pulse_width:
+		return "La largeur d'impulsion maximale n'est pas valide.", 400
+	if not servo_def_pulse_width:
+		return "La largeur d'impulsion par défaut n'est pas valide.", 400
+	if servo_min_pulse_width > servo_max_pulse_width:
+		return "La largeur d'impulsion minimum doit être inférieure à la largeur d'impulsion maximum", 400
+	if servo_def_pulse_width < servo_min_pulse_width or servo_def_pulse_width > servo_max_pulse_width:
+		return "La largeur d'impulsion par défaut doit être comprise entre son minimum et son maximum.", 400
 	if not raspi_id or ' ' in raspi_id:
 		return "Un id de raspberry ne doit pas être vide ou contenir d'espace.", 400
 	if Servo.query.filter_by(label=servo_label).first() is not None:
 		return "Un servomoteur portant le même label existe déjà.", 400
 	logging.info("Saving servo "+servo_label)
-	db_servo = Servo(label=servo_label, pin=servo_pin, enabled=True, raspi_id=raspi_id)
+	db_servo = Servo(label=servo_label, pin=servo_pin, enabled=True, min_pulse_width=servo_min_pulse_width, max_pulse_width=servo_max_pulse_width, def_pulse_width=servo_def_pulse_width, raspi_id=raspi_id)
 	db.session.add(db_servo)
 	db.session.commit()
 	return settings.render_page('settings.html')

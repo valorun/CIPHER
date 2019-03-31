@@ -6,12 +6,16 @@ var servosSettingsController = {
 		$("#addServo").on("click", function () {
 			let label = $("#newServoLabel").val();
 			let pin = $("#newServoPin").val();
+			let min_pulse_width = parseInt($("#newServoMinPulseWidth").val());
+			let max_pulse_width = parseInt($("#newServoMaxPulseWidth").val());
+			let def_pulse_width = parseInt($("#newServoDefPulseWidth").val());
 			let raspi_id = $("#newServoRaspiId").val();
+			console.log(min_pulse_width);
 
 			$.ajax({
 				type: 'POST',
 				url: '/save_servo',
-				data: { servo_label: label, servo_pin: pin, raspi_id: raspi_id },
+				data: { servo_label: label, servo_pin: pin, min_pulse_width: min_pulse_width, max_pulse_width: max_pulse_width, def_pulse_width: def_pulse_width, raspi_id: raspi_id },
 				success: function () {
 					location.reload();
 				},

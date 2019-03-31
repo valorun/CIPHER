@@ -21,9 +21,10 @@ var raspiesController = {
 		$("#raspberries").empty();
 		$.each(raspies, function(i, raspi){
 			console.log(raspi);
-			let card = "<div class='container cell pale-green topbar bottombar border-green margin-left'>"+
-					"<h3>"+ raspi.id + " | " + raspi.address+"</h3>"+
-				"</div>";
+			let card = "<div class='container cell center pale-green round-large border border-green padding-16'"+
+							"<h3><strong><i class='xxxlarge fab fa-raspberry-pi'></i></strong></h3>" +
+							"<h3>" + raspi.id + "</h3>" +
+						"</div>";
 			$("#raspberries").append(card);
 		});
 

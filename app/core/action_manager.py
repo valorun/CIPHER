@@ -75,8 +75,20 @@ def servo(label:str, position:int, speed:int):
 		pin = db_servo.pin
 		raspi_id = db_servo.raspi_id
 		logging.info("Moving servo \'" + label + "\' to " + str(position) + " at speed " + str(speed))
-		mqtt.publish('raspi/'+raspi_id+'/servo', json.dumps({'gpio':pin, 'position':position, 'speed':speed}))
+		mqtt.publish('raspi/'+raspi_id+'/servo/set_position', json.dumps({'gpio':pin, 'position':position, 'speed':speed}))
 
+def servo_sequence(index:int):
+	"""
+	COMPATIBILITY REASON
+	Launch a servo sequence, specific to maestro card
+	"""
+	with db.app.app_context():
+		db_servo = Servo.query.distinct(Relay.raspi_id).first()
+		if db_servo is None:
+			return
+		raspi_id = db_servo.raspi_id
+		logging.info("Executing servo sequence \'" + index + "\'")
+		mqtt.publish('raspi/'+raspi_id+'/servo/sequence', json.dumps({'index':index}))
 
 def sound(sound_name:str):
 	"""

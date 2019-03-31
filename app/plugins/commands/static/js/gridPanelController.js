@@ -62,6 +62,7 @@ var gridPanelController = {
 		$("#editPanelButton").on("click", () => {
 			this.gridPanelView.updateMode();
 			this.saveGrid();
+			socket.emit('update_all_relays_state');
 		});
 	},
 

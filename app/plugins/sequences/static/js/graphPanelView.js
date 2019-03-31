@@ -118,6 +118,7 @@ var graphPanelView = {
 		$("#soundOptions").addClass("hide");
 		$("#pauseOptions").addClass("hide");
 		$("#conditionOptions").addClass("hide");
+		$("#servoSequenceOptions").addClass("hide");//COMPATIBILITY REASON
 		if($('select[name=newNodeTypeChoice]').val()!==""){
 			$("#" +$('select[name=newNodeTypeChoice]').val()+ "Options").removeClass("hide");
 		}
@@ -137,6 +138,7 @@ var graphPanelView = {
 		let selectedAction = $('select[name=newNodeTypeChoice]').val();
 		nodeData.shape = 'box';
 		if (selectedAction == 'motion') {
+			action.type = "motion";
 			action.direction = $("#motion_direction").val();
 			if(action.direction == null){
 				failAlert("Aucune direction sélectionnée.");
@@ -147,18 +149,19 @@ var graphPanelView = {
 				failAlert("La vitesse doit être comprise entre 0 et 100.");
 				return false;
 			}
-			action.type = "motion";
 			label += "motion:" + action.direction + "," + action.speed;
 		} else if (selectedAction == 'servo') {
+			action.type = "servo";
 			action.servo = $("#servo").val();
 			if(action.servo == null){
 				failAlert("Aucun servomoteur sélectionné.");
 				return false;
 			}
-			action.type = "servo";
 			action.position = parseInt($("#servo_position").val());
-			if(!this.isInputNumberValid(action.position, 0, 100)){
-				failAlert("La position doit être comprise entre 0 et 100.");
+			let min_pulse_width = parseInt($("#servo_position").attr("min_pulse_width"));
+			let max_pulse_width = parseInt($("#servo_position").attr("max_pulse_width"));
+			if(!this.isInputNumberValid(action.position, 0, max_pulse_width)){
+				failAlert("La position doit être comprise entre "+min_pulse_width+" et "+max_pulse_width+".");
 				return false;
 			}
 			action.speed = parseInt($("#servo_speed").val());
@@ -168,12 +171,12 @@ var graphPanelView = {
 			}
 			label += "servo:" + action.servo+","+action.position+","+action.speed;
 		} else if (selectedAction == 'relay') {
+			action.type = "relay";
 			action.relay = $("#relay").val();
 			if(action.relay == null){
 				failAlert("Aucun relai sélectionné.");
 				return false;
 			}
-			action.type = "relay";
 			action.state = ($("#relayOnOff").prop("checked")?1:0)
 			label += "relay:" + action.relay+","+action.state;
 		} else if (selectedAction == 'speech') {
@@ -181,20 +184,20 @@ var graphPanelView = {
 			action.speech = $("#sentence").val();
 			label += "speech:\'" + action.speech + "\'";
 		} else if (selectedAction == 'script') {
+			action.type = "script";
 			action.script = $("#script").val();
 			if(action.script == null){
 				failAlert("Aucun script sélectionné.");
 				return false;
 			}
-			action.type = "script";
 			label += "script:" + action.script;
 		} else if (selectedAction == 'sound') {
+			action.type = "sound";
 			action.sound = $("#sound").val();
 			if(action.sound == null){
 				failAlert("Aucun son sélectionné.");
 				return false;
 			}
-			action.type = "sound";
 			label += "sound:" + action.sound;
 		} else if (selectedAction == 'pause') {
 			nodeData.shape = "circle"
@@ -215,13 +218,18 @@ var graphPanelView = {
 			action.flag = $("#flag").val().split(' ')[0];
 			label += "condition:" + action.flag;
 		}
+		else if (selectedAction == 'servoSequence'){ //COMPATIBILITY REASON
+			action.type = "servo_sequence";
+			action.sequence = parseInt($("#sequence").val());
+			nodeData.shape = "circle"
+			label += "servo_sequence:" + action.sequence;
+		}
 		nodeData.label = label;
 		nodeData.action = action;
 		return true;
 	},
 
 	isInputNumberValid: function(value, min, max){
-		console.log(!isNaN(parseInt(value)) && value <= max && value >= min);
 		return !isNaN(parseInt(value)) && value <= max && value >= min
 	}
 }
