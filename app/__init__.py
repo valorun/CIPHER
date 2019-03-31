@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # coding: utf-8
 
+import eventlet
+eventlet.monkey_patch(socket=False)
+
 from os import urandom
 import logging
 import importlib
@@ -11,8 +14,6 @@ from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from .model import db
 from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_PORT
-import eventlet
-eventlet.monkey_patch()
 
 socketio = SocketIO(logger=True) # socketio server used to communicate with web client
 mqtt = Mqtt() # mqtt client, need to be connected to a brocker (in local)
