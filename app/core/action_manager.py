@@ -83,7 +83,7 @@ def servo_sequence(index:int):
 	Launch a servo sequence, specific to maestro card
 	"""
 	with db.app.app_context():
-		db_servo = Servo.query.distinct(Relay.raspi_id).first()
+		db_servo = Servo.query.distinct(Servo.raspi_id).first()
 		if db_servo is None:
 			return
 		raspi_id = db_servo.raspi_id
