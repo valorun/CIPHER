@@ -87,7 +87,7 @@ def servo_sequence(index:int):
 		if db_servo is None:
 			return
 		raspi_id = db_servo.raspi_id
-		logging.info("Executing servo sequence \'" + index + "\'")
+		logging.info("Executing servo sequence \'" + str(index) + "\'")
 		mqtt.publish('raspi/'+raspi_id+'/servo/sequence', json.dumps({'index':index}))
 
 def sound(sound_name:str):
