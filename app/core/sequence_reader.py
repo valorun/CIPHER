@@ -52,7 +52,7 @@ class SequenceReader:
 		elif action=="servo":
 			servo(actionData["servo"], actionData["position"], actionData["speed"])
 		elif action=="servo_sequence": #COMPATIBILITY REASON
-			servo_sequence(actionData["index"])
+			servo_sequence(actionData["sequence"])
 		elif action=="condition":
 			if "flags" not in kwargs or actionData["flag"] not in kwargs["flags"]:
 				#if there is no flag, or the specified flag is missing, stop the execution
