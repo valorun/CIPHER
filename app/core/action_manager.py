@@ -101,7 +101,7 @@ def sound(sound_name:str):
 	if config.getAudioOnServer():
 		logging.info("Playing sound \'" + join(SOUNDS_LOCATION, sound_name) + "\' on server")
 		if current_sound is None or current_sound.poll() is None: # if no sound is played or the current sound ended
-			curent_sound = Popen(['mplayer', join(SOUNDS_LOCATION, sound_name).replace(" ", "\\ ")])	
+			curent_sound = Popen(['mplayer', join(SOUNDS_LOCATION, sound_name)])	
 		else:
 			curent_sound.terminate()
 	else:
