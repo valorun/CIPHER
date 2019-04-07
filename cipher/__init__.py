@@ -46,7 +46,7 @@ def create_app(debug=False):
     for p_name in plugins:
         try:
             # find the plugin object ...
-            module = importlib.import_module('.plugins.'+p_name, package='app')
+            module = importlib.import_module('.plugins.'+p_name, package='cipher')
             p = getattr(module, p_name)
             loaded_plugins.append(p)
             # then register its blueprint
