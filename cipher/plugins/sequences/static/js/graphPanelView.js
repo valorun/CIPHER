@@ -224,6 +224,8 @@ var graphPanelView = {
 			nodeData.shape = "circle"
 			label += "servo_sequence:" + action.sequence;
 		}
+		else
+			return false;
 		nodeData.label = label;
 		nodeData.action = action;
 		return true;

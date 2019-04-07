@@ -36,6 +36,7 @@
 
 					<div id="motionOptions" class="row-padding">
 						<div class="half">
+							<label for="motion_direction">Direction:</label>
 							<select class="select border" name="motion_direction" id="motion_direction">
 								<option value="" disabled selected>Choisir une direction</option>
 								<option value="forwards">Avant</option>
@@ -53,6 +54,7 @@
 
 					<div id="servoOptions" class="container">
 						<div class="third">
+							<label for="servo">Servomoteur:</label>
 							<select class="select border" name="servo" id="servo">
 								<option value="" disabled selected>Choisir un servomoteur</option>
 								{% for s in servos %}
