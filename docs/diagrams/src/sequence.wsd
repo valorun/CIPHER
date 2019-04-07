@@ -1,0 +1,42 @@
+@startuml sequence
+
+[o-> Webclient
+activate Webclient
+Webclient -> SocketIO : play_sequence(seq_name, flags)
+activate SocketIO
+
+SocketIO -> SequenceReader : launchSequence(seq_name, flags)
+activate SequenceReader
+
+SequenceReader -> Model : get sequence by name
+activate Model
+Model -> SequenceReader : retrieve sequence
+deactivate Model
+
+loop for each action node
+    alt action is a relay/servo/motion
+        SequenceReader -> MQTT : send action
+        activate MQTT
+        MQTT -> RaspiClient : send action
+        activate RaspiClient
+    else pause/script/sound/speech
+        SequenceReader -> SequenceReader : do action
+    end
+end
+deactivate MQTT
+deactivate RaspiClient
+SequenceReader -> SocketIO : notify sequence ended
+SocketIO -> Webclient : send notification
+
+[x<- Webclient
+
+box CIPHER
+    participant MQTT
+    participant SocketIO
+    participant SequenceReader
+    participant Model
+end box
+deactivate SequenceReader
+deactivate SocketIO
+deactivate Webclient
+@enduml

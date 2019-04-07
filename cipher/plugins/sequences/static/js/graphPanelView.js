@@ -158,8 +158,8 @@ var graphPanelView = {
 				return false;
 			}
 			action.position = parseInt($("#servo_position").val());
-			let min_pulse_width = parseInt($("#servo_position").attr("min_pulse_width"));
-			let max_pulse_width = parseInt($("#servo_position").attr("max_pulse_width"));
+			let min_pulse_width = parseInt($("#servo option:selected").attr("min_pulse_width"));
+			let max_pulse_width = parseInt($("#servo option:selected").attr("max_pulse_width"));
 			if(!this.isInputNumberValid(action.position, 0, max_pulse_width)){
 				failAlert("La position doit être comprise entre "+min_pulse_width+" et "+max_pulse_width+".");
 				return false;
