@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from os import listdir, makedirs, remove
 from os.path import isfile, join, exists
-from .constants import CONFIG_FILE, CHATBOT_DATABASE, SCRIPTS_LOCATION, SOUNDS_LOCATION
+from .constants import CONFIG_FILE, SCRIPTS_LOCATION, SOUNDS_LOCATION
 import json
 
 db = SQLAlchemy()
