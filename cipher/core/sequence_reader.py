@@ -3,7 +3,7 @@ import json
 from flask_socketio import SocketIO
 from cipher import socketio
 from cipher.model import db, Sequence
-from .action_manager import speech, relay, motion, servo, servo_sequence, sound, script
+from .actions import speech, relay, motion, servo, servo_sequence, sound, script
 
 class SequenceReader:
 	"""
@@ -78,6 +78,19 @@ class SequenceReader:
 				if "action" in n:
 					return n["action"]
 		return None
+	
+	def sequence_is_valid(self, json):
+		nodes=json[0]
+		edges=json[1]
+		#check if all nodes have at least one parent node
+		non_start_nodes = [n for n in nodes if n["id"]=="start"]
+		for n in non_start_nodes:
+			if not any([True for e in edges if e["to"]==n["id"]]) > 0:
+				return False
+		#check if all nodes have no edge that is both "to" and "from"
+		if len([False for e in edges if e["to"]==e["from"]]) > 0:
+			return False
+		return True
 
 	def readSequence(self, json, **kwargs):
 		"""
@@ -102,3 +115,5 @@ class SequenceReader:
 			seq_data = seq.value
 			logging.info('Executing sequence '+name)
 			self.readSequence(json.loads(seq_data), **kwargs)
+
+sequence_reader = SequenceReader()

@@ -1,12 +1,11 @@
 import logging
 import json
 from flask_socketio import SocketIO, emit
-from .sequence_reader import SequenceReader
-from .action_manager import relay, sound, motion
+from .sequence_reader import sequence_reader
+from .actions import relay, sound, motion
 from cipher import socketio, mqtt
 from cipher.model import Sequence
 
-sequence_reader = SequenceReader()
 
 @socketio.on('play_sequence', namespace='/client')
 def play_sequence(seq_name:str, flags):

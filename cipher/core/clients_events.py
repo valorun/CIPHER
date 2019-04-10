@@ -1,7 +1,7 @@
 import logging
 from flask import request
 from flask_socketio import SocketIO
-from .action_manager import motion
+from .actions import motion
 from cipher import socketio
 
 @socketio.on('connect', namespace='/client')

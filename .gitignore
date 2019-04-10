@@ -7,3 +7,6 @@ __pycache__
 *.wav
 *.json
 *.log
+.eslintrc.js
+node_modules/
+package.json

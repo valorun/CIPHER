@@ -5,6 +5,7 @@ from . import sequences
 from cipher.model import Sequence, Servo, Relay, db
 from cipher.security import login_required
 from cipher.model import resources
+from cipher.core.sequence_reader import sequence_reader
 
 @sequences.route('/sequences')
 @login_required
@@ -30,6 +31,8 @@ def save_sequence():
         return "La séquence est vide.", 400
     if Sequence.query.filter_by(id=seq_name).first() is not None:
 	    return "Une sequence portant le même nom existe déjà.", 400
+    if not sequence_reader.sequence_is_valid(json.loads(seq_data)):
+        return "La séquence n'est pas valide.", 400
     logging.info("Saving sequence "+seq_name)
     db_sequence = Sequence(id=seq_name, value=seq_data, enabled=True)
     db.session.merge(db_sequence)

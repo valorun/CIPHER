@@ -1,8 +1,8 @@
 {% extends 'template.html' %} {% block content %}
 <link href="{{ url_for('sequences.static', filename='vendor/vis.js/vis.min.css') }}" rel="stylesheet" type="text/css" />
 <script src="{{ url_for('sequences.static', filename='vendor/vis.js/vis.js') }}"></script>
-<script src="{{ url_for('sequences.static', filename='js/graphPanelView.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/graphPanelController.js') }}"></script>
+<script src="{{ url_for('sequences.static', filename='js/graphFormController.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/sequencesController.js') }}"></script>
 <style type="text/css">
 #network {
@@ -183,7 +183,7 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
-	graphPanelController.init();
+	graphFormController.init();
 	sequencesController.init();
 });
 

@@ -2,8 +2,8 @@ import logging
 from cipher.model import db, Intent
 import json
 from cipher import mqtt
-from cipher.core.action_events import sequence_reader
-from cipher.core.action_manager import speech
+from cipher.core.sequence_reader import sequence_reader
+from cipher.core.actions import speech
 
 @mqtt.on_topic('hermes/intent/#')
 def handle_intents(client, userdata, message):

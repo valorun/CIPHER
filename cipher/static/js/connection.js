@@ -6,7 +6,7 @@ var connectionManager = {
 	init: function(){
 		window.speechSynthesis.onvoiceschanged = () => {
 			this.voices=window.speechSynthesis.getVoices();
-		}
+		};
 		this.bind();
 	},
 	bind: function(){
@@ -30,10 +30,10 @@ var connectionManager = {
 			}
 		});
 		socket.on('connect', () => {
-			$("#socketErrorModal").hide()
+			$('#socketErrorModal').hide();
 		});
 		socket.on('disconnect', () => {
-			$("#socketErrorModal").show()
+			$('#socketErrorModal').show();
 		});
 	},
 
@@ -41,11 +41,11 @@ var connectionManager = {
 		if ('speechSynthesis' in window) {
 			let to_speak = new SpeechSynthesisUtterance(msg);
 			$.each(this.voices, (i, e) =>{
-				if(Cookies.get("voice") === e.name){
+				if(Cookies.get('voice') === e.name){
 					to_speak.voice = e;
 				}
 			});
 			window.speechSynthesis.speak(to_speak);
 		}
 	}
-}
+};
