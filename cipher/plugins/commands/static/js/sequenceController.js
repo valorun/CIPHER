@@ -4,10 +4,10 @@ var sequenceController = {
 	},
 	bind: function(){
 		//directly play a sequence in the list
-		$("#playSeqButton").on("click", () => {
-			if($("#sequence").val()!==null && $("#sequence").val()!==""){
-				socket.emit('play_sequence', $("#sequence").val(), $("#seq_flags").val().split(' '));
+		$('#playSeqButton').on('click', () => {
+			if($('#sequence').val()!==null && $('#sequence').val()!==''){
+				socket.emit('play_sequence', $('#sequence').val(), $('#seq_flags').val().split(' '));
 			}
 		});
 	}
-}
+};

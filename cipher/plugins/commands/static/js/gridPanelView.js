@@ -22,18 +22,18 @@ var gridPanelView = {
 		socket.on('update_relays_state', (relays_list) => {
 			$( relays_list ).each((i, relay) => {
 				//get the relays and their parameter (the relay specified), and update the associated state
-				$( "div[data-type='relay'][data-parameter='"+relay.label+"']" ).each((i, e) => {
-					$(e).css({"border":"4px solid"})
-					if(relay.state===1){
+				$( 'div[data-type=\'relay\'][data-parameter=\'' + relay.label + '\']' ).each((i, e) => {
+					$(e).css({'border':'4px solid'});
+					if(relay.state === 1){
 						$(e).addClass('border-green');
 						$(e).removeClass('border-dark-red');
 					}
-					else if(relay.state===0){
+					else if(relay.state === 0){
 						$(e).addClass('border-dark-red');
 						$(e).removeClass('border-green');
 					}
-				})
-			})
+				});
+			});
 		});
 	},
 
@@ -42,9 +42,9 @@ var gridPanelView = {
 	 */
 	enableEditionMode: function(){
 		this.editionMode=true;
-		$('.grid-stack-item-content').addClass("disabled");
-		$("#editPanelButton").addClass('fa-check');
-		$("#editPanelButton").removeClass('fa-edit');
+		$('.grid-stack-item-content').addClass('disabled');
+		$('#editPanelButton').addClass('fa-check');
+		$('#editPanelButton').removeClass('fa-edit');
 		$('#newButtonPanel').removeClass('hide');
 		$('.trash').removeClass('hide');
 	},
@@ -54,9 +54,9 @@ var gridPanelView = {
 	 */
 	disableEditionMode: function(){
 		this.editionMode=false;
-		$('.grid-stack-item-content').removeClass("disabled");
-		$("#editPanelButton").addClass('fa-edit');
-		$("#editPanelButton").removeClass('fa-check');
+		$('.grid-stack-item-content').removeClass('disabled');
+		$('#editPanelButton').addClass('fa-edit');
+		$('#editPanelButton').removeClass('fa-check');
 		$('#newButtonPanel').addClass('hide');
 		$('.trash').addClass('hide');
 	},
@@ -75,32 +75,32 @@ var gridPanelView = {
 	 * An action can be associated if desired. Additional parameters can be specified
 	 */
 	addButton: function(label, actionType, actionParameter, actionFlags, color, x, y, width, height){
-		let dataType = 'data-type="' + actionType + '" ';
-		let dataParameter = 'data-parameter="' + actionParameter + '" ';
-		let dataFlags = "";
+		let dataType = 'data-type=\'' + actionType + '\' ';
+		let dataParameter = 'data-parameter=\'' + actionParameter + '\' ';
+		let dataFlags = '';
 		if(actionFlags != null)
-			dataFlags = 'data-flags="' + actionFlags.join(' ') + '" ';
+			dataFlags = 'data-flags=\'' + actionFlags.join(' ') + '\' ';
 		
-		var dataColor="";
-		if(color!=null)
-		dataColor='data-color="'+color+'"';
+		var dataColor = '';
+		if(color != null)
+			dataColor = 'data-color=\'' + color + '\'';
 
-		var el= $('<div><div class="grid-stack-item-content btn '+ color +'" ' + dataType + dataParameter + dataFlags + dataColor+ '><strong class="display-middle">' + label + '</strong></div><div/>');
+		var el= $('<div><div class=\'grid-stack-item-content btn '+ color +'\' ' + dataType + dataParameter + dataFlags + dataColor+ '><strong class=\'display-middle\'>' + label + '</strong></div><div/>');
 		if(this.editionMode){
 			el.children().first().addClass('disabled');
 		}
-		el.on("click", () =>{
+		el.on('click', () =>{
 			if(!this.editionMode){
-				if(actionType == "relay") {
+				if(actionType == 'relay') {
 					socket.emit('activate_relay', actionParameter);
 				}
-				if(actionType == "sequence") {
+				if(actionType == 'sequence') {
 					socket.emit('play_sequence', actionParameter, actionFlags);
 				}
-				if(actionType == "sound") {
+				if(actionType == 'sound') {
 					socket.emit('play_sound', actionParameter);
 				}
-				console.log(actionType + ", " + actionParameter + ", " + actionFlags);
+				console.log(actionType + ', ' + actionParameter + ', ' + actionFlags);
 			}
 		});
 		this.grid.addWidget(el, x, y, width, height);
@@ -124,14 +124,14 @@ var gridPanelView = {
 	 * Update the form to match selected options
 	 */
 	updateForm: function() {
-		$("#relayOptions").addClass("hide");
-		$("#sequenceOptions").addClass("hide");
-		$("#soundOptions").addClass("hide");
-		if($('select[name=newButtonTypeChoice]').val()!==""){
-			$("#" +$('select[name=newButtonTypeChoice]').val()+ "Options").removeClass("hide");
+		$('#relayOptions').addClass('hide');
+		$('#sequenceOptions').addClass('hide');
+		$('#soundOptions').addClass('hide');
+		if($('select[name=newButtonTypeChoice]').val()!==''){
+			$('#' +$('select[name=newButtonTypeChoice]').val()+ 'Options').removeClass('hide');
 		}
 		else{
-			failAlert("Aucun type de bouton n'a été selectionné !");
+			failAlert('Aucun type de bouton n\'a été selectionné !');
 		}
 	}
-}
+};

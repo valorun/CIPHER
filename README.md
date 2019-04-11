@@ -24,7 +24,7 @@ Dans le cadre de notre exemple, l'application est décompressée dans le dossier
 Pour mettre en route le serveur au démarage du raspberry, plusieurs méthodes existent.
 Dans notre cas, la ligne ```nohup /home/pi/CIPHER/app.py``` est ajoutée avant le 'exit 0' du fichier ```etc/rc.local```.
 # Utilisation
-Une fois correctement installé et lancé, le serveur peut ensuite être accédé depuis l'adresse du raspberry dans un navigateur avec le port 5000. dans notre cas, il s'agit de l'adresse suivante :```https://192.168.1.78:5000```. 
+Une fois correctement installé et lancé, le serveur peut ensuite être accédé depuis l'adresse du raspberry dans un navigateur avec le port 5000. Dans notre cas, il s'agit de l'adresse suivante :```https://192.168.1.78:5000```. 
 
 # Bibliothèques utilisées
 ## Python

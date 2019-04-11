@@ -80,10 +80,13 @@ class SequenceReader:
 		return None
 	
 	def sequence_is_valid(self, json):
+		"""
+		Check if the specified sequence represented as JSON object is valid.
+		"""
 		nodes=json[0]
 		edges=json[1]
 		#check if all nodes have at least one parent node
-		non_start_nodes = [n for n in nodes if n["id"]=="start"]
+		non_start_nodes = [n for n in nodes if n["id"]!="start"]
 		for n in non_start_nodes:
 			if not any([True for e in edges if e["to"]==n["id"]]) > 0:
 				return False
