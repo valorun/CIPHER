@@ -86,6 +86,11 @@ class ConfigFile():
 			option = None
 		return option
 
+class CoreConfigFile(ConfigFile):
+
+	def __init__(self, filepath):
+		ConfigFile.__init__(self, filepath)
+
 	# CAMERA URL
 	def setCameraUrl(self, url: str):
 		if not url.strip():
@@ -164,5 +169,5 @@ class Resources():
 		return [f for f in listdir(self.soundsPath) if isfile(join(self.soundsPath, f))]
 
 
-config = ConfigFile(CONFIG_FILE)
+config = CoreConfigFile(CONFIG_FILE)
 resources = Resources(SCRIPTS_LOCATION, SOUNDS_LOCATION)
