@@ -9,11 +9,13 @@ from cipher.core.actions import speech
 def handle_intents(client, userdata, message):
 	intent = message.payload.decode('utf-8')
 	try:
-		intent = json.loads(intent)['intent']['intentName']
+		intent = json.loads(intent)
 	except Exception:
 		return
-	db_intent = Intent.query.filter_by(intent=intent).first()
+	intentName = intent['intent']['intentName']
+	db_intent = Intent.query.filter_by(intent=intentName).first()
 	slots = {}
+	slots['flags'] = intent['slots']
 	if(db_intent != None):
 		speech(db_intent.response)
 		sequence_reader.launchSequence(db_intent.sequence, **slots)
