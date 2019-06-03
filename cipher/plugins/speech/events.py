@@ -7,8 +7,11 @@ from cipher.core.actions import speech
 
 @mqtt.on_topic('hermes/intent/#')
 def handle_intents(client, userdata, message):
-	intent = message.payload.decode('utf-8').rsplit('/',1)[1]
-	logging.info(intent)
+	intent = message.payload.decode('utf-8')
+	try:
+		intent = json.loads(intent)['intent']['intentName']
+	except Exception:
+		return
 	db_intent = Intent.query.filter_by(intent=intent).first()
 	slots = {}
 	if(db_intent != None):
