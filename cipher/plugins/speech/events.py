@@ -5,6 +5,8 @@ from cipher import mqtt
 from cipher.core.sequence_reader import sequence_reader
 from cipher.core.actions import speech
 
+mqtt.subscribe('hermes/intent/#')
+
 @mqtt.on_topic('hermes/intent/#')
 def handle_intents(client, userdata, message):
 	intent = message.payload.decode('utf-8').rsplit('/',1)[1]
