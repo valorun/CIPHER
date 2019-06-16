@@ -61,12 +61,12 @@ var intentsController = {
  	 *	@param	{string} intent intent name
  	 */
 	deleteIntent: function (intent) {
-		var confirm = window.confirm("Etes vous sûr de vouloir supprimer l'intention \'" + rel_label + "\' ?");
+		var confirm = window.confirm("Etes vous sûr de vouloir supprimer l'intention \'" + intent + "\' ?");
 		if (confirm) {
 			$.ajax({
 				type: 'POST',
 				url: '/delete_intent',
-				data: { intent: rel_lintentabel },
+				data: { intent: intent },
 				success: () => {
 					console.log(intent + " deleted");
 					$("#" + intent).remove();
