@@ -9,7 +9,7 @@ def client_connect():
     """
     Function called when a client connects.
     """
-    logging.info("Client " + str(request.remote_addr) + ' connected.')
+    logging.info('Client ' + str(request.remote_addr) + ' connected.')
 
 @socketio.on('disconnect', namespace='/client')
 def client_disconnect():

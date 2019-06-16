@@ -46,14 +46,14 @@ def on_raspi_disconnect(client, userdata, msg):
 
 @socketio.on('shutdown', namespace='/client')
 def shutdown():
-    logging.info("Shutdown rasperries")
+    logging.info('Shutdown rasperries')
     mqtt.publish('raspi/shutdown', 'shutdown')
 
 @socketio.on('reboot', namespace='/client')
 def reboot():
-    logging.info("Reboot rasperries")
+    logging.info('Reboot rasperries')
     mqtt.publish('raspi/reboot', 'reboot')
 
 @socketio.on('get_raspies', namespace='/client')
 def get_raspies():
-    emit("get_raspies", raspies, namespace="/client", broadcast=True)
+    emit('get_raspies', raspies, namespace='/client', broadcast=True)
