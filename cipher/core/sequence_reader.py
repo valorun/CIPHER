@@ -45,17 +45,6 @@ class SequenceReader:
 		elif action == 'script':
 			#pass the kwargs to the script (can be altered)
 			kwargs = script(actionData['script'], **kwargs)
-<<<<<<< HEAD
-		elif action=='sound':
-			sound(actionData['sound'])
-		elif action=='motion':
-			motion(actionData['direction'], actionData['speed'])
-		elif action=='servo':
-			servo(actionData['servo'], actionData['position'], actionData['speed'])
-		elif action=='servo_sequence': #COMPATIBILITY REASON
-			servo_sequence(actionData['sequence'])
-		elif action=='condition':
-=======
 		elif action == 'sound':
 			sound(actionData['sound'])
 		elif action == 'motion':
@@ -65,7 +54,6 @@ class SequenceReader:
 		elif action == 'servo_sequence': #COMPATIBILITY REASON
 			servo_sequence(actionData['sequence'])
 		elif action == 'condition':
->>>>>>> eb85b2cae1df6f06146d3e8ad1820f754c440b22
 			if 'flags' not in kwargs or actionData['flag'] not in kwargs['flags']:
 				#if there is no flag, or the specified flag is missing, stop the execution
 				return False
@@ -77,11 +65,7 @@ class SequenceReader:
 		"""
 		children=[]
 		for e in edges:
-<<<<<<< HEAD
-			if e['from']==id:
-=======
 			if e['from'] == id:
->>>>>>> eb85b2cae1df6f06146d3e8ad1820f754c440b22
 				children.append(e['to'])
 		return children
 
@@ -90,11 +74,7 @@ class SequenceReader:
 		Return the action of the node with the given id.
 		"""
 		for n in nodes:
-<<<<<<< HEAD
-			if n['id']==id:
-=======
 			if n['id'] == id:
->>>>>>> eb85b2cae1df6f06146d3e8ad1820f754c440b22
 				if 'action' in n:
 					return n['action']
 		return None
@@ -106,21 +86,12 @@ class SequenceReader:
 		nodes = json[0]
 		edges = json[1]
 		#check if all nodes have at least one parent node
-<<<<<<< HEAD
-		non_start_nodes = [n for n in nodes if n['id']!='start']
-		for n in non_start_nodes:
-			if not any([True for e in edges if e['to']==n['id']]) > 0:
-				return False
-		#check if all nodes have no edge that is both 'to' and 'from'
-		if len([False for e in edges if e['to']==e['from']]) > 0:
-=======
 		non_start_nodes = [n for n in nodes if n['id'] != 'start']
 		for n in non_start_nodes:
 			if not any([True for e in edges if e['to'] == n['id']]) > 0:
 				return False
 		#check if all nodes have no edge that is both "to" and "from"
 		if len([False for e in edges if e['to'] == e['from']]) > 0:
->>>>>>> eb85b2cae1df6f06146d3e8ad1820f754c440b22
 			return False
 		return True
 
@@ -130,13 +101,8 @@ class SequenceReader:
 		"""
 		if self.threads > 0: #wait for the current sequence to be completed to launch a new one
 			return
-<<<<<<< HEAD
-		nodes=json[0]
-		edges=json[1]
-=======
 		nodes = json[0]
 		edges = json[1]
->>>>>>> eb85b2cae1df6f06146d3e8ad1820f754c440b22
 		self._executeSequence('start', nodes, edges, **kwargs)
 
 	def launchSequence(self, name, **kwargs):
