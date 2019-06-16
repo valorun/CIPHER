@@ -46,8 +46,8 @@ var sequencesController = {
 				url: '/delete_sequence',
 				data: {seq_name:seq_name},
 				success: function(){
-					console.log(seq_name+ ' deleted');
-					$('#'+seq_name).remove();
+					console.log(seq_name + ' deleted');
+					$('#' + seq_name).remove();
 				},
 				error: function(request){
 					failAlert(request.responseText);
