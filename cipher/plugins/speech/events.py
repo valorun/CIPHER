@@ -15,9 +15,10 @@ def handle_intents(client, userdata, message):
 	intentName = intent['intent']['intentName']
 	logging.info('Received intent \'' + intentName + '\' with slots \'' + str(intent['slots']) + '\'')
 	db_intent = Intent.query.filter_by(intent=intentName).first()
-	slots = {}
-	slots['flags'] = intent['slots']
+	kwargs = {}
+	kwargs['flags'] = [intentName]
+	kwargs['slots'] = intent['slots']
 	if(db_intent != None):
 		speech(db_intent.response)
-		sequence_reader.launchSequence(db_intent.sequence.id, **slots)
+		sequence_reader.launchSequence(db_intent.sequence.id, **kwargs)
 
