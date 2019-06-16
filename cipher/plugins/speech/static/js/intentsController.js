@@ -42,7 +42,7 @@ var intentsController = {
 	  *	@param	{string} intent intant name
 	  *	@param	{boolean} value new state for the intent
  	 */
-	 enableRelay: function (intent, value) {
+	 enableIntent: function (intent, value) {
 		$.ajax({
 			type: 'POST',
 			url: '/enable_intent',
@@ -60,7 +60,7 @@ var intentsController = {
  	 *  Delete an intent
  	 *	@param	{string} intent intent name
  	 */
-	deleteRelay: function (intent) {
+	deleteIntent: function (intent) {
 		var confirm = window.confirm("Etes vous sûr de vouloir supprimer l'intention \'" + rel_label + "\' ?");
 		if (confirm) {
 			$.ajax({

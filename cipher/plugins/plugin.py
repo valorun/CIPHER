@@ -7,10 +7,10 @@ class Plugin():
         self.name = name
         self.label = label
         self.icon = icon
-        self.blueprint = Blueprint(name, import_name, static_folder='static', static_url_path='/'+name+'/static', template_folder='templates')
+        self.blueprint = Blueprint(name, import_name, static_folder='static', static_url_path='/' + name + '/static', template_folder='templates')
 
     def register(self, app, plugins):
-        self.plugins=plugins
+        self.plugins = plugins
         app.register_blueprint(self.blueprint)
 
     def render_page(self, template_name_or_list, **context):

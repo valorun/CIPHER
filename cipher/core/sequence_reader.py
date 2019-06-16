@@ -33,28 +33,28 @@ class SequenceReader:
 		if actionData is None:
 			return True
 		
-		action=actionData["type"]
+		action=actionData['type']
 
-		if action == "pause":
+		if action == 'pause':
 			#if it's a pause, the executed script is paused
-			socketio.sleep( actionData["time"]/1000 )
-		elif action == "speech":
-			speech(actionData["speech"])
-		elif action == "relay":
-			relay(actionData["relay"], actionData["state"])
-		elif action == "script":
+			socketio.sleep( actionData['time']/1000 )
+		elif action == 'speech':
+			speech(actionData['speech'])
+		elif action == 'relay':
+			relay(actionData['relay'], actionData['state'])
+		elif action == 'script':
 			#pass the kwargs to the script (can be altered)
-			kwargs = script(actionData["script"], **kwargs)
-		elif action=="sound":
-			sound(actionData["sound"])
-		elif action=="motion":
-			motion(actionData["direction"], actionData["speed"])
-		elif action=="servo":
-			servo(actionData["servo"], actionData["position"], actionData["speed"])
-		elif action=="servo_sequence": #COMPATIBILITY REASON
-			servo_sequence(actionData["sequence"])
-		elif action=="condition":
-			if "flags" not in kwargs or actionData["flag"] not in kwargs["flags"]:
+			kwargs = script(actionData['script'], **kwargs)
+		elif action=='sound':
+			sound(actionData['sound'])
+		elif action=='motion':
+			motion(actionData['direction'], actionData['speed'])
+		elif action=='servo':
+			servo(actionData['servo'], actionData['position'], actionData['speed'])
+		elif action=='servo_sequence': #COMPATIBILITY REASON
+			servo_sequence(actionData['sequence'])
+		elif action=='condition':
+			if 'flags' not in kwargs or actionData['flag'] not in kwargs['flags']:
 				#if there is no flag, or the specified flag is missing, stop the execution
 				return False
 		return True
@@ -65,8 +65,8 @@ class SequenceReader:
 		"""
 		children=[]
 		for e in edges:
-			if e["from"]==id:
-				children.append(e["to"])
+			if e['from']==id:
+				children.append(e['to'])
 		return children
 
 	def _getNodeActionData(self, id, nodes):
@@ -74,9 +74,9 @@ class SequenceReader:
 		Return the action of the node with the given id.
 		"""
 		for n in nodes:
-			if n["id"]==id:
-				if "action" in n:
-					return n["action"]
+			if n['id']==id:
+				if 'action' in n:
+					return n['action']
 		return None
 	
 	def sequence_is_valid(self, json):
@@ -86,12 +86,12 @@ class SequenceReader:
 		nodes=json[0]
 		edges=json[1]
 		#check if all nodes have at least one parent node
-		non_start_nodes = [n for n in nodes if n["id"]!="start"]
+		non_start_nodes = [n for n in nodes if n['id']!='start']
 		for n in non_start_nodes:
-			if not any([True for e in edges if e["to"]==n["id"]]) > 0:
+			if not any([True for e in edges if e['to']==n['id']]) > 0:
 				return False
-		#check if all nodes have no edge that is both "to" and "from"
-		if len([False for e in edges if e["to"]==e["from"]]) > 0:
+		#check if all nodes have no edge that is both 'to' and 'from'
+		if len([False for e in edges if e['to']==e['from']]) > 0:
 			return False
 		return True
 
@@ -103,7 +103,7 @@ class SequenceReader:
 			return
 		nodes=json[0]
 		edges=json[1]
-		self._executeSequence("start", nodes, edges, **kwargs)
+		self._executeSequence('start', nodes, edges, **kwargs)
 
 	def launchSequence(self, name, **kwargs):
 		"""
@@ -111,7 +111,7 @@ class SequenceReader:
 		"""
 		if self.threads>0: #wait for the current sequence to be completed to launch a new one
 			return
-		if name is None or name == "":
+		if name is None or name == '':
 			return
 		seq = Sequence.query.filter_by(id=name).first()
 		if seq is not None and seq.enabled:
