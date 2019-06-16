@@ -1,5 +1,5 @@
 import logging
-from cipher.model import db, Intent
+from cipher.model import db, Intent, Sequence
 import json
 from cipher import mqtt
 from cipher.core.sequence_reader import sequence_reader
@@ -13,11 +13,11 @@ def handle_intents(client, userdata, message):
 	except Exception:
 		return
 	intentName = intent['intent']['intentName']
-	logging.info('Received intent \'' + intentName + '\' with slots \'' + intent['slots'] + '\'')
+	logging.info('Received intent \'' + intentName + '\' with slots \'' + str(intent['slots']) + '\'')
 	db_intent = Intent.query.filter_by(intent=intentName).first()
 	slots = {}
 	slots['flags'] = intent['slots']
 	if(db_intent != None):
 		speech(db_intent.response)
-		sequence_reader.launchSequence(db_intent.sequence, **slots)
+		sequence_reader.launchSequence(db_intent.sequence.id, **slots)
 
