@@ -8,12 +8,12 @@ from cipher.model import Sequence
 
 
 @socketio.on('play_sequence', namespace='/client')
-def play_sequence(seq_name:str, flags):
+def play_sequence(seq_name:str):
 	"""
 	Function called when the client want to execute a sequence.
 	"""
 	logging.debug("Client triggered sequence: \'" + seq_name + "\'")
-	sequence_reader.launchSequence(seq_name, flags=flags)
+	sequence_reader.launchSequence(seq_name)
 
 @socketio.on('activate_relay', namespace='/client')
 def activate_relay(label:str):
