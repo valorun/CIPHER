@@ -201,27 +201,12 @@ var graphPanelController = {
 			action.type = 'pause';
 			action.time = parseInt($('#pause').val());
 			label += 'pause:' + action.time + 'ms';
-		} else if (selectedAction == 'condition'){
-			if($('#flag').val() == null){
-				failAlert('Aucun drapeau sélectionné.');
-				return false;
-			}
-			if($('#flag').val().split(' ').length > 1){
-				failAlert('Un seul drapeau peut être ajouté à la fois et ne doit pas contenir d\'espaces.');
-				return false;
-			}
-			nodeData.shape = 'diamond';
-			action.type = 'condition';
-			action.flag = $('#flag').val().split(' ')[0];
-			label += 'condition:' + action.flag;
-		}
-		else if (selectedAction == 'servoSequence'){ //COMPATIBILITY REASON
+		} else if (selectedAction == 'servoSequence'){ //COMPATIBILITY REASON
 			action.type = 'servo_sequence';
 			action.sequence = parseInt($('#sequence').val());
 			nodeData.shape = 'circle';
 			label += 'servo_sequence:' + action.sequence;
-		}
-		else
+		} else
 			return false;
 		nodeData.label = label;
 		nodeData.action = action;
