@@ -28,7 +28,7 @@ class SequenceReader:
 
 	def executeAction(self, actionData, **kwargs):
 		"""
-		Execute an action based on an action data, for exemple 'sleep:100ms'.
+		Execute an action based on an action data, for exemple 'sleep'.
 		"""
 		if actionData is None:
 			return True
