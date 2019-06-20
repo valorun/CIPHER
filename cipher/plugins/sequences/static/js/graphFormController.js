@@ -38,7 +38,6 @@ var graphFormController = {
 		$('#scriptOptions').addClass('hide');
 		$('#soundOptions').addClass('hide');
 		$('#pauseOptions').addClass('hide');
-		$('#conditionOptions').addClass('hide');
 		$('#servoSequenceOptions').addClass('hide');//COMPATIBILITY REASON
 		if($('select[name=newNodeTypeChoice]').val() !== ''){
 			$('#' + $('select[name=newNodeTypeChoice]').val() + 'Options').removeClass('hide');
