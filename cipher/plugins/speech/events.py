@@ -21,4 +21,3 @@ def handle_intents(client, userdata, message):
 	if(db_intent != None):
 		speech(db_intent.response)
 		sequence_reader.launchSequence(db_intent.sequence.id, **kwargs)
-

@@ -1,5 +1,3 @@
-import json
-import requests
 from cipher.core.actions import speech
 
 def main(**kwargs):
@@ -7,4 +5,3 @@ def main(**kwargs):
         return
 
     speech(kwargs['slots'][0])
-    return kwargs

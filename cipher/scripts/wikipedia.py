@@ -6,9 +6,9 @@ from cipher.core.actions import speech
 def main(**kwargs):
     if 'slots' not in kwargs or len(kwargs['slots']) < 1:
         return
-    response = requests.get("https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles=" + kwargs['slots'][0]['rawValue'] + "&exintro&exlimit=1&exsentences=1")
+    response = requests.get('https://fr.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles=' + kwargs['slots'][0]['rawValue'] + '&exintro&exlimit=1&exsentences=1')
     content = json.loads(response.content.decode('utf-8'))
-    extract = ""
+    extract = ''
     try:
         pages = content['query']['pages']
         for page in pages.values():
@@ -16,4 +16,3 @@ def main(**kwargs):
     except Exception:
         logging.error("not found")
     speech(extract)
-    return kwargs
