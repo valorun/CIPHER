@@ -2,6 +2,7 @@ from cipher.core.actions import speech
 
 def main(**kwargs):
     if 'slots' not in kwargs or len(kwargs['slots']) < 1:
+        logging.error("no slot found")
         return
 
     result = 0
