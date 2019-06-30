@@ -20,6 +20,6 @@ def main(**kwargs):
                 elif last_operator == '/':
                     result /= slot['value']['value']
         elif slot['entity'] == 'operator':
-            last_operator == slot['value']['value']
+            last_operator = slot['value']['value']
 
     speech(str(int(result)))
