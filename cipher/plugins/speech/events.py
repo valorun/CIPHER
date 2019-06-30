@@ -16,7 +16,6 @@ def handle_intents(client, userdata, message):
 	logging.info('Received intent \'' + intentName + '\' with slots \'' + str(intent['slots']) + '\'')
 	db_intent = Intent.query.filter_by(intent=intentName).first()
 	kwargs = {}
-	kwargs['flags'] = [intentName]
 	kwargs['slots'] = intent['slots']
 	if(db_intent != None):
 		speech(db_intent.response)
