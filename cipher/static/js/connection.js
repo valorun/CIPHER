@@ -4,8 +4,10 @@ var connectionManager = {
 	voices: null,
 	audio: null,
 	init: function(){
+		this.voices = window.speechSynthesis.getVoices();
+
 		window.speechSynthesis.onvoiceschanged = () => {
-			this.voices=window.speechSynthesis.getVoices();
+			this.voices = window.speechSynthesis.getVoices();
 		};
 		this.bind();
 	},
@@ -38,7 +40,7 @@ var connectionManager = {
 	},
 
 	speak: function(msg){
-		if ('speechSynthesis' in window) {
+		if ('speechSynthesis' in window && this.voices !== null) {
 			let to_speak = new SpeechSynthesisUtterance(msg);
 			this.voices.forEach((e) =>{
 				if(Cookies.get('voice') === e.name){

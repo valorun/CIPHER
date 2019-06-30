@@ -1,17 +1,8 @@
 var settingsController = {
 	init: function () {
-		window.speechSynthesis.onvoiceschanged = function () {
-			let voices = window.speechSynthesis.getVoices();
-			$.each(voices, function () {
-				if (typeof Cookies.get('voice') !== 'undefined' &&
-					Cookies.get('voice') === this.name) { // if a voice has already been chosen, select it
-					$('#voices').append($('<option selected=\'selected\'/>').val(this.name).text(this.name));
-				} else {
-					$('#voices').append($('<option />').val(this.name).text(this.name));
-				}
-			});
-		};
+		window.speechSynthesis.onvoiceschanged = this.fillVoices;
 		this.bind();
+		this.fillVoices();
 		socket.emit('get_raspies');
 	},
 	bind: function () {
@@ -109,4 +100,16 @@ var settingsController = {
 		});
 
 	},
+	fillVoices: function() {
+		let voices = window.speechSynthesis.getVoices();
+		$('#voices').empty();
+		$.each(voices, function () {
+			if (typeof Cookies.get('voice') !== 'undefined' &&
+				Cookies.get('voice') === this.name) { // if a voice has already been chosen, select it
+				$('#voices').append($('<option selected=\'selected\'/>').val(this.name).text(this.name));
+			} else {
+				$('#voices').append($('<option />').val(this.name).text(this.name));
+			}
+		});
+	}
 };
