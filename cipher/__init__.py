@@ -56,7 +56,7 @@ def create_app(debug=False):
             exit(1)
 
     socketio.init_app(app)
-    #mqtt.init_app(app)
+    mqtt.init_app(app)
     mqtt.subscribe('server/#')
     mqtt.subscribe('hermes/intent/#')
     
