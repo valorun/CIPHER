@@ -1,5 +1,5 @@
 # **C.I.P.H.E.R: Control Interface for Programmable Homemade Entertainment Robot**
-![alt text](https://raw.githubusercontent.com/valorun/CIPHER/dev/cipher/static/img/capture.png)
+![alt text](https://raw.githubusercontent.com/valorun/CIPHER/docs/capture.png)
 Interface de contrôle robotique C.I.P.H.E.R. Il s'agit d'une interface web réalisée en HTML/Js permettant une connexion à un raspberry via un serveur Python Flask. En outre, l'utilisateur peut ordonner l'exécution de commandes sur les raspberries inter-connectés, tel que l'activation de relais ou de servo-moteurs.
 
 # Fonctionnalités
