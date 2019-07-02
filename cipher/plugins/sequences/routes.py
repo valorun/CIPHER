@@ -31,7 +31,8 @@ def save_sequence():
         return "La séquence est vide.", 400
     if Sequence.query.filter_by(id=seq_name).first() is not None:
 	    return "Une sequence portant le même nom existe déjà.", 400
-    if not sequence_reader.sequence_is_valid(json.loads(seq_data)):
+
+    if not sequence_reader.getSequenceFromJson(json.loads(seq_data)).isValid():
         return "La séquence n'est pas valide.", 400
     logging.info("Saving sequence "+seq_name)
     db_sequence = Sequence(id=seq_name, value=seq_data, enabled=True)
