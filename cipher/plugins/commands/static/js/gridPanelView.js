@@ -74,18 +74,15 @@ var gridPanelView = {
 	 * Add a button to the grid
 	 * An action can be associated if desired. Additional parameters can be specified
 	 */
-	addButton: function(label, actionType, actionParameter, actionFlags, color, x, y, width, height){
+	addButton: function(label, actionType, actionParameter, color, x, y, width, height){
 		let dataType = 'data-type=\'' + actionType + '\' ';
 		let dataParameter = 'data-parameter=\'' + actionParameter + '\' ';
-		let dataFlags = '';
-		if(actionFlags != null)
-			dataFlags = 'data-flags=\'' + actionFlags.join(' ') + '\' ';
 		
 		var dataColor = '';
 		if(color != null)
 			dataColor = 'data-color=\'' + color + '\'';
 
-		var el= $('<div><div class=\'grid-stack-item-content btn '+ color +'\' ' + dataType + dataParameter + dataFlags + dataColor+ '><strong class=\'display-middle\'>' + label + '</strong></div><div/>');
+		var el= $('<div><div class=\'grid-stack-item-content btn '+ color +'\' ' + dataType + dataParameter + dataColor+ '><strong class=\'display-middle\'>' + label + '</strong></div><div/>');
 		if(this.editionMode){
 			el.children().first().addClass('disabled');
 		}
@@ -95,12 +92,12 @@ var gridPanelView = {
 					socket.emit('activate_relay', actionParameter);
 				}
 				if(actionType == 'sequence') {
-					socket.emit('play_sequence', actionParameter, actionFlags);
+					socket.emit('play_sequence', actionParameter);
 				}
 				if(actionType == 'sound') {
 					socket.emit('play_sound', actionParameter);
 				}
-				console.log(actionType + ', ' + actionParameter + ', ' + actionFlags);
+				console.log(actionType + ', ' + actionParameter);
 			}
 		});
 		this.grid.addWidget(el, x, y, width, height);

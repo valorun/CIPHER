@@ -16,7 +16,6 @@ var gridPanelController = {
 
 			let actionType = $('select[name=newButtonTypeChoice]').val();
 			let actionParam = null;
-			let actionFlags = null;
 			if (actionType == 'relay') {
 				if($('#relays').val() == null){
 					failAlert('Aucun relai n\'a été selectionné.');
@@ -38,7 +37,6 @@ var gridPanelController = {
 					failAlert('Un bouton correspondant à la même sequence existe déjà.');
 					return;
 				}
-				actionFlags = $('#flags').val().split(' ');
 			} else if (actionType == 'sound') {
 				if($('#sounds').val() == null){
 					failAlert('Aucun son n\'a été selectionné.');
@@ -52,7 +50,7 @@ var gridPanelController = {
 				}
 			}
 
-			this.gridPanelView.addButton(buttonLabel, actionType, actionParam, actionFlags, color, 1, 1, 1, 1);
+			this.gridPanelView.addButton(buttonLabel, actionType, actionParam, color, 1, 1, 1, 1);
 		});
 
 		$('select[name=newButtonTypeChoice]').on('change', () => {
@@ -91,10 +89,7 @@ var gridPanelController = {
 			success: (result) =>{
 				let items = GridStackUI.Utils.sort(result);
 				items.forEach((node) => {
-					let flags = [];
-					if(node.action.flags != null)
-						flags = node.action.flags.split(' ');
-					this.gridPanelView.addButton(node.label, node.action.type, node.action.parameter, flags, node.color, node.x, node.y, node.width, node.height);
+					this.gridPanelView.addButton(node.label, node.action.type, node.action.parameter, node.color, node.x, node.y, node.width, node.height);
 				});
 				socket.emit('update_all_relays_state');
 			},
@@ -117,7 +112,6 @@ var gridPanelController = {
 			let action = {};
 			action.type = child.data('type');
 			action.parameter = child.data('parameter');
-			action.flags = child.data('flags');
 
 			return {
 				x: node.x,

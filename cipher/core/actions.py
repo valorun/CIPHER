@@ -43,11 +43,11 @@ def relay(label:str, state=None):
 			for peer in peers_rel:
 				peers.append(peer.pin)
 			#activate the relay on the corresponding raspberry
-			mqtt.publish('raspi/'+raspi_id+'/relay/activate', json.dumps({'gpio':pin, 'state':state, 'peers':peers}))
+			mqtt.publish('raspi/' + raspi_id + '/relay/activate', json.dumps({'gpio':pin, 'state':state, 'peers':peers}))
 			#socketio.emit('activate_paired_relay', (pin, state, peers, raspi_id), namespace='/relay', broadcast=True)
 
 		else:
-			mqtt.publish('raspi/'+raspi_id+'/relay/activate', json.dumps({'gpio':pin, 'state':state, 'peers':None}))
+			mqtt.publish('raspi/' + raspi_id + '/relay/activate', json.dumps({'gpio':pin, 'state':state, 'peers':None}))
 			#socketio.emit('activate_relay', (pin, state, raspi_id), namespace='/relay')
 
 def motion(direction:str, speed:int):
@@ -60,7 +60,7 @@ def motion(direction:str, speed:int):
 		return
 		
 	logging.info('Moving with values ' + direction + ', ' + str(speed))
-	mqtt.publish('raspi/'+config.getMotionRaspiId()+'/motion', json.dumps({'direction':direction, 'speed':speed}))
+	mqtt.publish('raspi/' + config.getMotionRaspiId() + '/motion', json.dumps({'direction':direction, 'speed':speed}))
 	
 def servo(label:str, position:int, speed:int):
 	"""
@@ -75,7 +75,7 @@ def servo(label:str, position:int, speed:int):
 		pin = db_servo.pin
 		raspi_id = db_servo.raspi_id
 		logging.info('Moving servo \'' + label + '\' to ' + str(position) + ' at speed ' + str(speed))
-		mqtt.publish('raspi/'+raspi_id+'/servo/set_position', json.dumps({'gpio':pin, 'position':position, 'speed':speed}))
+		mqtt.publish('raspi/' + raspi_id + '/servo/set_position', json.dumps({'gpio':pin, 'position':position, 'speed':speed}))
 
 def servo_sequence(index:int):
 	"""
@@ -88,7 +88,7 @@ def servo_sequence(index:int):
 			return
 		raspi_id = db_servo.raspi_id
 		logging.info('Executing servo sequence \'' + str(index) + '\'')
-		mqtt.publish('raspi/'+raspi_id+'/servo/sequence', json.dumps({'index':index}))
+		mqtt.publish('raspi/' + raspi_id + '/servo/sequence', json.dumps({'index':index}))
 
 def sound(sound_name:str):
 	"""

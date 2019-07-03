@@ -24,7 +24,7 @@ class SequenceReader:
 		Launch the sequence execution from a JSON object.
 		"""
 		#wait for the current sequence to be completed to launch a new one
-		if self.currentSequence is not None and not self.currentSequence.inExecution():
+		if self.currentSequence is not None and self.currentSequence.inExecution():
 			return
 		
 		seq = self.getSequenceFromJson(json)

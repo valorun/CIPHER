@@ -1,3 +1,4 @@
+import logging
 from flask_socketio import SocketIO
 from cipher import socketio
 from .actions import speech, relay, motion, servo, servo_sequence, sound, script
@@ -95,7 +96,6 @@ class Sequence:
             return True
 
         action = actionData['type']
-
         if action == 'pause':
             #if it's a pause, the executed script is paused
             socketio.sleep( actionData['time']/1000 )
