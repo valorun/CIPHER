@@ -21,4 +21,4 @@ def handle_intents(client, userdata, message):
 		if db_intent.sequence is not None:
 			sequence_reader.launchSequence(db_intent.sequence.id, **kwargs)
 		elif db_intent.script_name is not None:
-			script(db_intent.script_name)
+			script(db_intent.script_name, **kwargs)
