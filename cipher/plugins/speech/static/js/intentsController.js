@@ -10,12 +10,12 @@ var intentsController = {
 				failAlert("L'intention fournie est vide.");
   				return;
 			}
-			var response=$("#currentResponse" ).val()
+			var script_name=$("#currentScriptName" ).val()
   			var sequence_id=$( "#currentSequence" ).val();
 			$.ajax({
 				type: 'POST',
 				url: '/save_intent',
-				data: { intent: intent, response: response, sequence_id: sequence_id},
+				data: { intent: intent, script_name: script_name, sequence_id: sequence_id},
 				success: function () {
 					location.reload();
 				},

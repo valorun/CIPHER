@@ -24,7 +24,7 @@ class Relay(db.Model):
 	raspi_id = db.Column(db.String(20), nullable=False)
 
 	def __repr__(self):
-		return '<Relay %r : >' % self.label
+		return '<Relay %r>' % self.label
 
 class Servo(db.Model):
 	label = db.Column(db.String(50), primary_key=True)
@@ -36,16 +36,16 @@ class Servo(db.Model):
 	raspi_id = db.Column(db.String(20), nullable=False)
 
 	def __repr__(self):
-		return '<Servo %r : >' % self.label
+		return '<Servo %r>' % self.label
 
 class Intent(db.Model):
 	intent = db.Column(db.String(50), primary_key=True)
-	response = db.Column(db.String(50))
+	script_name = db.Column(db.String(50))
 	sequence_id = db.Column(db.String(50), db.ForeignKey('sequence.id'))
 	enabled = db.Column(db.Boolean, nullable=False)
 
 	def __repr__(self):
-		return '<Intent %r : >' % self.intent
+		return '<Intent %r>' % self.intent
 
 class ConfigFile():
 	"""
@@ -60,9 +60,9 @@ class ConfigFile():
 		try:
 			with open(self.filepath, 'r') as f:
 				content = json.load(f)
-		except IOError: #si aucun fichier n'existe, ou si la donnée lue n'est pas en json
+		except IOError: #if no file exists, or if the data is not in json
 			with open(self.filepath, 'w') as f:
-				f.write("") #on créer un nouveau 
+				f.write("") #create a new one
 			content = {}
 		except ValueError:
 			content = {}
