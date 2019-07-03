@@ -22,14 +22,14 @@ def save_buttons():
     """
     Save the grid of buttons on the server.
     """
-    logging.info("Saving buttons grid")
-    data=request.form.get("data")
+    logging.info('Saving buttons grid')
+    data=request.form.get('data')
     try:
         data = json.loads(data)
     except (ValueError, Exception):
         data = None
     config.setCommandsGrid(data)
-    return "Grille sauvegardée.", 200
+    return 'Grille sauvegardée.', 200
 
 @commands.route('/load_buttons', methods=['POST'])
 @login_required
@@ -37,6 +37,6 @@ def load_buttons():
     """  
     Load the grid of buttons from the server.
     """
-    logging.info("Loading buttons grid")
+    logging.info('Loading buttons grid')
     grid = config.getCommandsGrid()
     return jsonify(grid)

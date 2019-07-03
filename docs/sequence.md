@@ -53,4 +53,4 @@ Une séquence se présente sous la forme suivante:
 ]
 ```
 
-Il s'agit ici d'une séquence simple, où un seul noeud est relié au noeud de départ.gi
+Il s'agit ici d'une séquence simple, où un seul noeud est relié au noeud de départ.
