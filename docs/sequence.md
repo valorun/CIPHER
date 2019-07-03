@@ -13,7 +13,7 @@ Une fenêtre représentant un graph vide permet à l'utilisateur d'ajouter diff�
 - Mettre la branche courante en pause
 
 Les relais et servomoteurs pouvant être activés sont à définir préalablement dans l'onglet "Paramètres".
-Une séquence peut contenir plusieurs actions en parallèle. Par exemple, si plusieurs actions sont reliées à un noeud même noeud, celles-ci seront toutes executées en même temps après l'action du noeud courant.
+Une séquence peut contenir plusieurs actions en parallèle. Par exemple, si plusieurs actions sont reliées à un même noeud, celles-ci seront toutes executées en même temps après l'action du noeud courant.
 
 ## Aspect technique
 
