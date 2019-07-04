@@ -24,14 +24,14 @@ def save_intent():
     script_name = request.form.get('script_name')
     seq_id = request.form.get('sequence_id')
     if not intent or ' ' in intent:
-        return 'Un nom d\'intention ne doit pas être vide ou contenir d\'espace.', 400
+        return "Un nom d'intention ne doit pas être vide ou contenir d'espace.", 400
     if ' ' in script_name:
-        return 'Un nom de script ne doit pas contenir d\'espace.', 400
+        return "Un nom de script ne doit pas contenir d'espace.", 400
     if Intent.query.filter_by(intent=intent).first() is not None:
-	    return 'Une intention portant le même nom existe déjà.', 400
+	    return "Une intention portant le même nom existe déjà.", 400
     if script_name and script_name not in resources.getScripts():
-        return 'Le script spécifié n\'existe pas.', 400
-    logging.info('Saving intent \'' + intent + '\'')
+        return "Le script spécifié n'existe pas.", 400
+    logging.info("Saving intent '" + intent + "'")
     db_intent = Intent(intent=intent, script_name=script_name, sequence_id=seq_id, enabled=True)
     db.session.merge(db_intent)
     db.session.commit()
@@ -43,8 +43,8 @@ def enable_intent():
     intent = request.form.get('intent')
     value = json.loads(request.form.get('value'))
     if not intent or ' ' in intent:
-        return 'Une intention ne doit pas être vide ou contenir d\'espace.', 400
-    logging.info('Updating intent \'' + intent + '\'')
+        return "Une intention ne doit pas être vide ou contenir d'espace.", 400
+    logging.info("Updating intent '" + intent + "'")
     db_intent = Intent.query.filter_by(intent=intent).first()
     db_intent.enabled = value
     db.session.commit()
@@ -55,8 +55,8 @@ def enable_intent():
 def delete_intent():
     intent = request.form.get('intent')
     if not intent or ' ' in intent:
-        return 'Une intention ne doit pas être vide ou contenir d\'espace.', 400
-    logging.info('Deleting intent \'' + intent + '\'')
+        return "Une intention ne doit pas être vide ou contenir d'espace.", 400
+    logging.info("Deleting intent '" + intent + "'")
     db_intent = Intent.query.filter_by(intent=intent).first()
     db.session.delete(db_intent)
     db.session.commit()

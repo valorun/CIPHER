@@ -7,15 +7,15 @@ from cipher.security import login_required
 
 @core.app_errorhandler(400)
 def invalid_page(e):
-	return render_template('error.html', error_code=400, error_message='La requête est invalide'), 400
+	return render_template('error.html', error_code=400, error_message="La requête est invalide"), 400
 
 @core.app_errorhandler(404)
 def page_not_found(e):
-	return render_template('error.html', error_code=404, error_message='Cette page n\'existe pas'), 404
+	return render_template('error.html', error_code=404, error_message="Cette page n'existe pas"), 404
 
 @core.app_errorhandler(405)
 def method_not_allowed(e):
-	return render_template('error.html', error_code=405, error_message='Cette page n\'existe pas'), 405
+	return render_template('error.html', error_code=405, error_message="Cette page n'existe pas"), 405
 
 #@core.app_errorhandler(Exception)
 #def unhandled_exception(e):

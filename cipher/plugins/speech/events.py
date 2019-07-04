@@ -13,7 +13,7 @@ def handle_intents(client, userdata, message):
 	except Exception:
 		return
 	intentName = intent['intent']['intentName']
-	logging.info('Received intent \'' + intentName + '\' with slots \'' + str(intent['slots']) + '\'')
+	logging.info("Received intent '" + intentName + "' with slots '" + str(intent['slots']) + "'")
 	db_intent = Intent.query.filter_by(intent=intentName).first()
 	kwargs = {}
 	kwargs['slots'] = intent['slots']

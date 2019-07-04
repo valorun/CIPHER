@@ -40,7 +40,7 @@ class SequenceReader:
 		seq = DbSequence.query.filter_by(id=name).first()
 		if seq is not None and seq.enabled:
 			seq_data = seq.value
-			logging.info('Executing sequence ' + name)
+			logging.info("Executing sequence " + name)
 			self.readSequence(json.loads(seq_data), **kwargs)
 
 sequence_reader = SequenceReader()

@@ -13,7 +13,7 @@ def login():
         session['username'] = request.form['username']
         session['logged_in'] = True
     else:
-        flash('L\'utilisateur ou le mot de passe est incorrect.')
+        flash("L'utilisateur ou le mot de passe est incorrect.")
     return redirect('/')
 
 @security.route('/logout')

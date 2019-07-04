@@ -16,7 +16,7 @@ def speech(speech:str):
 	"""
 	if speech is None:
 		return
-	logging.info('Pronouncing \'' + speech + '\'')
+	logging.info("Pronouncing '" + speech + "'")
 	socketio.emit('response', speech, namespace='/client')
 
 def relay(label:str, state=None):
@@ -24,7 +24,7 @@ def relay(label:str, state=None):
 	Activate the relay with the specified label
 	"""
 	if state != 1 and state != 0:
-		state=''
+		state = ''
 	with db.app.app_context():
 		db_rel = Relay.query.filter_by(label=label).first()
 		if db_rel is None or not db_rel.enabled:
@@ -33,7 +33,7 @@ def relay(label:str, state=None):
 		parity = db_rel.parity
 		raspi_id = db_rel.raspi_id
 
-		logging.info('Activating relay \'' + label + '\'')
+		logging.info("Activating relay '" + label + "'")
 
 		#if the relay is paired
 		if parity!='':
@@ -44,11 +44,9 @@ def relay(label:str, state=None):
 				peers.append(peer.pin)
 			#activate the relay on the corresponding raspberry
 			mqtt.publish('raspi/' + raspi_id + '/relay/activate', json.dumps({'gpio':pin, 'state':state, 'peers':peers}))
-			#socketio.emit('activate_paired_relay', (pin, state, peers, raspi_id), namespace='/relay', broadcast=True)
 
 		else:
 			mqtt.publish('raspi/' + raspi_id + '/relay/activate', json.dumps({'gpio':pin, 'state':state, 'peers':None}))
-			#socketio.emit('activate_relay', (pin, state, raspi_id), namespace='/relay')
 
 def motion(direction:str, speed:int):
 	"""
@@ -59,7 +57,7 @@ def motion(direction:str, speed:int):
 	if config.getMotionRaspiId() is None:
 		return
 		
-	logging.info('Moving with values ' + direction + ', ' + str(speed))
+	logging.info("Moving with values " + direction + ", " + str(speed))
 	mqtt.publish('raspi/' + config.getMotionRaspiId() + '/motion', json.dumps({'direction':direction, 'speed':speed}))
 	
 def servo(label:str, position:int, speed:int):
@@ -74,7 +72,7 @@ def servo(label:str, position:int, speed:int):
 			return
 		pin = db_servo.pin
 		raspi_id = db_servo.raspi_id
-		logging.info('Moving servo \'' + label + '\' to ' + str(position) + ' at speed ' + str(speed))
+		logging.info("Moving servo '" + label + "' to " + str(position) + " at speed " + str(speed))
 		mqtt.publish('raspi/' + raspi_id + '/servo/set_position', json.dumps({'gpio':pin, 'position':position, 'speed':speed}))
 
 def servo_sequence(index:int):
@@ -87,7 +85,7 @@ def servo_sequence(index:int):
 		if db_servo is None:
 			return
 		raspi_id = db_servo.raspi_id
-		logging.info('Executing servo sequence \'' + str(index) + '\'')
+		logging.info("Executing servo sequence '" + str(index) + "'")
 		mqtt.publish('raspi/' + raspi_id + '/servo/sequence', json.dumps({'index':index}))
 
 def sound(sound_name:str):
@@ -95,17 +93,17 @@ def sound(sound_name:str):
 	Execute the requested sound from the 'sounds' directory
 	"""
 	if not exists(join(SOUNDS_LOCATION, sound_name)):
-		logging.error('Cannot load sound \'' + sound_name + '\'')
+		logging.error("Cannot load sound '" + sound_name + "'")
 		return
 
 	if config.getAudioOnServer():
-		logging.info('Playing sound \'' + join(SOUNDS_LOCATION, sound_name) + '\' on server')
+		logging.info("Playing sound '" + join(SOUNDS_LOCATION, sound_name) + "\' on server")
 		if current_sound is None or current_sound.poll() is None: # if no sound is played or the current sound ended
 			curent_sound = Popen(['mplayer', join(SOUNDS_LOCATION, sound_name)])	
 		else:
 			curent_sound.terminate()
 	else:
-		logging.info('Playing sound \'' + sound_name + '\' on client')			
+		logging.info("Playing sound '" + sound_name + "' on client")			
 		socketio.emit('play_sound', sound_name, namespace='/client')
 
 def script(script_name:str, **kwargs):
@@ -113,11 +111,11 @@ def script(script_name:str, **kwargs):
 	Import the requested script from the 'scripts' directory and execute its 'main' method
 	"""
 	if not exists(join(SCRIPTS_LOCATION, script_name)):
-		logging.error('Cannot load script \'' + script_name + '\'')
+		logging.error("Cannot load script '" + script_name + "'")
 		return
 	spec = importlib.util.spec_from_file_location('script', join(SCRIPTS_LOCATION, script_name))
 	script = importlib.util.module_from_spec(spec)
-	logging.info('Executing script \'' + script_name + '\'')			
+	logging.info("Executing script '" + script_name + "'")			
 	spec.loader.exec_module(script)
 	result = script.main(**kwargs)
 	if result is not None and type(result) == dict:

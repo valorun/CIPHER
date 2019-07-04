@@ -10,7 +10,7 @@ def update_all_relays_state():
 	"""
 	Update the state of the relays on the raspberry side at the request of a client.
 	"""
-	logging.info('Request relay status update from client')
+	logging.info("Request relay status update from client")
 	# for each known raspberry ...
 	for raspi in Relay.query.distinct(Relay.raspi_id):
 		raspi_id=raspi.raspi_id
@@ -27,7 +27,7 @@ def update_relays_state_for_client(client, userdata, msg):
 	"""
 	Update the state of the relays on the client side at the request of a raspberry.
 	"""
-	logging.info('Updating relay status on client')
+	logging.info("Updating relay status on client")
 	relays_list = [] # relays to update on client 
 	data = json.loads(msg.payload.decode('utf-8'))
 	# for each specified relay ...

@@ -52,11 +52,11 @@ def create_app(debug=False):
             # then register its blueprint
             p.register(app, loaded_plugins)
         except Exception:
-            logging.error('Failed to load plugin \'' + p_name + '\'')
+            logging.error("Failed to load plugin '" + p_name + "'")
             exit(1)
 
     socketio.init_app(app)
-    mqtt.init_app(app)
+    #mqtt.init_app(app)
     mqtt.subscribe('server/#')
     mqtt.subscribe('hermes/intent/#')
     

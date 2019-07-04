@@ -8,19 +8,19 @@ from cipher.security import login_required
 @settings.route('/settings')
 @login_required
 def settings_page():
-    relays=Relay.query.all()
-    servos=Servo.query.all()
-    cameraUrl=config.getCameraUrl() or ""
-    audioOnServer=config.getAudioOnServer()
-    motionRaspiId=config.getMotionRaspiId() or ""
+    relays = Relay.query.all()
+    servos = Servo.query.all()
+    cameraUrl = config.getCameraUrl() or ''
+    audioOnServer = config.getAudioOnServer()
+    motionRaspiId = config.getMotionRaspiId() or ''
     return settings.render_page('settings.html', relays=relays, servos=servos, cameraUrl=cameraUrl, audioOnServer=audioOnServer, motionRaspiId=motionRaspiId)
 
 @settings.route('/save_relay', methods=['POST'])
 @login_required
 def save_relay():
-	rel_label = request.form.get("rel_label")
-	rel_pin = request.form.get("rel_pin")
-	rel_parity = request.form.get("rel_parity")
+	rel_label = request.form.get('rel_label')
+	rel_pin = request.form.get('rel_pin')
+	rel_parity = request.form.get('rel_parity')
 	raspi_id = request.form.get("raspi_id")
 	if not rel_label or ' ' in rel_label:
 		return "Un label de relai ne doit pas être vide ou contenir d'espace.", 400
@@ -32,7 +32,7 @@ def save_relay():
 		return "Un id de raspberry ne doit pas être vide ou contenir d'espace.", 400
 	if Relay.query.filter_by(label=rel_label).first() is not None:
 		return "Un relai portant le même label existe déjà.", 400
-	logging.info("Saving relay "+rel_label)
+	logging.info('Saving relay ' + rel_label)
 	db_relay = Relay(label=rel_label, pin=rel_pin, enabled=True, parity=rel_parity, raspi_id=raspi_id)
 	db.session.add(db_relay)
 	db.session.commit()
@@ -41,11 +41,11 @@ def save_relay():
 @settings.route('/enable_relay', methods=['POST'])
 @login_required
 def enable_relay():
-    rel_label = request.form.get("rel_label")
-    value = json.loads(request.form.get("value"))
+    rel_label = request.form.get('rel_label')
+    value = json.loads(request.form.get('value'))
     if not rel_label or ' ' in rel_label:
         return "Un label de relai ne doit pas être vide ou contenir d'espace.", 400
-    logging.info("Updating relay "+rel_label)
+    logging.info("Updating relay " + rel_label)
     db_rel = Relay.query.filter_by(label=rel_label).first()
     if db_rel is None:
         return "Le relai est inconnu.", 400
@@ -59,7 +59,7 @@ def delete_relay():
     rel_label = request.form.get("rel_label")
     if not rel_label or ' ' in rel_label:
         return "Un label de relai ne doit pas être vide ou contenir d'espace.", 400
-    logging.info("Deleting relay "+rel_label)
+    logging.info("Deleting relay " + rel_label)
     db_rel = Relay.query.filter_by(label=rel_label).first()
     if db_rel is None:
         return "Le relai est inconnu.", 400
@@ -70,12 +70,12 @@ def delete_relay():
 @settings.route('/save_servo', methods=['POST'])
 @login_required
 def save_servo():
-	servo_label = request.form.get("servo_label")
-	servo_pin = request.form.get("servo_pin")
-	raspi_id = request.form.get("raspi_id")
-	servo_min_pulse_width = int(request.form.get("min_pulse_width"))
-	servo_max_pulse_width = int(request.form.get("max_pulse_width"))
-	servo_def_pulse_width = int(request.form.get("def_pulse_width"))
+	servo_label = request.form.get('servo_label')
+	servo_pin = request.form.get('servo_pin')
+	raspi_id = request.form.get('raspi_id')
+	servo_min_pulse_width = int(request.form.get('min_pulse_width'))
+	servo_max_pulse_width = int(request.form.get('max_pulse_width'))
+	servo_def_pulse_width = int(request.form.get('def_pulse_width'))
 
 	if not servo_label or ' ' in servo_label:
 		return "Un label de servo moteur ne doit pas être vide ou contenir d'espace.", 400
@@ -95,7 +95,7 @@ def save_servo():
 		return "Un id de raspberry ne doit pas être vide ou contenir d'espace.", 400
 	if Servo.query.filter_by(label=servo_label).first() is not None:
 		return "Un servomoteur portant le même label existe déjà.", 400
-	logging.info("Saving servo "+servo_label)
+	logging.info("Saving servo '" + servo_label + "'")
 	db_servo = Servo(label=servo_label, pin=servo_pin, enabled=True, min_pulse_width=servo_min_pulse_width, max_pulse_width=servo_max_pulse_width, def_pulse_width=servo_def_pulse_width, raspi_id=raspi_id)
 	db.session.add(db_servo)
 	db.session.commit()
@@ -104,11 +104,11 @@ def save_servo():
 @settings.route('/enable_servo', methods=['POST'])
 @login_required
 def enable_servo():
-    servo_label = request.form.get("servo_label")
+    servo_label = request.form.get('servo_label')
     value = json.loads(request.form.get("value"))
     if not servo_label or ' ' in servo_label:
         return "Un label de servomoteur ne doit pas être vide ou contenir d'espace.", 400
-    logging.info("Updating servo "+servo_label)
+    logging.info("Updating servo " + servo_label)
     db_servo = Servo.query.filter_by(label=servo_label).first()
     if db_servo is None:
         return "Le servomoteur est inconnu.", 400
@@ -119,10 +119,10 @@ def enable_servo():
 @settings.route('/delete_servo', methods=['POST'])
 @login_required
 def delete_servo():
-    servo_label = request.form.get("servo_label")
+    servo_label = request.form.get('servo_label')
     if not servo_label or ' ' in servo_label:
         return "Un label de servomoteur ne doit pas être vide ou contenir d'espace.", 400
-    logging.info("Deleting servo "+servo_label)
+    logging.info("Deleting servo " + servo_label)
     db_servo = Servo.query.filter_by(label=servo_label).first()
     if db_servo is None:
         return "Le servomoteur est inconnu.", 400
@@ -134,17 +134,17 @@ def delete_servo():
 @settings.route('/update_camera_url', methods=['POST'])
 @login_required
 def update_camera_url():
-    url = request.form.get("camera_url")
+    url = request.form.get('camera_url')
     if url and ' ' in url: #if the string is empty, update is accepted
         return "L'url ne doit pas contenir d'espace.", 400
-    logging.info("Updating camera URL: "+url)
+    logging.info("Updating camera URL: " + url)
     config.setCameraUrl(url)
     return settings.render_page('settings.html')
 
 @settings.route('/update_audio_source', methods=['POST'])
 @login_required
 def update_audio_source():
-    value = json.loads(request.form.get("value"))
+    value = json.loads(request.form.get('value'))
     logging.info("Updating audio source")
     config.setAudioOnServer(value)
     return settings.render_page('settings.html')
@@ -157,15 +157,15 @@ def get_audio_mode():
 @settings.route('/update_motion_raspi_id', methods=['POST'])
 @login_required
 def update_motion_raspi_id():
-    id = request.form.get("raspi_id")
-    logging.info("Updating motion raspi id: "+id)
+    id = request.form.get('raspi_id')
+    logging.info("Updating motion raspi id: " + id)
     config.setMotionRaspiId(id)
     return settings.render_page('settings.html')
 
 @settings.route('/update_robot_name', methods=['POST'])
 @login_required
 def update_robot_name():
-    name = request.form.get("robot_name")
-    logging.info("Updating robot name: "+name)
+    name = request.form.get('robot_name')
+    logging.info("Updating robot name: " + name)
     config.setRobotName(name)
     return settings.render_page('settings.html')
