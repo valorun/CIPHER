@@ -19,7 +19,7 @@ Interface de contrôle robotique C.I.P.H.E.R. Il s'agit d'une interface web réa
 
 Téléchargez et décompressez l'archive de C.I.P.H.E.R sur le serveur à l'emplacement désiré.
 Pour une installation automatique, executez le script ```setup.sh``` disponible à la racine du dossier.
-Le client (disponible à l'adresse suivante: ```https://github.com/valorun/CIPHER-raspberry-client```) doit être ensuite installé sur tout les raspberries devant être connectés.
+Le client (disponible à l'adresse suivante: <https://github.com/valorun/CIPHER-raspberry-client>) doit être ensuite installé sur tout les raspberries devant être connectés.
 
 ### Pré-requis
 
