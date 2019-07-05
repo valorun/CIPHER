@@ -1,8 +1,8 @@
 {% extends 'template.html' %} {% block content %}
 <link href="{{ url_for('sequences.static', filename='vendor/vis.js/vis.min.css') }}" rel="stylesheet" type="text/css" />
 <script src="{{ url_for('sequences.static', filename='vendor/vis.js/vis.js') }}"></script>
-<script src="{{ url_for('sequences.static', filename='js/graphPanelView.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/graphPanelController.js') }}"></script>
+<script src="{{ url_for('sequences.static', filename='js/graphFormController.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/sequencesController.js') }}"></script>
 <style type="text/css">
 #network {
@@ -30,7 +30,6 @@
 						<option value="speech">Parole</option>
 						<option value="script">Script</option>
 						<option value="sound">Son</option>
-						<option value="condition">Condition</option>
 						<option value="pause">Pause</option>
 					</select>
 
@@ -124,11 +123,6 @@
 						<label for="pause">Temps(ms):</label>
 						<input type="number" id="pause" value="0" class="input border" min="0">
 					</div>
-
-					<div id="conditionOptions" class="container">
-						<label for="flag">Drapeau:</label>
-						<input type="text" id="flag" value="" class="input border" placeholder="Drapeau">
-					</div>
 				</div>
 
 				<div id="network"></div>
@@ -183,7 +177,7 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
-	graphPanelController.init();
+	graphFormController.init();
 	sequencesController.init();
 });
 

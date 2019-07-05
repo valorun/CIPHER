@@ -23,7 +23,7 @@ def save_buttons():
     Save the grid of buttons on the server.
     """
     logging.info("Saving buttons grid")
-    data=request.form.get("data")
+    data=request.form.get('data')
     try:
         data = json.loads(data)
     except (ValueError, Exception):

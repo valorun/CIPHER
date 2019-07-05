@@ -10,12 +10,12 @@ var intentsController = {
 				failAlert("L'intention fournie est vide.");
   				return;
 			}
-			var response=$("#currentResponse" ).val()
+			var script_name=$("#currentScriptName" ).val()
   			var sequence_id=$( "#currentSequence" ).val();
 			$.ajax({
 				type: 'POST',
 				url: '/save_intent',
-				data: { intent: intent, response: response, sequence_id: sequence_id},
+				data: { intent: intent, script_name: script_name, sequence_id: sequence_id},
 				success: function () {
 					location.reload();
 				},
@@ -42,7 +42,7 @@ var intentsController = {
 	  *	@param	{string} intent intant name
 	  *	@param	{boolean} value new state for the intent
  	 */
-	 enableRelay: function (intent, value) {
+	 enableIntent: function (intent, value) {
 		$.ajax({
 			type: 'POST',
 			url: '/enable_intent',
@@ -60,13 +60,13 @@ var intentsController = {
  	 *  Delete an intent
  	 *	@param	{string} intent intent name
  	 */
-	deleteRelay: function (intent) {
-		var confirm = window.confirm("Etes vous sûr de vouloir supprimer l'intention \'" + rel_label + "\' ?");
+	deleteIntent: function (intent) {
+		var confirm = window.confirm("Etes vous sûr de vouloir supprimer l'intention \'" + intent + "\' ?");
 		if (confirm) {
 			$.ajax({
 				type: 'POST',
 				url: '/delete_intent',
-				data: { intent: rel_lintentabel },
+				data: { intent: intent },
 				success: () => {
 					console.log(intent + " deleted");
 					$("#" + intent).remove();

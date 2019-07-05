@@ -1,12 +1,14 @@
-var socket = io.connect(window.location.host+'/client');
+var socket = io.connect(window.location.host + '/client');
 
 var connectionManager = {
 	voices: null,
 	audio: null,
 	init: function(){
+		this.voices = window.speechSynthesis.getVoices();
+
 		window.speechSynthesis.onvoiceschanged = () => {
-			this.voices=window.speechSynthesis.getVoices();
-		}
+			this.voices = window.speechSynthesis.getVoices();
+		};
 		this.bind();
 	},
 	bind: function(){
@@ -30,22 +32,22 @@ var connectionManager = {
 			}
 		});
 		socket.on('connect', () => {
-			$("#socketErrorModal").hide()
+			$('#socketErrorModal').hide();
 		});
 		socket.on('disconnect', () => {
-			$("#socketErrorModal").show()
+			$('#socketErrorModal').show();
 		});
 	},
 
 	speak: function(msg){
-		if ('speechSynthesis' in window) {
+		if ('speechSynthesis' in window && this.voices !== null) {
 			let to_speak = new SpeechSynthesisUtterance(msg);
-			$.each(this.voices, (i, e) =>{
-				if(Cookies.get("voice") === e.name){
+			this.voices.forEach((e) =>{
+				if(Cookies.get('voice') === e.name){
 					to_speak.voice = e;
 				}
 			});
 			window.speechSynthesis.speak(to_speak);
 		}
 	}
-}
+};

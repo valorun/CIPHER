@@ -3,20 +3,20 @@ var sequencesController = {
 		this.bind();
 	},
 	bind: function(){
-		$('input[name=enableSeq]').on("change", (e) => {
+		$('input[name=enableSeq]').on('change', (e) => {
 			//get the sequence name by getting the second part of the id, after '_'
-			let seq_name=e.currentTarget.id.substr(e.currentTarget.id.indexOf('_')+1);
-			this.enableSequence(seq_name, $(e.currentTarget).prop("checked"))
+			let seq_name = e.currentTarget.id.substr(e.currentTarget.id.indexOf('_') + 1);
+			this.enableSequence(seq_name, $(e.currentTarget).prop('checked'));
 		});
-		$('a[name=deleteSeq]').on("click", (e) => {
+		$('a[name=deleteSeq]').on('click', (e) => {
 			//get the sequence name by getting the second part of the id, after '_'
-			let seq_name=e.currentTarget.id.substr(e.currentTarget.id.indexOf('_')+1)
-			this.deleteSequence(seq_name)
+			let seq_name = e.currentTarget.id.substr(e.currentTarget.id.indexOf('_') + 1);
+			this.deleteSequence(seq_name);
 		});
 	},
 
 	/**
-	* enable OR disable a sequence
+	* Enable OR disable a sequence
 	* @param {string} seq_name the name of the sequence to enable or disable
 	* @param {boolean} value the new state for the sequence
 	*/
@@ -26,9 +26,9 @@ var sequencesController = {
 			url: '/enable_sequence',
 			data: {seq_name:seq_name, value:value},
 			success: function(){
-				console.log(seq_name+" updated");
+				console.log(seq_name + ' updated');
 			},
-			error: function(request, status, error){
+			error: function(request){
 				failAlert(request.responseText);
 			}
 		});
@@ -39,17 +39,17 @@ var sequencesController = {
 	* @param {string} seq_name the name of the sequence to delete
 	*/
 	deleteSequence: function(seq_name){
-		let confirm = window.confirm("Etes vous sûr de vouloir supprimer la séquence \'"+seq_name+"\' ?");
+		let confirm = window.confirm('Etes vous sûr de vouloir supprimer la séquence \'' + seq_name + '\' ?');
 		if(confirm){
 			$.ajax({
 				type: 'POST',
 				url: '/delete_sequence',
 				data: {seq_name:seq_name},
 				success: function(){
-					console.log(seq_name+" deleted");
-					$("#"+seq_name).remove();
+					console.log(seq_name + ' deleted');
+					$('#' + seq_name).remove();
 				},
-				error: function(request, status, error){
+				error: function(request){
 					failAlert(request.responseText);
 				}
 			});

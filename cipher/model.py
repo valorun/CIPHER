@@ -24,7 +24,7 @@ class Relay(db.Model):
 	raspi_id = db.Column(db.String(20), nullable=False)
 
 	def __repr__(self):
-		return '<Relay %r : >' % self.label
+		return '<Relay %r>' % self.label
 
 class Servo(db.Model):
 	label = db.Column(db.String(50), primary_key=True)
@@ -36,16 +36,16 @@ class Servo(db.Model):
 	raspi_id = db.Column(db.String(20), nullable=False)
 
 	def __repr__(self):
-		return '<Servo %r : >' % self.label
+		return '<Servo %r>' % self.label
 
 class Intent(db.Model):
 	intent = db.Column(db.String(50), primary_key=True)
-	response = db.Column(db.String(50))
+	script_name = db.Column(db.String(50))
 	sequence_id = db.Column(db.String(50), db.ForeignKey('sequence.id'))
 	enabled = db.Column(db.Boolean, nullable=False)
 
 	def __repr__(self):
-		return '<Intent %r : >' % self.intent
+		return '<Intent %r>' % self.intent
 
 class ConfigFile():
 	"""
@@ -60,9 +60,9 @@ class ConfigFile():
 		try:
 			with open(self.filepath, 'r') as f:
 				content = json.load(f)
-		except IOError: #si aucun fichier n'existe, ou si la donnée lue n'est pas en json
+		except IOError: #if no file exists, or if the data is not in json
 			with open(self.filepath, 'w') as f:
-				f.write("") #on créer un nouveau 
+				f.write("") #create a new one
 			content = {}
 		except ValueError:
 			content = {}
@@ -86,48 +86,53 @@ class ConfigFile():
 			option = None
 		return option
 
+class CoreConfigFile(ConfigFile):
+
+	def __init__(self, filepath):
+		ConfigFile.__init__(self, filepath)
+
 	# CAMERA URL
 	def setCameraUrl(self, url: str):
 		if not url.strip():
 			url = None
-		self.saveOption("camera_url", url)
+		self.saveOption('camera_url', url)
 
 	def getCameraUrl(self) -> str:
-		return self.loadOption("camera_url")
+		return self.loadOption('camera_url')
 
 	# COMMANDS GRID
 	def setCommandsGrid(self, grid: {}):
-		self.saveOption("commands_grid", grid)
+		self.saveOption('commands_grid', grid)
 
 	def getCommandsGrid(self) -> {}:
-		return self.loadOption("commands_grid")
+		return self.loadOption('commands_grid')
 
 	# AUDIO SOURCE
 	def setAudioOnServer(self, mode: bool):
-		self.saveOption("audio_on_server", mode)
+		self.saveOption('audio_on_server', mode)
 
 	def getAudioOnServer(self) -> bool:
-		mode = self.loadOption("audio_on_server")
+		mode = self.loadOption('audio_on_server')
 		return mode or False
 
 	# MOTION RASPI ID
 	def setMotionRaspiId(self, raspi_id: str):
 		if not raspi_id.strip():
 			raspi_id = None
-		self.saveOption("motion_raspi_id", raspi_id)
+		self.saveOption('motion_raspi_id', raspi_id)
 
 	def getMotionRaspiId(self) -> str:
-		return self.loadOption("motion_raspi_id")
+		return self.loadOption('motion_raspi_id')
 
 	# ROBOT NAME
 	def setRobotName(self, name:str):
 		if not name.strip():
-			name = "My robot"
-		self.saveOption("robot_name", name)
+			name = 'My robot'
+		self.saveOption('robot_name', name)
 	
 	def getRobotName(self) -> str:
-		name = self.loadOption("robot_name")
-		return name or "My robot"
+		name = self.loadOption('robot_name')
+		return name or 'My robot'
 
 
 class Resources():
@@ -164,5 +169,5 @@ class Resources():
 		return [f for f in listdir(self.soundsPath) if isfile(join(self.soundsPath, f))]
 
 
-config = ConfigFile(CONFIG_FILE)
+config = CoreConfigFile(CONFIG_FILE)
 resources = Resources(SCRIPTS_LOCATION, SOUNDS_LOCATION)

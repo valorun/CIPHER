@@ -46,18 +46,19 @@ def create_app(debug=False):
     for p_name in plugins:
         try:
             # find the plugin object ...
-            module = importlib.import_module('.plugins.'+p_name, package='cipher')
+            module = importlib.import_module('.plugins.' + p_name, package='cipher')
             p = getattr(module, p_name)
             loaded_plugins.append(p)
             # then register its blueprint
             p.register(app, loaded_plugins)
         except Exception:
-            print('Failed to load plugin \'' + p_name + '\'')
+            logging.error("Failed to load plugin '" + p_name + "'")
             exit(1)
 
     socketio.init_app(app)
     mqtt.init_app(app)
-    mqtt.subscribe("server/#")
+    mqtt.subscribe('server/#')
+    mqtt.subscribe('hermes/intent/#')
     
     return app
 

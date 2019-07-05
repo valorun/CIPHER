@@ -10,56 +10,54 @@ var gridPanelController = {
 		this.loadGrid();
 	},
 	bind: function() {
-		$("#addButton").on("click", () => {
-			let buttonLabel=$("#buttonLabel").val();
-			let color=$("#color").data("color");
+		$('#addButton').on('click', () => {
+			let buttonLabel=$('#buttonLabel').val();
+			let color=$('#color').data('color');
 
 			let actionType = $('select[name=newButtonTypeChoice]').val();
-			let actionParam=null;
-			let actionFlags=null;
-			if (actionType == "relay") {
-				if($("#relays").val() == null){
-					failAlert("Aucun relai n'a été selectionné.");
+			let actionParam = null;
+			if (actionType == 'relay') {
+				if($('#relays').val() == null){
+					failAlert('Aucun relai n\'a été selectionné.');
 					return;
 				}
-				actionParam=$("#relays").val();
+				actionParam = $('#relays').val();
 				//if the relay isn't already used
-				if(this.actionAlreadyUsed(actionParam, "relay")){
-					failAlert("Un bouton correspondant au même relai existe déjà.");
+				if(this.actionAlreadyUsed(actionParam, 'relay')){
+					failAlert('Un bouton correspondant au même relai existe déjà.');
 					return;
 				}
-			} else if (actionType == "sequence") {
-				if($("#sequences").val() == null){
-					failAlert("Aucune séquence n'a été selectionnée.");
+			} else if (actionType == 'sequence') {
+				if($('#sequences').val() == null){
+					failAlert('Aucune séquence n\'a été selectionnée.');
 					return;
 				}
-				actionParam=$("#sequences").val();
-				if(this.actionAlreadyUsed(actionParam, "sequence")){
-					failAlert("Un bouton correspondant à la même sequence existe déjà.");
+				actionParam = $('#sequences').val();
+				if(this.actionAlreadyUsed(actionParam, 'sequence')){
+					failAlert('Un bouton correspondant à la même sequence existe déjà.');
 					return;
 				}
-				actionFlags=$("#flags").val().split(' ');
-			} else if (actionType == "sound") {
-				if($("#sounds").val() == null){
-					failAlert("Aucun son n'a été selectionné.");
+			} else if (actionType == 'sound') {
+				if($('#sounds').val() == null){
+					failAlert('Aucun son n\'a été selectionné.');
 					return;
 				}
-				actionParam=$("#sounds").val();
+				actionParam = $('#sounds').val();
 				//if the sound isn't already used
 				if(this.actionAlreadyUsed(actionParam)){
-					failAlert("Un bouton correspondant au même son existe déjà.");
+					failAlert('Un bouton correspondant au même son existe déjà.');
 					return;
 				}
 			}
 
-			this.gridPanelView.addButton(buttonLabel, actionType, actionParam, actionFlags, color, 1, 1, 1, 1);
+			this.gridPanelView.addButton(buttonLabel, actionType, actionParam, color, 1, 1, 1, 1);
 		});
 
-		$('select[name=newButtonTypeChoice]').on("change", () => {
+		$('select[name=newButtonTypeChoice]').on('change', () => {
 			this.gridPanelView.updateForm();
 		});
 
-		$("#editPanelButton").on("click", () => {
+		$('#editPanelButton').on('click', () => {
 			this.gridPanelView.updateMode();
 			this.saveGrid();
 			socket.emit('update_all_relays_state');
@@ -72,7 +70,7 @@ var gridPanelController = {
 	actionAlreadyUsed: function(param, type){
 		let found=false;
 		$('.grid-stack-item-content').each(function() {
-			if($(this).data("type")===type && $(this).data("parameter")===param){
+			if($(this).data('type') === type && $(this).data('parameter') === param){
 				found=true;
 				return false;
 			}
@@ -90,15 +88,12 @@ var gridPanelController = {
 			url: '/load_buttons',
 			success: (result) =>{
 				let items = GridStackUI.Utils.sort(result);
-				_.each(items, (node) => {
-					flags = [];
-					if(node.action.flags != null)
-						flags = node.action.flags.split(' ');
-					this.gridPanelView.addButton(node.label, node.action.type, node.action.parameter, flags, node.color, node.x, node.y, node.width, node.height);
-				}, this);
+				items.forEach((node) => {
+					this.gridPanelView.addButton(node.label, node.action.type, node.action.parameter, node.color, node.x, node.y, node.width, node.height);
+				});
 				socket.emit('update_all_relays_state');
 			},
-			error: (request, status, error) =>{
+			error: (request) =>{
 				failAlert(request.responseText);
 			}
 		});
@@ -117,7 +112,6 @@ var gridPanelController = {
 			let action = {};
 			action.type = child.data('type');
 			action.parameter = child.data('parameter');
-			action.flags = child.data('flags')
 
 			return {
 				x: node.x,
@@ -137,7 +131,7 @@ var gridPanelController = {
 			success: function(){
 
 			},
-			error: function(request, status, error){
+			error: function(request){
 				failAlert(request.responseText);
 			}
 		});
