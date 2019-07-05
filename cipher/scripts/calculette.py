@@ -12,6 +12,7 @@ def main(**kwargs):
                 if result is None:
                     result = slot['value']['value']
                 else:
+                    speech("Il semble que l'opération demandée n'est pas valide")
                     return False # calcul invalide, deux opérandes successifs
             else:
                 if last_operator == '+':
@@ -26,11 +27,14 @@ def main(**kwargs):
         elif slot['entity'] == 'operator':
             if last_operator is None:
                 if result is None:
+                    speech("Il semble que l'opération demandée n'est pas valide")
                     return False # calcul invalide, commence par un opérateur
                 last_operator = slot['value']['value']
             else:
+                speech("Il semble que l'opération demandée n'est pas valide")
                 return False # calcul invalide, deux opérateurs successifs
         else:
+            speech("Il semble que l'opération demandée n'est pas valide")
             return False
 
     speech(str(int(result)))
