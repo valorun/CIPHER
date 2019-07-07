@@ -28,6 +28,7 @@ def relay(label:str, state=None):
 	with db.app.app_context():
 		db_rel = Relay.query.filter_by(label=label).first()
 		if db_rel is None or not db_rel.enabled:
+			logging.warning("Unknown relay '" + label + "'.")
 			return
 		pin = db_rel.pin
 		parity = db_rel.parity
@@ -64,12 +65,18 @@ def servo(label:str, position:int, speed:int):
 	"""
 	Launch a servo motor to a position at a specified speed
 	"""
-	if position < 0 or position > 100 or speed < 0 or position > 100:
+	if speed < 0 or speed > 100:
+		logging.warning("Out of range speed " + str(speed) + " for servo '" + label + "'.")
 		return
 	with db.app.app_context():
 		db_servo = Servo.query.filter_by(label=label).first()
 		if db_servo is None or not db_servo.enabled:
+			logging.warning("Unknown or disabled servo '" + label + "'.")
 			return
+		if position < db_servo.min_pulse_width or position > db_servo.max_pulse_width:
+			logging.warning("Out of range position " + str(position) + " for servo '" + label + "'.")
+			return
+
 		pin = db_servo.pin
 		raspi_id = db_servo.raspi_id
 		logging.info("Moving servo '" + label + "' to " + str(position) + " at speed " + str(speed))
@@ -83,6 +90,7 @@ def servo_sequence(index:int):
 	with db.app.app_context():
 		db_servo = Servo.query.distinct(Servo.raspi_id).first()
 		if db_servo is None:
+			logging.warning("No default servo raspi set.")
 			return
 		raspi_id = db_servo.raspi_id
 		logging.info("Executing servo sequence '" + str(index) + "'")
@@ -93,7 +101,7 @@ def sound(sound_name:str):
 	Execute the requested sound from the 'sounds' directory
 	"""
 	if not exists(join(SOUNDS_LOCATION, sound_name)):
-		logging.error("Cannot load sound '" + sound_name + "'")
+		logging.warning("Cannot load sound '" + sound_name + "'")
 		return
 
 	if config.getAudioOnServer():
@@ -111,7 +119,7 @@ def script(script_name:str, **kwargs):
 	Import the requested script from the 'scripts' directory and execute its 'main' method
 	"""
 	if not exists(join(SCRIPTS_LOCATION, script_name)):
-		logging.error("Cannot load script '" + script_name + "'")
+		logging.warning("Cannot load script '" + script_name + "'")
 		return
 	spec = importlib.util.spec_from_file_location('script', join(SCRIPTS_LOCATION, script_name))
 	script = importlib.util.module_from_spec(spec)
