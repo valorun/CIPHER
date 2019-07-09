@@ -7,7 +7,7 @@ SERVER_DATABASE='sqlite:///' + os.path.join(os.path.dirname(__file__), 'server_d
 
 CONFIG_FILE=os.path.join(os.path.dirname(__file__),'config.json')
 
-LOG_FILE=os.path.join(os.path.dirname(__file__),'app.log')
+LOG_FILE=os.path.join(os.path.dirname(__file__), 'app.log')
 
 SCRIPTS_LOCATION=os.path.join(os.path.dirname(__file__),'scripts/')
 
