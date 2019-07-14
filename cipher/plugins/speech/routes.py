@@ -3,7 +3,8 @@ import json
 import re
 from flask import Flask, session, request, redirect
 from . import speech
-from cipher.model import Sequence, Intent, db, resources
+from .model import Intent
+from cipher.model import Sequence, db, resources
 from cipher.security import login_required
 
 @speech.route('/speech')

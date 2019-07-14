@@ -31,9 +31,6 @@ def create_app(debug=False):
     app.config['MQTT_BROKER_URL'] = MQTT_BROKER_URL
     app.config['MQTT_BROKER_PORT'] = MQTT_BROKER_PORT
     app.config['MQTT_KEEPALIVE'] = 5
-    db.app = app
-    db.init_app(app)
-    db.create_all()
 
     from .core import core as core_blueprint
     from .security import security as security_blueprint
@@ -51,9 +48,13 @@ def create_app(debug=False):
             loaded_plugins.append(p)
             # then register its blueprint
             p.register(app, loaded_plugins)
-        except Exception:
-            logging.error("Failed to load plugin '" + p_name + "'")
+        except Exception as e:
+            logging.error("Failed to load plugin '" + p_name + "': {0}".format(e))
             exit(1)
+ 
+    db.app = app
+    db.init_app(app)
+    db.create_all()
 
     socketio.init_app(app)
     mqtt.init_app(app)

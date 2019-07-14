@@ -10,6 +10,7 @@ from cipher.constants import SCRIPTS_LOCATION, SOUNDS_LOCATION
 from cipher.model import db, Servo, Relay, config
 
 current_sound = None
+
 def speech(speech:str):
 	"""
 	Speak on the client from the client or from the raspberry, according to the parameter

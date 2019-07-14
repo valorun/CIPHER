@@ -8,6 +8,7 @@ class Plugin():
         self.label = label
         self.icon = icon
         self.blueprint = Blueprint(name, import_name, static_folder='static', static_url_path='/' + name + '/static', template_folder='templates')
+        self.tables = []
 
     def register(self, app, plugins):
         self.plugins = plugins

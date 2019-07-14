@@ -1,5 +1,6 @@
 import logging
-from cipher.model import db, Intent, Sequence
+from cipher.model import db, Sequence
+from .model import Intent
 import json
 from cipher import mqtt
 from cipher.core.sequence_reader import sequence_reader
