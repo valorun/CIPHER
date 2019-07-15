@@ -120,7 +120,6 @@ class Sequence:
                 return False
         return True
 
-    
     def inExecution(self):
         """
         Check if the sequence is currently in execution.

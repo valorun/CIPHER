@@ -1,5 +1,4 @@
 from cipher.model import db
-from . import speech
 
 class Intent(db.Model):
 	intent = db.Column(db.String(50), primary_key=True)

@@ -7,11 +7,19 @@ import json
 
 db = SQLAlchemy()
 
+class User(db.Model):
+	username = db.Column(db.String(50), primary_key=True)
+	password = db.Column(db.String(50))
+	active = db.Column(db.Boolean, nullable=False)
+
+	def __repr__(self):
+		return '<User %r>' % self.username
+
 class Sequence(db.Model):
 	id = db.Column(db.String(50), primary_key=True)
 	value = db.Column(db.Text, nullable=False)
 	enabled = db.Column(db.Boolean, nullable=False)
-	intents = db.relationship('Intent', backref='sequence', lazy=True)
+	#intents = db.relationship('Intent', backref='sequence', lazy=True)
 
 	def __repr__(self):
 		return '<Sequence %r>' % self.id
