@@ -27,15 +27,15 @@ var connectionManager = {
 				this.audio = null;
 			}
 			else {
-				this.audio = new Audio(window.location.origin+'/play_sound/'+sound_name);
+				this.audio = new Audio(window.location.origin + '/play_sound/' + sound_name);
 				this.audio.play();
 			}
 		});
 		socket.on('connect', () => {
-			$('#socketErrorModal').hide();
+			document.getElementById('socketErrorModal').style.display = 'none';
 		});
 		socket.on('disconnect', () => {
-			$('#socketErrorModal').show();
+			document.getElementById('socketErrorModal').style.display = 'block';
 		});
 	},
 

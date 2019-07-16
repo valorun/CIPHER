@@ -19,8 +19,6 @@ var raspiesController = {
 		document.getElementById('raspberries').innerHTML = '';
 
 		raspies.array.forEach(raspi => {
-			
-		});(raspies, function(i, raspi){
 			console.log(raspi);
 			let card = '<div class=\'container cell center pale-green round-large border border-green padding-16\''+
 							'<h3><strong><i class=\'xxxlarge fab fa-raspberry-pi\'></i></strong></h3>' +
