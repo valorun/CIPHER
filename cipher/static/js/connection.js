@@ -1,17 +1,35 @@
 var socket = io.connect(window.location.host + '/client');
 
-var connectionManager = {
-	voices: null,
-	audio: null,
-	init: function(){
-		this.voices = window.speechSynthesis.getVoices();
+var connectionManager = (() => {
+	'use strict';
+
+	let voices = null;
+	let audio = null;
+
+	/* PUBLIC METHODS */
+	function init(){
+		voices = window.speechSynthesis.getVoices();
 
 		window.speechSynthesis.onvoiceschanged = () => {
-			this.voices = window.speechSynthesis.getVoices();
+			voices = window.speechSynthesis.getVoices();
 		};
-		this.bind();
-	},
-	bind: function(){
+		bindSocketIOEvents();
+	}
+
+	function speak(msg) {
+		if ('speechSynthesis' in window && voices !== null) {
+			let to_speak = new SpeechSynthesisUtterance(msg);
+			voices.forEach((e) =>{
+				if(Cookies.get('voice') === e.name){
+					to_speak.voice = e;
+				}
+			});
+			window.speechSynthesis.speak(to_speak);
+		}
+	}
+
+	/* PRIVATE METHODS */
+	function bindSocketIOEvents(){
 		socket.on('command', (msg) => {
 			console.log('Message from server: ', msg);
 		});
@@ -19,16 +37,16 @@ var connectionManager = {
 		//server response when a sentence must be play on the client
 		socket.on('response', (msg) => {
 			console.log('Message from server: ', msg);
-			this.speak(msg);
+			speak(msg);
 		});
 		socket.on('play_sound', (sound_name) => {
-			if(this.audio != null ){
-				this.audio.pause();
-				this.audio = null;
+			if(audio != null ){
+				audio.pause();
+				audio = null;
 			}
 			else {
-				this.audio = new Audio(window.location.origin+'/play_sound/'+sound_name);
-				this.audio.play();
+				audio = new Audio(window.location.origin + '/play_sound/' + sound_name);
+				audio.play();
 			}
 		});
 		socket.on('connect', () => {
@@ -37,17 +55,10 @@ var connectionManager = {
 		socket.on('disconnect', () => {
 			$('#socketErrorModal').show();
 		});
-	},
-
-	speak: function(msg){
-		if ('speechSynthesis' in window && this.voices !== null) {
-			let to_speak = new SpeechSynthesisUtterance(msg);
-			this.voices.forEach((e) =>{
-				if(Cookies.get('voice') === e.name){
-					to_speak.voice = e;
-				}
-			});
-			window.speechSynthesis.speak(to_speak);
-		}
 	}
-};
+
+	return {
+		init: init,
+		speak: speak
+	};
+})();

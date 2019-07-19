@@ -1,13 +1,13 @@
-var templateController = {
-	sidebar: null,
-	overlayBg : null,
+var templateController = (() => {
+	let sidebar = null;
+	let overlayBg = null;
 	
-	init: function(){
-		this.sidebar=$('#sidebar');
-		this.overlayBg=$('#overlay');
-		this.bind();
-	},
-	bind: function(){
+	function init() {
+		sidebar = $('#sidebar');
+		overlayBg = $('#overlay');
+		bind();
+	}
+	function bind() {
 		$('#sidebar_button').on('click', () =>{
 			if (this.sidebar.is(':visible'))
 				this.close_sidebar();
@@ -37,13 +37,13 @@ var templateController = {
 					this.open_accordion(element);	
 			});
 		});
-	},
+	}
 
 	/**
 	* Open the specified accordion
 	* @param {JQuery} e the accordion object
 	*/
-	open_accordion: function(e){
+	function open_accordion(e) {
 		let header=e.find('.accordion-header');
 		let content=e.find('.accordion-content');
 		let icon=header.find('.accordion-icon');
@@ -51,13 +51,13 @@ var templateController = {
 		icon.removeClass('fa-angle-right');
 		content.show();
 		e.trigger('open');
-	},
+	}
 
 	/**
 	* Close the specified accordion
 	* @param {JQuery} e the accordion object
 	*/
-	close_accordion: function(e){
+	function close_accordion(e) {
 		let header=e.find('.accordion-header');
 		let content=e.find('.accordion-content');
 		let icon=header.find('.accordion-icon');
@@ -65,25 +65,25 @@ var templateController = {
 		icon.removeClass('fa-angle-down');
 		content.hide();
 		e.trigger('close');
-	},
+	}
 	/**
 	* Check id the specified accordion is open
 	* @param {JQuery} e the accordion object
 	* @returns {boolean}
 	*/ 
-	is_accordion_open: function(e){
+	function is_accordion_open(e) {
 		let content=e.find('.accordion-content');
 		return content.is(':visible');
-	},
+	}
 
-	open_sidebar: function() {
+	function open_sidebar() {
 		this.sidebar.show();
 		this.overlayBg.show();
-	},
+	}
 
-	close_sidebar: function() {
+	function close_sidebar() {
 		this.sidebar.hide();
 		this.overlayBg.hide();
 	}
 
-};
+})();
