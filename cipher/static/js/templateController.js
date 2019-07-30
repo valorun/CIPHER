@@ -1,89 +1,101 @@
 var templateController = (() => {
-	let sidebar = null;
-	let overlayBg = null;
+	'use strict';
+	
+	let DOM = {};
+	let accordions = [];
+
+	let openEvent = new CustomEvent('open', {bubbles: true, cancelable: true});
+	let closeEvent = new CustomEvent('close', {bubbles: true, cancelable: true});
+	
+
+	/**
+	 * Class used to represent the accordions containers in the page.
+	 */
+	class Accordion {
+		/**
+		 * Instanciate the accordion
+		 * @param {*} $header header element with class 'accordion-header'
+		 */
+		constructor($header){
+			this.$element = $header.parentNode;
+			this.$content = this.$element.getElementsByClassName('accordion-content')[0];
+			this.$icon = this.$element.getElementsByClassName('accordion-icon')[0];
+			this.$icon.classList.add('fas', 'fa-angle-right');
+			this.$icon.classList.remove('fa-angle-down');
+			this.$content.style.display = 'none';
+
+			$header.addEventListener('click', () =>{
+				if (this.isOpen)
+					this.close();
+				else
+					this.open();	
+			});
+		}
+
+		open() {
+			this.$icon.classList.add('fa-angle-down');
+			this.$icon.classList.remove('fa-angle-right');
+			this.$content.style.display = 'block';
+			this.$element.dispatchEvent(openEvent);
+		}
+
+		close() {
+			this.$icon.classList.add('fa-angle-right');
+			this.$icon.classList.remove('fa-angle-down');
+			this.$content.style.display = 'none';
+			this.$element.dispatchEvent(closeEvent);
+		}
+
+		get isOpen() {
+			return this.$content.style.display !== 'none';
+		}
+
+	}
 	
 	function init() {
-		sidebar = $('#sidebar');
-		overlayBg = $('#overlay');
-		bind();
+		cacheDom();
+		bindUIEvents();
 	}
-	function bind() {
-		$('#sidebar_button').on('click', () =>{
-			if (this.sidebar.is(':visible'))
-				this.close_sidebar();
+
+	function bindUIEvents() {
+		document.getElementById('sidebar_button').addEventListener('click', () =>{
+			if (isVisible(sidebar))
+				close_sidebar();
 			else
-				this.open_sidebar();
+				open_sidebar();
 		});
-		$('#close_sidebar_button').on('click', () =>{
-			this.close_sidebar();
+
+		document.getElementById('close_sidebar_button').addEventListener('click', () =>{
+			close_sidebar();
 		});
-		$('#overlay').on('click', () =>{
-			this.close_sidebar();
+
+		document.getElementById('overlay').addEventListener('click', () =>{
+			close_sidebar();
 		});
 
 		//setup collapse on accordions
-		$('.accordion-header').each( (i, header) => {
-			let element = $(header).parent();
-			let content=element.find('.accordion-content');
-			let icon=$(header).find('.accordion-icon');
-			icon.addClass('fas fa-angle-right');
-			icon.removeClass('fa-angle-down');
-			content.hide();
-
-			$(header).on('click', () =>{
-				if(this.is_accordion_open(element))
-					this.close_accordion(element);
-				else
-					this.open_accordion(element);	
-			});
-		});
+		Array.from(document.getElementsByClassName('accordion-header')).forEach($header => 
+			accordions.push(new Accordion($header))
+		);
 	}
 
-	/**
-	* Open the specified accordion
-	* @param {JQuery} e the accordion object
-	*/
-	function open_accordion(e) {
-		let header=e.find('.accordion-header');
-		let content=e.find('.accordion-content');
-		let icon=header.find('.accordion-icon');
-		icon.addClass('fa-angle-down');
-		icon.removeClass('fa-angle-right');
-		content.show();
-		e.trigger('open');
-	}
-
-	/**
-	* Close the specified accordion
-	* @param {JQuery} e the accordion object
-	*/
-	function close_accordion(e) {
-		let header=e.find('.accordion-header');
-		let content=e.find('.accordion-content');
-		let icon=header.find('.accordion-icon');
-		icon.addClass('fa-angle-right');
-		icon.removeClass('fa-angle-down');
-		content.hide();
-		e.trigger('close');
-	}
-	/**
-	* Check id the specified accordion is open
-	* @param {JQuery} e the accordion object
-	* @returns {boolean}
-	*/ 
-	function is_accordion_open(e) {
-		let content=e.find('.accordion-content');
-		return content.is(':visible');
+	function cacheDom() {
+		DOM.$sidebar = document.getElementById('sidebar');
+		DOM.$overlayBg = document.getElementById('overlay');
 	}
 
 	function open_sidebar() {
-		this.sidebar.show();
-		this.overlayBg.show();
+		DOM.$sidebar.style.display = 'block';
+		DOM.$overlayBg.style.display = 'block';
 	}
 
 	function close_sidebar() {
-		this.sidebar.hide();
-		this.overlayBg.hide();
+		DOM.$sidebar.style.display = 'none';
+		DOM.$overlayBg.style.display = 'none';
+	}
+
+	return {
+		init: init
 	}
 
 })();

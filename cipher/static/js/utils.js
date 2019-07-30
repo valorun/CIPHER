@@ -7,8 +7,9 @@ function successAlert(message) {
 }
 
 function alert(title, message, color) {
-	$('.alert-modal')
-		.append('<div class=\'display-bottomright\'>' +
+	document.getElementsByClassName('alert-modal')[0]
+			.insertAdjacentHTML('beforeend',
+				'<div class=\'display-bottomright\'>' +
 					'<div class=\'panel card-4 animate-bottom display-container ' + color + '\'>' +
 						'<span onclick=\'this.parentElement.style.display=\'none\'\' ' +
 						'class=\'button large display-topright ' + color + '\'>&times;' +
@@ -19,7 +20,11 @@ function alert(title, message, color) {
 						'</p>' +
 					'</div>' +
 				'</div>');
-	setTimeout(function () {
-		$('.alert-modal').empty();
+	setTimeout(() => {
+		document.getElementsByClassName('alert-modal')[0].innerHTML = '';
 	}, 3000);
+}
+
+function isVisible(el) {
+	return (el.offsetParent !== null);
 }

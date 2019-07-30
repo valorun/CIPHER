@@ -50,10 +50,10 @@ var connectionManager = (() => {
 			}
 		});
 		socket.on('connect', () => {
-			$('#socketErrorModal').hide();
+			document.getElementById('socketErrorModal').style.display = 'none';
 		});
 		socket.on('disconnect', () => {
-			$('#socketErrorModal').show();
+			document.getElementById('socketErrorModal').style.display = 'block';
 		});
 	}
 
