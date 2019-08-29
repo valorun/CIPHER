@@ -52,11 +52,17 @@ var templateController = (() => {
 
 	}
 	
+	/* PUBLIC METHODS */
 	function init() {
 		cacheDom();
 		bindUIEvents();
 	}
 
+	function getAccordion(accordionId) {
+		return accordions.filter(a => a.$element.id === accordionId)
+	}
+
+	/* PRIVATE METHODS */
 	function bindUIEvents() {
 		document.getElementById('sidebar_button').addEventListener('click', () =>{
 			if (isVisible(sidebar))
@@ -95,7 +101,8 @@ var templateController = (() => {
 	}
 
 	return {
-		init: init
+		init: init,
+		getAccordion: getAccordion
 	}
 
 })();
