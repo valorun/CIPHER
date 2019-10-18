@@ -58,14 +58,18 @@ var templateController = (() => {
 		bindUIEvents();
 	}
 
+	/**
+	 * Return the accordion with the given ID.
+	 * @param {*} accordionId ID of the accordion.
+	 */
 	function getAccordion(accordionId) {
-		return accordions.filter(a => a.$element.id === accordionId)
+		return accordions.filter(a => a.$element.id === accordionId)[0];
 	}
 
 	/* PRIVATE METHODS */
 	function bindUIEvents() {
 		document.getElementById('sidebar_button').addEventListener('click', () =>{
-			if (isVisible(sidebar))
+			if (isVisible(DOM.$sidebar))
 				close_sidebar();
 			else
 				open_sidebar();
@@ -103,6 +107,6 @@ var templateController = (() => {
 	return {
 		init: init,
 		getAccordion: getAccordion
-	}
+	};
 
 })();

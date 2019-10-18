@@ -18,23 +18,23 @@ var editorController = (() => {
 	/* PRIVATE METHODS */
 	function bindUIEvents() {
 		document.querySelectorAll('a[name=editScript]').forEach((e) => {
-			console.log(e.currentTarget);
-			const script_name = e.currentTarget.id.substr(e.currentTarget.id.indexOf('_') + 1);
-			e.addEventListener('click', (e1) => {
-				editScript(script_name)
-			})
+			const script_name = e.id.substr(e.id.indexOf('_') + 1);
+			e.addEventListener('click', () => {
+				editScript(script_name);
+			});
 		});
 
 		document.querySelectorAll('a[name=deleteScript]').forEach((e) => {
-			const script_name = e.currentTarget.id.substr(e.currentTarget.id.indexOf('_') + 1);
-			e.addEventListener('click', (e1) => {
-				deleteScript(script_name)
-			})
+			const script_name = e.id.substr(e.id.indexOf('_') + 1);
+			e.addEventListener('click', () => {
+				deleteScript(script_name);
+			});
 		});
 		
-		document.getElementById('#saveButton').addEventListener('click', (e) => {
-			saveScript(DOM.$scriptName, editor.getValue());
-		})
+		document.getElementById('saveButton').addEventListener('click', () => {
+			console.log(DOM.$scriptName);
+			saveScript(DOM.$scriptName.value, editor.getValue());
+		});
 	}
 
 	function cacheDom() {
@@ -48,21 +48,19 @@ var editorController = (() => {
 	function editScript(script_name) {
 		DOM.$scriptName.value = script_name;
 
-		let status;
 		fetch('/read_script/' + script_name, {method: 'GET'})
-		.then((response) => {
-			status = response.status;
-			return response.json();
-		})
-		.then((data) => {
-			if(status != 200) {
-				failAlert(request.responseText);
-				return;
-			}
-			editor.setValue(data);
-			templateController.open_accordion(templateController.getAccordion('editorPanel'));
-			window.location.hash = '#editorPanel';
-		});
+			.then((response) => {
+				if(response.status != 200) {
+					response.json().then((r) => failAlert(r));
+					return;
+				}
+				return response.json();
+			})
+			.then((data) => {
+				editor.setValue(data);
+				templateController.getAccordion('editorPanel').open();
+				window.location.hash = '#editorPanel';
+			});
 	}
 
 	/**
@@ -78,21 +76,17 @@ var editorController = (() => {
 			fetch('/delete_script', {
 				method: 'POST',
 				headers: headers,
-				body: {script_name:script_name}
+				body: JSON.stringify({script_name:script_name})
 			})
-			.then((response) => {
-				status = response.status;
-				return response.json();
-			})
-			.then((data) => {
-				if(status != 200) {
-					failAlert(request.responseText);
-					return;
-				}
-				console.log(script_name + ' deleted');
-				DOM.$scriptName.remove();
-				location.reload();
-			});
+				.then((response) => {
+					if(response.status != 200) {
+						response.json().then((r) => failAlert(r));
+						return;
+					}
+					console.log(script_name + ' deleted');
+					DOM.$scriptName.remove();
+					location.reload();
+				});
 		}
 	}
 
@@ -104,27 +98,22 @@ var editorController = (() => {
 	function saveScript(script_name, script_data) {
 		let headers = new Headers();
 		headers.append('Content-Type', 'application/json');
-
 		fetch('/save_script', {
 			method: 'POST',
 			headers: headers,
-			body: {script_name:script_name, script_data:script_data}
+			body: JSON.stringify({script_name:script_name, script_data:script_data})
 		})
-		.then((response) => {
-			status = response.status;
-			return response.json();
-		})
-		.then((data) => {
-			if(status != 200) {
-				failAlert(request.responseText);
-				return;
-			}
-			console.log(script_name + ' saved');
-			location.reload();
-		});
+			.then((response) => {
+				if(response.status != 200) {
+					response.json().then((r) => failAlert(r));
+					return;
+				}
+				console.log(script_name + ' saved');
+				location.reload();
+			});
 	}
 	return {
 		init: init
-	}
+	};
 
 })();

@@ -8,18 +8,18 @@ function successAlert(message) {
 
 function alert(title, message, color) {
 	document.getElementsByClassName('alert-modal')[0]
-			.insertAdjacentHTML('beforeend',
-				'<div class=\'display-bottomright\'>' +
-					'<div class=\'panel card-4 animate-bottom display-container ' + color + '\'>' +
-						'<span onclick=\'this.parentElement.style.display=\'none\'\' ' +
-						'class=\'button large display-topright ' + color + '\'>&times;' +
-						'</span>' +
-						'<h3>' + title + '</h3>' +
-						'<p>' +
-							'<strong>' + message + '</strong>' +
-						'</p>' +
-					'</div>' +
-				'</div>');
+		.insertAdjacentHTML('beforeend',
+			'<div class=\'display-bottomright\'>' +
+				'<div class=\'panel card-4 animate-bottom display-container ' + color + '\'>' +
+					'<span onclick=\'this.parentElement.style.display=\'none\'\' ' +
+					'class=\'button large display-topright ' + color + '\'>&times;' +
+					'</span>' +
+					'<h3>' + title + '</h3>' +
+					'<p>' +
+						'<strong>' + message + '</strong>' +
+					'</p>' +
+				'</div>' +
+			'</div>');
 	setTimeout(() => {
 		document.getElementsByClassName('alert-modal')[0].innerHTML = '';
 	}, 3000);
