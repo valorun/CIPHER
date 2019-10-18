@@ -15,8 +15,10 @@ class SequenceReader:
 		"""
 		Create a sequence object from JSON.
 		"""
-		nodes = json[0]
-		edges = json[1]
+		if 'nodes' not in json or 'edges' not in json:
+			return None
+		nodes = json['nodes']
+		edges = json['edges']
 		return Sequence(nodes, edges)
 
 	def readSequence(self, json, **kwargs):

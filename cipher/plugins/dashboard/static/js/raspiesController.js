@@ -1,3 +1,6 @@
+/* globals socket */
+
+/* exported raspiesController */
 var raspiesController = (() => {
 	'use strict';
 	let DOM = {};

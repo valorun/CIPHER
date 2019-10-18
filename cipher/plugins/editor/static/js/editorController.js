@@ -1,3 +1,8 @@
+/* globals failAlert */
+/* globals ace */
+/* globals templateController */
+
+/* exported editorController */
 var editorController = (() => {
 	'use strict';
 
@@ -112,6 +117,7 @@ var editorController = (() => {
 				location.reload();
 			});
 	}
+
 	return {
 		init: init
 	};

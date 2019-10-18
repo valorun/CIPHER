@@ -1,3 +1,6 @@
+/* globals socket */
+
+/* exported debugController */
 var debugController = (() => {
 	'use strict';
 
@@ -22,5 +25,5 @@ var debugController = (() => {
 
 	return {
 		init: init
-	}
+	};
 })();

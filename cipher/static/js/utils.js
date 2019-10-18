@@ -1,7 +1,9 @@
+/* exported failAlert */
 function failAlert(message) {
 	alert('<i class=\'fas fa-times-circle\'></i> Attention !', message, 'dark-red');
 }
 
+/* exported successAlert */
 function successAlert(message) {
 	alert('<i class=\'fas fa-check-circle\'></i> Succès !', message, 'green');
 }
@@ -25,6 +27,7 @@ function alert(title, message, color) {
 	}, 3000);
 }
 
+/* exported isVisible */
 function isVisible(el) {
 	return (el.offsetParent !== null);
 }

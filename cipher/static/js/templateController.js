@@ -1,3 +1,6 @@
+/* globals isVisible */
+
+/* exported templateController */
 var templateController = (() => {
 	'use strict';
 	
