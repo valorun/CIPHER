@@ -1,80 +1,127 @@
-var intentsController = {
-	init: function(){
-		this.bind();
-	},
-	bind: function(){
+/* globals failAlert */
+
+/* exported intentsController */
+var intentsController = (() => {
+	'use strict';
+
+	let DOM = {};
+
+	/* PUBLIC METHODS */
+	function init() {
+		cacheDom();
+		bindUIEvents();
+	}
+
+	/* PRIVATE METHODS */
+	function bindUIEvents(){
 		//button to add the sentence to the conversation
-  		$("#addResponseButton").on("click", () => {
-  			var intent=$( "#currentIntent" ).val();
-  			if(intent==null || intent===""){
-				failAlert("L'intention fournie est vide.");
-  				return;
+		document.getElementById('addResponseButton').addEventListener('click', () => {
+			let intent = DOM.$currentIntent.value;
+			if(intent == null || intent === ''){
+				failAlert('L\'intention fournie est vide.');
+				return;
 			}
-			var script_name=$("#currentScriptName" ).val()
-  			var sequence_id=$( "#currentSequence" ).val();
-			$.ajax({
-				type: 'POST',
-				url: '/save_intent',
-				data: { intent: intent, script_name: script_name, sequence_id: sequence_id},
-				success: function () {
-					location.reload();
-				},
-				error: function (request, status, error) {
-					failAlert(request.responseText);
-				}
-			});
+			let script_name = DOM.$currentScriptName.value;
+			let sequence_id = DOM.$currentSequence.value;
+			saveIntent(intent, script_name, sequence_id);
 		});
+
 		//checkbox to enable or disable the relay
-		$('input[name=enableIntent]').on("change", (e) => {
-			let intent = e.currentTarget.id.substr(e.currentTarget.id.indexOf('_') + 1)
-			this.enableIntent(intent, $(e.currentTarget).prop("checked"))
+		document.querySelectorAll('input[name=enableIntent]').forEach((e) => {
+			const intent = e.id.substr(e.id.indexOf('_') + 1);
+			e.addEventListener('change', () => {
+				enableIntent(intent, e.checked);
+			});
 		});
 
 		//button to delete the relay
-		$('a[name=deleteIntent]').on("click", (e) => {
-			let intent = e.currentTarget.id.substr(e.currentTarget.id.indexOf('_') + 1)
-			this.deleteIntent(intent)
+		document.querySelectorAll('a[name=deleteIntent]').forEach((e) => {
+			const intent = e.id.substr(e.id.indexOf('_') + 1);
+			e.addEventListener('click', () => {
+				deleteIntent(intent);
+			});
 		});
-	},
+	}
+
+	function cacheDom() {
+		DOM.$currentIntent = document.getElementById('currentIntent');
+		DOM.$currentScriptName = document.getElementById('currentScriptName');
+		DOM.$currentSequence = document.getElementById('currentSequence');
+	}
+
+	/**
+	 * Save an intent
+	 * @param {*} intent intant name
+	 * @param {*} script_name optional script name
+	 * @param {*} sequence_id optional sequence id
+	 */
+	function saveIntent(intent, script_name, sequence_id) {
+		let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+		fetch('/save_intent', {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify({intent: intent, script_name: script_name, sequence_id: sequence_id})
+		})
+			.then((response) => {
+				if(response.status != 200) {
+					response.json().then((r) => failAlert(r));
+					return;
+				}
+				location.reload();
+			});
+	}
 
 	/**
  	 *  Enable OR disable an intent
 	  *	@param	{string} intent intant name
 	  *	@param	{boolean} value new state for the intent
  	 */
-	 enableIntent: function (intent, value) {
-		$.ajax({
-			type: 'POST',
-			url: '/enable_intent',
-			data: { intent: intent, value: value },
-			success: function () {
-				console.log(intent + " updated");
-			},
-			error: function (request, status, error) {
-				failAlert(request.responseText);
-			}
-		});
-	},
+	function enableIntent(intent, value) {
+		let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+		fetch('/enable_intent', {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify({intent:intent, value:value})
+		})
+			.then((response) => {
+				if(response.status != 200) {
+					response.json().then((r) => failAlert(r));
+					return;
+				}
+				console.log(intent + ' updated');
+
+			});
+	}
 
 	/**
  	 *  Delete an intent
  	 *	@param	{string} intent intent name
  	 */
-	deleteIntent: function (intent) {
-		var confirm = window.confirm("Etes vous sûr de vouloir supprimer l'intention \'" + intent + "\' ?");
+	function deleteIntent(intent) {
+		var confirm = window.confirm('Etes vous sûr de vouloir supprimer l\'intention \'' + intent + '\' ?');
+		let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
 		if (confirm) {
-			$.ajax({
-				type: 'POST',
-				url: '/delete_intent',
-				data: { intent: intent },
-				success: () => {
-					console.log(intent + " deleted");
-					$("#" + intent).remove();
-				},
-				error: (request, status, error) => {
-					failAlert(request.responseText);
-				}
-			});
+			fetch('/delete_intent', {
+				method: 'POST',
+				headers: headers,
+				body: JSON.stringify({intent:intent})
+			})
+				.then((response) => {
+					if(response.status != 200) {
+						response.json().then((r) => failAlert(r));
+						return;
+					}
+					console.log(intent + ' deleted');
+					let intent_el = document.getElementById(intent);
+					intent_el.parentNode.removeChild(intent_el);
+				});
 		}
 	}
-}
+
+	return {
+		init: init
+	};
+})();

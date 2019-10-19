@@ -3,7 +3,6 @@
 /* globals graphPanelController */
 
 
-
 /* exported graphFormController */
 var graphFormController = (() => {
 	'use strict';

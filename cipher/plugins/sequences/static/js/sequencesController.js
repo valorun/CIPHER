@@ -58,7 +58,6 @@ var sequencesController = (() => {
 		let headers = new Headers();
 		headers.append('Content-Type', 'application/json');
 		if(confirm){
-
 			fetch('/delete_sequence', {
 				method: 'POST',
 				headers: headers,
