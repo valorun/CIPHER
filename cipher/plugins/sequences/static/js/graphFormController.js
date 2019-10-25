@@ -1,15 +1,16 @@
 /* globals failAlert */
 /* globals templateController */
 /* globals graphPanelController */
+/* globals fetchJson */
 
 
 /* exported graphFormController */
-var graphFormController = (() => {
+const graphFormController = (() => {
 	'use strict';
 
-	let DOM = {};
+	const DOM = {};
 
-	let graphPanel = graphPanelController;
+	const graphPanel = graphPanelController;
 
 	/* PUBLIC METHODS */
 	function init() {
@@ -36,7 +37,7 @@ var graphFormController = (() => {
 
 		document.querySelectorAll('a[name=editSeq]').forEach((e) => {
 			e.addEventListener('click', () => {
-				let seq_name = e.id.substr(e.id.indexOf('_') + 1);
+				const seq_name = e.id.substring(e.id.indexOf('_') + 1);
 				console.log(seq_name);
 
 				editSequence(seq_name);
@@ -71,7 +72,7 @@ var graphFormController = (() => {
 		DOM.$pauseOptions.classList.add('hide');
 		DOM.$servoSequenceOptions.classList.add('hide'); // COMPATIBILITY REASON
 		if (document.querySelector('select[name=newNodeTypeChoice]').value !== '') {
-			let selectedNodeType = document.querySelector('select[name=newNodeTypeChoice]');
+			const selectedNodeType = document.querySelector('select[name=newNodeTypeChoice]');
 			document.getElementById(selectedNodeType.value + 'Options').classList.remove('hide');
 		} else {
 			failAlert('Aucune action n\'a été selectionnée !');
@@ -82,20 +83,10 @@ var graphFormController = (() => {
 	 * Save the graph on the server
 	 */
 	function saveGraph() {
-		let sequence = graphPanel.getGraph();
+		const sequence = graphPanel.getGraph();
 
-		let headers = new Headers();
-		headers.append('Content-Type', 'application/json');
-		fetch('/save_sequence', {
-			method: 'POST',
-			headers: headers,
-			body: JSON.stringify({seq_name:DOM.$name.value, seq_data:sequence})
-		})
-			.then((response) => {
-				if(response.status != 200) {
-					response.json().then((r) => failAlert(r));
-					return;
-				}
+		fetchJson('/save_sequence', 'POST', {seq_name:DOM.$name.value, seq_data:sequence})
+			.then(()=> {
 				location.reload();
 			});
 	}
@@ -106,8 +97,8 @@ var graphFormController = (() => {
 	 */
 	function editSequence(seq_name) {
 		DOM.$name.value = seq_name;
-		let sequenceData = document.getElementById('data_' + seq_name).innerHTML;
-		let json = JSON.parse(sequenceData);
+		const sequenceData = document.getElementById('data_' + seq_name).innerHTML;
+		const json = JSON.parse(sequenceData);
 		graphPanel.updateGraph(json.nodes, json.edges);
 	}
 

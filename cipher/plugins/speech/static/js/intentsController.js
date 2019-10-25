@@ -1,10 +1,11 @@
 /* globals failAlert */
+/* globals fetchJson */
 
 /* exported intentsController */
-var intentsController = (() => {
+const intentsController = (() => {
 	'use strict';
 
-	let DOM = {};
+	const DOM = {};
 
 	/* PUBLIC METHODS */
 	function init() {
@@ -16,13 +17,13 @@ var intentsController = (() => {
 	function bindUIEvents(){
 		//button to add the sentence to the conversation
 		document.getElementById('addResponseButton').addEventListener('click', () => {
-			let intent = DOM.$currentIntent.value;
+			const intent = DOM.$currentIntent.value;
 			if(intent == null || intent === ''){
 				failAlert('L\'intention fournie est vide.');
 				return;
 			}
-			let script_name = DOM.$currentScriptName.value;
-			let sequence_id = DOM.$currentSequence.value;
+			const script_name = DOM.$currentScriptName.value;
+			const sequence_id = DOM.$currentSequence.value;
 			saveIntent(intent, script_name, sequence_id);
 		});
 
@@ -56,18 +57,9 @@ var intentsController = (() => {
 	 * @param {*} sequence_id optional sequence id
 	 */
 	function saveIntent(intent, script_name, sequence_id) {
-		let headers = new Headers();
-		headers.append('Content-Type', 'application/json');
-		fetch('/save_intent', {
-			method: 'POST',
-			headers: headers,
-			body: JSON.stringify({intent: intent, script_name: script_name, sequence_id: sequence_id})
-		})
-			.then((response) => {
-				if(response.status != 200) {
-					response.json().then((r) => failAlert(r));
-					return;
-				}
+		fetchJson('/save_intent', 'POST', 
+			{intent: intent, script_name: script_name, sequence_id: sequence_id})
+			.then(() => {
 				location.reload();
 			});
 	}
@@ -78,20 +70,9 @@ var intentsController = (() => {
 	  *	@param	{boolean} value new state for the intent
  	 */
 	function enableIntent(intent, value) {
-		let headers = new Headers();
-		headers.append('Content-Type', 'application/json');
-		fetch('/enable_intent', {
-			method: 'POST',
-			headers: headers,
-			body: JSON.stringify({intent:intent, value:value})
-		})
-			.then((response) => {
-				if(response.status != 200) {
-					response.json().then((r) => failAlert(r));
-					return;
-				}
+		fetchJson('/enable_intent', 'POST', {intent:intent, value:value})
+			.then(() => {
 				console.log(intent + ' updated');
-
 			});
 	}
 
@@ -100,22 +81,13 @@ var intentsController = (() => {
  	 *	@param	{string} intent intent name
  	 */
 	function deleteIntent(intent) {
-		var confirm = window.confirm('Etes vous sûr de vouloir supprimer l\'intention \'' + intent + '\' ?');
-		let headers = new Headers();
-		headers.append('Content-Type', 'application/json');
+		const confirm = window.confirm('Etes vous sûr de vouloir supprimer l\'intention \'' + intent + '\' ?');
+		
 		if (confirm) {
-			fetch('/delete_intent', {
-				method: 'POST',
-				headers: headers,
-				body: JSON.stringify({intent:intent})
-			})
-				.then((response) => {
-					if(response.status != 200) {
-						response.json().then((r) => failAlert(r));
-						return;
-					}
+			fetchJson('/delete_intent', 'POST', {intent:intent})
+				.then(() => {
 					console.log(intent + ' deleted');
-					let intent_el = document.getElementById(intent);
+					const intent_el = document.getElementById(intent);
 					intent_el.parentNode.removeChild(intent_el);
 				});
 		}

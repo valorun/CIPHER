@@ -1,7 +1,7 @@
 import logging
 import json
 import re
-from flask import Flask, session, request, redirect, jsonify
+from flask import Flask, session, request, jsonify
 from . import speech
 from .model import Intent
 from cipher.model import Sequence, db, resources
@@ -36,7 +36,7 @@ def save_intent():
     db_intent = Intent(intent=intent, script_name=script_name, sequence_id=seq_id, enabled=True)
     db.session.merge(db_intent)
     db.session.commit()
-    return speech.render_page('speech.html')
+    return jsonify("L'intention '" + intent + "' a été sauvegardée avec succès."), 200
 
 @speech.route('/enable_intent', methods=['POST'])
 @login_required
@@ -49,7 +49,7 @@ def enable_intent():
     db_intent = Intent.query.filter_by(intent=intent).first()
     db_intent.enabled = value
     db.session.commit()
-    return speech.render_page('speech.html')
+    return jsonify("L'état de l'intention '" + intent + "' a été modifié."), 200
 
 @speech.route('/delete_intent', methods=['POST'])
 @login_required
@@ -61,4 +61,4 @@ def delete_intent():
     db_intent = Intent.query.filter_by(intent=intent).first()
     db.session.delete(db_intent)
     db.session.commit()
-    return speech.render_page('speech.html')
+    return jsonify("L'intention '" + intent + "' a été supprimée avec succès."), 200

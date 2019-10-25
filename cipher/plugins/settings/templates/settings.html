@@ -50,7 +50,8 @@
 					<form id="motionRaspiIdForm">
 						<label for="motionRaspiId">Id du Raspberry attribué aux déplacements: </label>
 						<div class="row">
-							<input id="motionRaspiId" type="text" class="input border col" style="width: 80%" placeholder="ex: raspi_###" value="{{ motionRaspiId }}">
+							<input id="motionRaspiId" type="text" class="input border col" style="width: 80%" placeholder="ex: raspi_###" value="{{ motionRaspiId }}" list="motionRaspiIdData">
+							<datalist id="motionRaspiIdData"></datalist>
 							<button type="submit" class="button secondary col" style="width:20%"><i class="fa fa-check"></i></button>
 						</div>
 					</form>

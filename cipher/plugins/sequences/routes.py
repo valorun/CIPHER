@@ -1,5 +1,5 @@
 import logging
-from flask import Flask, session, request, redirect, jsonify
+from flask import Flask, session, request, jsonify
 import json
 from . import sequences
 from cipher.model import Sequence, Servo, Relay, db
@@ -38,7 +38,7 @@ def save_sequence():
     db_sequence = Sequence(id=seq_name, value=json.dumps(seq_data), enabled=True)
     db.session.merge(db_sequence)
     db.session.commit()
-    return redirect('/sequences')
+    return jsonify("La séquence '" + seq_name + "' a été sauvegardée avec succès."), 200
 
 @sequences.route('/enable_sequence', methods=['POST'])
 @login_required
@@ -56,7 +56,7 @@ def enable_sequence():
         return jsonify("La séquence est inconnue."), 400
     db_seq.enabled = value
     db.session.commit()
-    return redirect('/sequences')
+    return jsonify("L'état de la séquence '" + seq_name + "' a été modifié."), 200
 
 @sequences.route('/delete_sequence', methods=['POST'])
 @login_required
@@ -73,4 +73,5 @@ def delete_sequence():
         return jsonify("La séquence est inconnue."), 400
     db.session.delete(db_seq)
     db.session.commit()
-    return redirect('/sequences')
+    return jsonify("La séquence '" + seq_name + "' a été supprimée avec succès."), 200
+

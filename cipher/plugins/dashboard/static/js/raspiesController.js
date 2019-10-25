@@ -1,9 +1,9 @@
 /* globals socket */
 
 /* exported raspiesController */
-var raspiesController = (() => {
+const raspiesController = (() => {
 	'use strict';
-	let DOM = {};
+	const DOM = {};
 
 	/* PUBLIC METHODS */
 	function init() {
@@ -40,11 +40,11 @@ var raspiesController = (() => {
 		// then add all current raspies
 		raspies.forEach(raspi => {
 			console.log(raspi);
-			let card = '<div class=\'container cell center pale-green round-large border border-green padding-16\''+
+			const card = '<div class=\'container cell center pale-green round-large border border-green padding-16\''+
 							'<h3><strong><i class=\'xxxlarge fab fa-raspberry-pi\'></i></strong></h3>' +
 							'<h3>' + raspi.id + '</h3>' +
 						'</div>';
-			DOM.$raspberries.insertAdjacentElement('beforeend', card);
+			DOM.$raspberries.insertAdjacentHTML('beforeend', card);
 		});
 	}
 

@@ -1,14 +1,14 @@
 /* globals isVisible */
 
 /* exported templateController */
-var templateController = (() => {
+const templateController = (() => {
 	'use strict';
 	
-	let DOM = {};
-	let accordions = [];
+	const DOM = {};
+	const accordions = [];
 
-	let openEvent = new CustomEvent('open', {bubbles: true, cancelable: true});
-	let closeEvent = new CustomEvent('close', {bubbles: true, cancelable: true});
+	const openEvent = new CustomEvent('open', {bubbles: true, cancelable: true});
+	const closeEvent = new CustomEvent('close', {bubbles: true, cancelable: true});
 	
 
 	/**

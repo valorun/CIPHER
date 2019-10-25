@@ -1,6 +1,6 @@
 import logging
 import re
-from flask import request, redirect, jsonify
+from flask import request, jsonify
 from cipher.security import login_required
 from cipher.model import resources
 from . import editor
@@ -22,7 +22,7 @@ def delete_script():
 		return jsonify("Un nom de script ne doit pas être vide ou contenir d'espace."), 400
 	logging.info("Deleting " + script_name)
 	resources.deleteScript(script_name)
-	return redirect('/editor')
+	return jsonify("Le script '" + script_name + "' a été supprimé avec succès."), 200
 
 @editor.route('/save_script', methods=['POST'])
 @login_required
@@ -38,7 +38,7 @@ def save_script():
 		return jsonify("Un nom de script ne doit pas être vide ou contenir d'espace."), 400
 	logging.info("Saving " + script_name)
 	resources.saveScript(script_name, script_data)
-	return redirect('/editor')
+	return jsonify("Le script '" + script_name + "' a été sauvegardé avec succès."), 200
 
 @editor.route('/read_script/<script_name>', methods=['GET'])
 def read_script(script_name):
@@ -48,4 +48,7 @@ def read_script(script_name):
 	if not script_name or ' ' in script_name:
 		return jsonify("Un nom de script ne doit pas être vide ou contenir d'espace."), 400
 	logging.info("Reading " + script_name)
-	return jsonify(resources.readScript(script_name))
+	script_content = resources.readScript(script_name)
+	if script_content is None:
+		return jsonify("Le script n'existe pas."), 400
+	return jsonify(script_content)

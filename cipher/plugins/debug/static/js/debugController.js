@@ -1,10 +1,10 @@
 /* globals socket */
 
 /* exported debugController */
-var debugController = (() => {
+const debugController = (() => {
 	'use strict';
 
-	let DOM = {};
+	const DOM = {};
 
 	/* PUBLIC METHODS */
 	function init(){

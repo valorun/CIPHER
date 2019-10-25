@@ -52,6 +52,7 @@ class ConfigFile():
 	"""
 	def __init__(self, filepath):
 		self.filepath=filepath
+		
 	def saveOption(self, key: str, data):
 		"""
 		Save an option into the config file.
@@ -59,9 +60,9 @@ class ConfigFile():
 		try:
 			with open(self.filepath, 'r') as f:
 				content = json.load(f)
-		except IOError: #if no file exists, or if the data is not in json
+		except IOError: # if no file exists, or if the data is not in json
 			with open(self.filepath, 'w') as f:
-				f.write("") #create a new one
+				f.write("") # create a new one
 			content = {}
 		except ValueError:
 			content = {}
@@ -159,6 +160,8 @@ class Resources():
 			
 	def readScript(self, script_name):
 		path = join(self.scriptsPath, script_name)
+		if not exists(path):
+			return None
 		with open(path, encoding='utf-8', mode='r') as file:
 			return file.read()
 

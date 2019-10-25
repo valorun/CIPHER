@@ -1,10 +1,10 @@
 /* globals socket */
 
 /* exported speechDetectionController */
-var speechDetectionController = (() => {
+const speechDetectionController = (() => {
 	'use strict';
 
-	let DOM = {};
+	const DOM = {};
 
 	/* PUBLIC METHODS */
 	function init() {
@@ -25,7 +25,7 @@ var speechDetectionController = (() => {
 		
 		//server response when a sentence must be play on the client
 		socket.on('response', (msg) => {
-			let time = new Date();
+			const time = new Date();
 			DOM.$detectionResult.insertAdjacentHTML('beforeend', '<li>'+
 					'<div class="row">'+
 						'<div class="col l2 m2 s3 center">' +

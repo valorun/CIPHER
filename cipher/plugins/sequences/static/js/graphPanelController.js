@@ -2,10 +2,10 @@
 /* globals vis */
 
 /* exported graphPanelController */
-var graphPanelController = (() => {
+const graphPanelController = (() => {
 	'use strict';
 
-	let DOM = {};
+	const DOM = {};
 
 	let nodes = null;
 	let edges = null;
@@ -48,7 +48,7 @@ var graphPanelController = (() => {
 	 * Get graph as JSON.
 	 */
 	function getGraph() {
-		let graph = {};
+		const graph = {};
 		graph.nodes = nodes.get();
 		graph.edges = edges.get();
 		return graph;
@@ -71,12 +71,12 @@ var graphPanelController = (() => {
 		edges = new vis.DataSet();
 		
 		// create a network
-		let container = document.getElementById('network');
-		let data = {
+		const container = document.getElementById('network');
+		const data = {
 			nodes: nodes,
 			edges: edges
 		};
-		let locales = {
+		const locales = {
 			fr: {
 				edit: 'Editer',
 				del: 'Supprimer la sélection',
@@ -93,7 +93,7 @@ var graphPanelController = (() => {
 				editClusterError: 'Clusters cannot be edited.'
 			}
 		};
-		let options = {
+		const options = {
 			locale: 'fr',
 			locales: locales,
 			manipulation: {
@@ -186,7 +186,7 @@ var graphPanelController = (() => {
 	*/
 	function handleNodeToAdd(nodeData) {
 		let label = '';
-		let action = {};
+		const action = {};
 		nodeData.shape = 'box';
 		switch (DOM.$selectedAction.value) {
 		case ('motion'): {
@@ -206,15 +206,15 @@ var graphPanelController = (() => {
 		}
 		case ('servo'): {
 			action.type = 'servo';
-			let $selected_servo = DOM.$servo.options[DOM.$servo.selectedIndex];
+			const $selected_servo = DOM.$servo.options[DOM.$servo.selectedIndex];
 			action.servo = $selected_servo.value;
 			if(action.servo == null){
 				failAlert('Aucun servomoteur sélectionné.');
 				return false;
 			}
 			action.position = parseInt(DOM.$servo_position.value);
-			let min_pulse_width = parseInt($selected_servo.min);
-			let max_pulse_width = parseInt($selected_servo.max);
+			const min_pulse_width = parseInt($selected_servo.min);
+			const max_pulse_width = parseInt($selected_servo.max);
 			if(!isInputNumberValid(action.position, min_pulse_width, max_pulse_width)){
 				failAlert('La position doit être comprise entre ' + min_pulse_width + ' et ' + max_pulse_width + '.');
 				return false;

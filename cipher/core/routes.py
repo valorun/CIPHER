@@ -1,5 +1,5 @@
 import logging
-from flask import Flask, Response, render_template, flash, send_from_directory
+from flask import Flask, Response, render_template, flash, send_from_directory, jsonify
 from os.path import join
 from . import core
 from cipher.constants import SOUNDS_LOCATION
@@ -19,7 +19,8 @@ def method_not_allowed(e):
 
 #@core.app_errorhandler(Exception)
 #def unhandled_exception(e):
-#	return render_template('error.html', error_code=500, error_message='Une erreur imprévue est survenue'), 500
+#	logging.error(e)
+#	return jsonify("Une erreur imprévue est survenue."), 500
 
 @core.route('/play_sound/<sound_name>', methods=['GET'])
 @login_required

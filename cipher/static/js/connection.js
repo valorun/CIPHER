@@ -1,6 +1,11 @@
-var socket = io.connect(window.location.host + '/client');
+/* globals io */
+/* globals Cookies */
 
-var connectionManager = (() => {
+/* exported socket */
+const socket = io.connect(window.location.host + '/client');
+
+/* exported connectionManager */
+const connectionManager = (() => {
 	'use strict';
 
 	let voices = null;
@@ -18,7 +23,7 @@ var connectionManager = (() => {
 
 	function speak(msg) {
 		if ('speechSynthesis' in window && voices !== null) {
-			let to_speak = new SpeechSynthesisUtterance(msg);
+			const to_speak = new SpeechSynthesisUtterance(msg);
 			voices.forEach((e) =>{
 				if(Cookies.get('voice') === e.name){
 					to_speak.voice = e;
