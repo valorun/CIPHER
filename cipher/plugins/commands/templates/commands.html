@@ -1,26 +1,24 @@
 {% extends 'template.html' %}
 {% block content %}
-<script src="{{ url_for('commands.static', filename='vendor/gridstack/lodash.js') }}"></script>
-<script src="{{ url_for('commands.static', filename='vendor/gridstack/gridstack.js') }}"></script>
-<script src="{{ url_for('commands.static', filename='vendor/gridstack/gridstack.jQueryUI.js') }}"></script>
-<link rel="stylesheet" href="{{ url_for('commands.static', filename='vendor/gridstack/gridstack.css') }}">
-
 <script src="{{ url_for('static', filename='js/connection.js') }}"></script>
-<script src="{{ url_for('commands.static', filename='js/colorpicker.js') }}"></script>
-<script src="{{ url_for('commands.static', filename='js/gridPanelView.js') }}"></script>
-<script src="{{ url_for('commands.static', filename='js/gridPanelController.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/draggablesGrid.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/commandButton.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/colorpickerController.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/gridController.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/gridFormController.js') }}"></script>
 
 <style type="text/css">
 
-.grid-stack-item-content {
-	text-align: center;
+.grid-cell {
+	float: left;
+	width: 150px;
+	height: 100px;
+	margin: 10px;
+	padding: 10px;
+	display: table;
 }
 
-.grid-stack-item-removing {
-	opacity: 0.2;
-}
-
-.trash {
+.trashbin {
 	height: 100px;
 	margin-bottom: 20px;
 	background: rgba(255, 0, 0);
@@ -101,14 +99,12 @@
 
 	<div id="panel" class="border container white" style="width:100%">
 		<div class="row-padding">
-			<div class="trash center text-white row">
+			<div class="trashbin center text-white row" id="trashbin">
 				<h1 class="cell-middle"><i class="fas fa-trash"></i></h1>
 			</div>
 		</div>
-		<div class="row-padding">
-			<div class="grid-stack" id="grid">
+		<div class="row-padding" id="grid">
 
-			</div>
 		</div>
 	</div>
 </div>
@@ -117,7 +113,7 @@
 <div id="color-picker" class="modal" style="z-index:4;">
 	<div class="modal-content animate-top card-4">
 		<header class="container primary">
-			<span onclick="$('#color-picker').hide();" class="button display-topright xlarge">&times;</span>
+			<span onclick="document.getElementById('color-picker').style.display = 'none'" class="button display-topright xlarge">&times;</span>
 			<h2>Selectionnez la couleur du bouton</h2>
 		</header>
 		<div class="container center">
@@ -140,12 +136,10 @@
 
 
 <script type="text/javascript">
-$(document).ready(function() {
-	connectionManager.init();
+    document.addEventListener('DOMContentLoaded', () => {
 
-	gridPanelController.init();
-});
-
+		gridFormController.init();
+	});
 </script>
 
 {% endblock %}

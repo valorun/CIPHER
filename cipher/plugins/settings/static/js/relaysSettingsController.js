@@ -41,7 +41,6 @@ const relaysSettingsController = (() => {
 				deleteRelay(rel_label);
 			});
 		});
-
 	}
 
 	function cacheDom() {

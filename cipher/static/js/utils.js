@@ -9,8 +9,8 @@ function successAlert(message) {
 }
 
 function alert(title, message, color) {
-	const el = document.getElementsByClassName('alert-modal')[0];
-	el.insertAdjacentHTML('beforeend',
+	const $el = document.getElementsByClassName('alert-modal')[0];
+	$el.insertAdjacentHTML('beforeend',
 		'<div class=\'display-bottomright\'>' +
 			'<div class=\'panel card-4 animate-bottom display-container ' + color + '\'>' +
 				'<span onclick=\'this.parentElement.style.display=\'none\'\' ' +
@@ -23,18 +23,18 @@ function alert(title, message, color) {
 			'</div>' +
 		'</div>');
 	setTimeout(() => {
-		while(el.firstChild) el.removeChild(el.firstChild);
+		while($el.firstChild) $el.removeChild($el.firstChild);
 	}, 3000);
 }
 
 /* exported isVisible */
-function isVisible(el) {
-	return (el.offsetParent !== null);
+function isVisible($el) {
+	return ($el.offsetParent !== null);
 }
 
 /* exported empty */
-function empty(el) {
-	while(el.firstChild) el.removeChild(el.firstChild);
+function empty($el) {
+	while($el.firstChild) $el.removeChild($el.firstChild);
 }
 
 /* exported fetchJson */

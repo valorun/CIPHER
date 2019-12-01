@@ -208,18 +208,18 @@ const graphPanelController = (() => {
 			action.type = 'servo';
 			const $selected_servo = DOM.$servo.options[DOM.$servo.selectedIndex];
 			action.servo = $selected_servo.value;
-			if(action.servo == null){
+			if(action.servo == null || action.servo === ''){
 				failAlert('Aucun servomoteur sélectionné.');
 				return false;
 			}
 			action.position = parseInt(DOM.$servo_position.value);
-			const min_pulse_width = parseInt($selected_servo.min);
-			const max_pulse_width = parseInt($selected_servo.max);
+			const min_pulse_width = parseInt($selected_servo.dataset.min);
+			const max_pulse_width = parseInt($selected_servo.dataset.max);
 			if(!isInputNumberValid(action.position, min_pulse_width, max_pulse_width)){
 				failAlert('La position doit être comprise entre ' + min_pulse_width + ' et ' + max_pulse_width + '.');
 				return false;
 			}
-			action.speed = parseInt(DOM.$servo_position.value);
+			action.speed = parseInt(DOM.$servo_speed.value);
 			if(!isInputNumberValid(action.speed, 0, 100)){
 				failAlert('La vitesse doit être comprise entre 0 et 100.');
 				return false;

@@ -9,7 +9,6 @@ const templateController = (() => {
 
 	const openEvent = new CustomEvent('open', {bubbles: true, cancelable: true});
 	const closeEvent = new CustomEvent('close', {bubbles: true, cancelable: true});
-	
 
 	/**
 	 * Class used to represent the accordions containers in the page.

@@ -24,15 +24,11 @@ def save_buttons():
 	Save the grid of buttons on the server.
 	"""
 	logging.info("Saving buttons grid for user '" + session['username'] + "'.")
-	data = request.form.get('data')
-	try:
-		json.loads(data) # check if data have correct JSON format
-	except (ValueError, Exception):
-		data = None
+	data = request.json.get('data')
 	new_db_command_panel = UserCommandPanel(username=session['username'], grid=str(data))
 	db.session.merge(new_db_command_panel)
 	db.session.commit()
-	return "Grille sauvegardée.", 200
+	return jsonify("Grille sauvegardée."), 200
 
 @commands.route('/load_buttons', methods=['POST'])
 @login_required
@@ -45,5 +41,5 @@ def load_buttons():
 		logging.info("Loading buttons grid for user '" + session['username'] + "'.")
 		grid = json.loads(db_command_panel.grid)
 		logging.info(grid)
-		return jsonify(grid)
-	return "Aucune grille associée à l'utilisateur", 400
+		return jsonify(grid), 200
+	return jsonify("Aucune grille associée à l'utilisateur"), 400

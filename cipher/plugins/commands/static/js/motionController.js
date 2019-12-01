@@ -1,19 +1,22 @@
-var motionController = {
-	key_pressed: false,
-	init: function () {
-		this.bind();
-	},
-	bind: function () {
-		$('#motion_speed').slider({
-			orientation: 'vertical',
-			range: 'min',
-			min: 0,
-			max: 100,
-			value: 0,
-			slide: (event, ui) => {
-				$('#amount').val(ui.value);
-			}
-		});
+/* globals socket */
+/* globals templateController */
+
+/* exported motionController */
+const motionController = (() => {
+	'use strict';
+
+	const DOM = {};
+
+	let key_pressed = false;
+
+	/* PUBLIC METHODS */
+	function init() {
+		cacheDom();
+		bindUIEvents();
+	}
+
+	/* PRIVATE METHODS */
+	function bindUIEvents() {
 
 		//selects different listeners depending on the type of device used.
 		let startActionEvent = 'mousedown';
@@ -24,50 +27,62 @@ var motionController = {
 		}
 
 		//carriage panel controller
-		$('.motion-direction').on(startActionEvent, (e) => {
-			let direction = $(e.currentTarget).attr('value').split('_')[1];
-			let speed = $('#motion_speed').slider('value');
-
-			console.log(direction + ', ' + speed);
-			socket.emit('move', direction, speed);
-		}).on(stopActionEvent, () => {
-			console.log('stop, 0');
-			socket.emit('move', 'stop', 0);
+		[...document.getElementsByClassName('motion-direction')].forEach(e => {
+			const direction = e.getAttribute('value').split('_')[1];
+			e.addEventListener(startActionEvent, () => {
+				const speed = DOM.$motion_speed.value;
+				console.log(direction + ', ' + speed);
+				socket.emit('move', direction, speed);
+			});
+			e.addEventListener(stopActionEvent, () => {
+				console.log('stop, 0');
+				socket.emit('move', 'stop', 0);
+			});
 		});
 
 		//carriage key controller
-		$(document).on('keydown', (e) => {
-			if (!templateController.is_accordion_open($('#motion')))
+		document.addEventListener('keydown', (e) => {
+			if (!templateController.getAccordion('motion').isOpen)
+				return;
+			if (key_pressed)
 				return;
 			e.preventDefault();
-			if (this.key_pressed)
-				return;
 			let direction = 'stop';
-			let speed = $('#motion_speed').slider('value');
+			const speed = DOM.$motion_speed.value;
 
 			switch (e.keyCode) {
-				case 37:
-					direction = 'left';
-					break;
-				case 38:
-					direction = 'forwards';
-					break;
-				case 39:
-					direction = 'right';
-					break;
-				case 40:
-					direction = 'backwards';
-					break;
+			case 37:
+				direction = 'left';
+				break;
+			case 38:
+				direction = 'forwards';
+				break;
+			case 39:
+				direction = 'right';
+				break;
+			case 40:
+				direction = 'backwards';
+				break;
 			}
 			console.log(direction + ', ' + speed);
 			socket.emit('move', direction, speed);
-			this.key_pressed = true;
-		}).on('keyup', () => {
-			if (!templateController.is_accordion_open($('#motion')))
+			key_pressed = true;
+		});
+
+		document.addEventListener('keyup', () => {
+			if (!templateController.getAccordion('motion').isOpen)
 				return;
 			console.log('stop, 0');
 			socket.emit('move', 'stop', 0);
-			this.key_pressed = false;
+			key_pressed = false;
 		});
 	}
-};
+
+	function cacheDom() {
+		DOM.$motion_speed = document.getElementById('motion_speed');
+	}
+
+	return {
+		init: init
+	};
+})();

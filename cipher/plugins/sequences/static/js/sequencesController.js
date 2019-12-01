@@ -49,8 +49,8 @@ const sequencesController = (() => {
 			fetchJson('/delete_sequence', 'POST', {seq_name:seq_name})
 				.then(()=> {
 					console.log(seq_name + ' deleted');
-					const seq_el = document.getElementById(seq_name);
-					seq_el.parentNode.removeChild(seq_el);
+					const $seq_el = document.getElementById(seq_name);
+					$seq_el.parentNode.removeChild($seq_el);
 				});
 		}
 	}
