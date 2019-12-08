@@ -1,5 +1,5 @@
 import logging
-from flask import Flask, session, request, redirect
+from flask import Flask, session, request, jsonify
 import json
 from . import sequences
 from cipher.model import Sequence, Servo, Relay, db
@@ -23,22 +23,22 @@ def save_sequence():
     """
     Save a sequence in the database.
     """
-    seq_name = request.form.get('seq_name')
-    seq_data = request.form.get('seq_data')
+    seq_name = request.json.get('seq_name')
+    seq_data = request.json.get('seq_data')
     if not seq_name or ' ' in seq_name:
-        return "Un nom de séquence ne doit pas être vide ou contenir d'espace.", 400
+        return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
     if seq_data is None:
-        return "La séquence est vide.", 400
+        return jsonify("La séquence est vide."), 400
     if Sequence.query.filter_by(id=seq_name).first() is not None:
-	    return "Une sequence portant le même nom existe déjà.", 400
-
-    if not sequence_reader.getSequenceFromJson(json.loads(seq_data)).isValid():
-        return "La séquence n'est pas valide.", 400
+	    return jsonify("Une sequence portant le même nom existe déjà."), 400
+    sequence = sequence_reader.getSequenceFromJson(seq_data)
+    if sequence is not None and not sequence.isValid():
+        return jsonify("La séquence n'est pas valide."), 400
     logging.info("Saving sequence '" + seq_name + "'")
-    db_sequence = Sequence(id=seq_name, value=seq_data, enabled=True)
+    db_sequence = Sequence(id=seq_name, value=json.dumps(seq_data), enabled=True)
     db.session.merge(db_sequence)
     db.session.commit()
-    return redirect('/sequences')
+    return jsonify("La séquence '" + seq_name + "' a été sauvegardée avec succès."), 200
 
 @sequences.route('/enable_sequence', methods=['POST'])
 @login_required
@@ -46,17 +46,17 @@ def enable_sequence():
     """
     Enable or disable a equence stored in the database.
     """
-    seq_name = request.form.get('seq_name')
-    value = json.loads(request.form.get('value'))
+    seq_name = request.json.get('seq_name')
+    value = request.json.get('value')
     if not seq_name or ' ' in seq_name:
-        return "Un nom de séquence ne doit pas être vide ou contenir d'espace.", 400
+        return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
     logging.info("Updating '" + seq_name + "'")
     db_seq = Sequence.query.filter_by(id=seq_name).first()
     if db_seq is None:
-        return "La séquence est inconnue.", 400
+        return jsonify("La séquence est inconnue."), 400
     db_seq.enabled = value
     db.session.commit()
-    return redirect('/sequences')
+    return jsonify("L'état de la séquence '" + seq_name + "' a été modifié."), 200
 
 @sequences.route('/delete_sequence', methods=['POST'])
 @login_required
@@ -64,13 +64,14 @@ def delete_sequence():
     """
     Delete a sequence stored in the database.
     """
-    seq_name = request.form.get('seq_name')
+    seq_name = request.json.get('seq_name')
     if not seq_name or ' ' in seq_name:
-        return "Un nom de séquence ne doit pas être vide ou contenir d'espace.", 400
+        return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
     logging.info("Deleting " + seq_name + "'")
     db_seq = Sequence.query.filter_by(id=seq_name).first()
     if db_seq is None:
-        return "La séquence est inconnue.", 400
+        return jsonify("La séquence est inconnue."), 400
     db.session.delete(db_seq)
     db.session.commit()
-    return redirect('/sequences')
+    return jsonify("La séquence '" + seq_name + "' a été supprimée avec succès."), 200
+

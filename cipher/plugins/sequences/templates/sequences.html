@@ -89,18 +89,18 @@
 							</select>
 						</div>
 						<div class="half">
-							<input class="check" type="checkbox" checked="checked" id="relayOnOff">
+							<input class="check" type="checkbox" checked="checked" id="relay_on_off">
 							<label>On/Off</label>
 						</div>
 					</div>
 
 					<div id="speechOptions" class="container">
-						<label for="sentence">Phrase:</label>
-						<input type="text" id="sentence" value="" class="input border" placeholder="Exemple: bonjour, je suis un robot">
+						<label for="speech_sentence">Phrase:</label>
+						<input type="text" id="speech_sentence" value="" class="input border" placeholder="Exemple: bonjour, je suis un robot">
 					</div>
 
 					<div id="scriptOptions" class="container">
-						<select class="select border" name="script" id="script">
+						<select class="select border" name="script_name" id="script_name">
 							<option value="" disabled selected>Choisir un script</option>
 							{% for s in scripts %}
 							{% if s %}
@@ -111,7 +111,7 @@
 					</div>
 
 					<div id="soundOptions" class="container">
-						<select class="select border" name="sound" id="sound">
+						<select class="select border" name="sound_name" id="sound_name">
 							<option value="" disabled selected>Choisir un son</option>
 							{% for s in sounds %}
 							<option value="{{ s }}" >{{ s }}</option>
@@ -176,10 +176,10 @@
 	</div>
 </div>
 <script type="text/javascript">
-$(document).ready(function() {
-	graphFormController.init();
-	sequencesController.init();
-});
+    document.addEventListener('DOMContentLoaded', () => {
+		graphFormController.init();
+		sequencesController.init();
+	});
 
 </script>
 {% endblock %}

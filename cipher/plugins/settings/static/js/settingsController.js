@@ -1,115 +1,99 @@
-var settingsController = {
-	init: function () {
+/* globals Cookies */
+/* globals socket */
+/* globals successAlert */
+/* globals fetchJson */
+/* globals empty */
+
+
+/* exported settingsController */
+const settingsController = (() => {
+	'use strict';
+
+	const DOM = {};
+
+	/* PUBLIC METHODS */
+	function init() {
 		window.speechSynthesis.onvoiceschanged = this.fillVoices;
-		this.bind();
-		this.fillVoices();
+		cacheDom();
+		bindUIEvents();
+		fillVoices();
 		socket.emit('get_raspies');
-	},
-	bind: function () {
+	}
+
+	/* PRIVATE METHODS */
+	function bindUIEvents() {
 
 		//voice selection
-		$('#voices').on('change', function () {
-			Cookies.set('voice', $('#voices').val());
-		})
+		DOM.$voices.addEventListener('change', () => {
+			Cookies.set('voice', DOM.$voices.value);
+		});
 
+		//raspies autocompletes
 		socket.on('get_raspies', (raspies) => {
 			raspies = raspies.map(r => r.id);
-			$('#newRelayRaspiId,#newServoRaspiId,#motionRaspiId,#servoRaspiId').autocomplete({
-				source: raspies
+			document.querySelectorAll('#newRelayRaspiIdData,#newServoRaspiIdData,#motionRaspiIdData').forEach((e) => {
+				empty(e);
+				raspies.forEach((r) => {
+					e.insertAdjacentHTML('beforeend', '<option value="' + r + '">');
+				});
 			});
-
 		});
 		
 
 		//camera url modification
-		$('#cameraUrlForm').on('submit', (e) => {
+		document.getElementById('cameraUrlForm', (e) => {
 			e.preventDefault();
-			$.ajax({
-				type: 'POST',
-				url: '/update_camera_url',
-				data: { camera_url: $('#cameraUrl').val() },
-				success: function () {
-					successAlert('L\'URL de la caméra a été mis à jour');
-				},
-				error: function (request) {
-					failAlert(request.responseText);
-				}
-			});
-		});
-
-		//motion mode
-		$('#wheelsMode').on('change', (e) => {
-			$.ajax({
-				type: 'POST',
-				url: '/update_motion_mode',
-				data: { value: $(e.currentTarget).prop('checked') },
-				success: function () {
-					successAlert('Le mode de déplacement a été mis à jour');
-				},
-				error: function (request) {
-					failAlert(request.responseText);
-				}
-			});
+			fetchJson('/update_camera_url', 'POST', {camera_url:DOM.$cameraUrl})
+				.then(r => successAlert(r));
 		});
 
 		//audio on server mode
-		$('#audioOnServer').on('change', (e) => {
-			$.ajax({
-				type: 'POST',
-				url: '/update_audio_source',
-				data: { value: $(e.currentTarget).prop('checked') },
-				success: function () {
-					successAlert('La source audio a été mise à jour');
-				},
-				error: function (request) {
-					failAlert(request.responseText);
-				}
-			});
+		document.getElementById('audioOnServer').addEventListener('change', (e) => {
+			fetchJson('/update_audio_source', 'POST', {value:e.srcElement.checked})
+				.then(r => successAlert(r));
 		});
 
 		//motion raspi id modification
-		$('#motionRaspiIdForm').on('submit', (e) => {
+		document.getElementById('motionRaspiIdForm').addEventListener('submit', (e) => {
 			e.preventDefault();
-			$.ajax({
-				type: 'POST',
-				url: '/update_motion_raspi_id',
-				data: { raspi_id: $('#motionRaspiId').val() },
-				success: function () {
-					successAlert('L\'id du raspberry chargé des déplacements a été mis à jour');
-				},
-				error: function (request) {
-					failAlert(request.responseText);
-				}
-			});
+			fetchJson('/update_motion_raspi_id', 'POST', {raspi_id:DOM.$motionRaspiId.value})
+				.then(r => successAlert(r));
 		});
 
 		//robot name modification
-		$('#robotNameForm').on('submit', (e) => {
+		document.getElementById('robotNameForm').addEventListener('submit', (e) => {
 			e.preventDefault();
-			$.ajax({
-				type: 'POST',
-				url: '/update_robot_name',
-				data: { robot_name: $('#robotName').val() },
-				success: function () {
-					successAlert('Le nom du robot a été mis à jour');
-				},
-				error: function (request) {
-					failAlert(request.responseText);
-				}
-			});
+			fetchJson('/update_robot_name', 'POST', {robot_name:DOM.$robotName.value})
+				.then(r => successAlert(r));
 		});
 
-	},
-	fillVoices: function() {
-		let voices = window.speechSynthesis.getVoices();
-		$('#voices').empty();
-		$.each(voices, function () {
+	}
+
+	function cacheDom() {
+		DOM.$voices = document.getElementById('voices');
+		DOM.$cameraUrl = document.getElementById('cameraUrl');
+		DOM.$robotName = document.getElementById('robotName');
+		DOM.$motionRaspiId = document.getElementById('motionRaspiId');
+
+	}
+
+	function fillVoices(){
+		const voices = window.speechSynthesis.getVoices();
+		empty(DOM.$voices);
+
+		voices.forEach((e) => {
 			if (typeof Cookies.get('voice') !== 'undefined' &&
-				Cookies.get('voice') === this.name) { // if a voice has already been chosen, select it
-				$('#voices').append($('<option selected=\'selected\'/>').val(this.name).text(this.name));
+				Cookies.get('voice') === e.name) { // if a voice has already been chosen, select it
+				DOM.$voices.insertAdjacentHTML('beforeend', '<option selected=\'selected\' value=' + e.name + '>' +
+					e.name + '</option>');
 			} else {
-				$('#voices').append($('<option />').val(this.name).text(this.name));
+				DOM.$voices.insertAdjacentHTML('beforeend', '<option value=' + e.name + '>' +
+				e.name + '</option>');
 			}
 		});
 	}
-};
+
+	return {
+		init: init
+	};
+})();

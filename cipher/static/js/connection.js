@@ -1,48 +1,30 @@
-var socket = io.connect(window.location.host + '/client');
+/* globals io */
+/* globals Cookies */
 
-var connectionManager = {
-	voices: null,
-	audio: null,
-	init: function(){
-		this.voices = window.speechSynthesis.getVoices();
+/* exported socket */
+const socket = io.connect(window.location.host + '/client');
+
+/* exported connectionManager */
+const connectionManager = (() => {
+	'use strict';
+
+	let voices = null;
+	let audio = null;
+
+	/* PUBLIC METHODS */
+	function init(){
+		voices = window.speechSynthesis.getVoices();
 
 		window.speechSynthesis.onvoiceschanged = () => {
-			this.voices = window.speechSynthesis.getVoices();
+			voices = window.speechSynthesis.getVoices();
 		};
-		this.bind();
-	},
-	bind: function(){
-		socket.on('command', (msg) => {
-			console.log('Message from server: ', msg);
-		});
+		bindSocketIOEvents();
+	}
 
-		//server response when a sentence must be play on the client
-		socket.on('response', (msg) => {
-			console.log('Message from server: ', msg);
-			this.speak(msg);
-		});
-		socket.on('play_sound', (sound_name) => {
-			if(this.audio != null ){
-				this.audio.pause();
-				this.audio = null;
-			}
-			else {
-				this.audio = new Audio(window.location.origin+'/play_sound/'+sound_name);
-				this.audio.play();
-			}
-		});
-		socket.on('connect', () => {
-			$('#socketErrorModal').hide();
-		});
-		socket.on('disconnect', () => {
-			$('#socketErrorModal').show();
-		});
-	},
-
-	speak: function(msg){
-		if ('speechSynthesis' in window && this.voices !== null) {
-			let to_speak = new SpeechSynthesisUtterance(msg);
-			this.voices.forEach((e) =>{
+	function speak(msg) {
+		if ('speechSynthesis' in window && voices !== null) {
+			const to_speak = new SpeechSynthesisUtterance(msg);
+			voices.forEach((e) =>{
 				if(Cookies.get('voice') === e.name){
 					to_speak.voice = e;
 				}
@@ -50,4 +32,38 @@ var connectionManager = {
 			window.speechSynthesis.speak(to_speak);
 		}
 	}
-};
+
+	/* PRIVATE METHODS */
+	function bindSocketIOEvents(){
+		socket.on('command', (msg) => {
+			console.log('Message from server: ', msg);
+		});
+
+		//server response when a sentence must be play on the client
+		socket.on('response', (msg) => {
+			console.log('Message from server: ', msg);
+			speak(msg);
+		});
+		socket.on('play_sound', (sound_name) => {
+			if(audio != null ){
+				audio.pause();
+				audio = null;
+			}
+			else {
+				audio = new Audio(window.location.origin + '/play_sound/' + sound_name);
+				audio.play();
+			}
+		});
+		socket.on('connect', () => {
+			document.getElementById('socketErrorModal').style.display = 'none';
+		});
+		socket.on('disconnect', () => {
+			document.getElementById('socketErrorModal').style.display = 'block';
+		});
+	}
+
+	return {
+		init: init,
+		speak: speak
+	};
+})();

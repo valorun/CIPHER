@@ -18,11 +18,10 @@
 	</div>
 </div>
 <script>
-$(document).ready(function() {
-	connectionManager.init();
+	document.addEventListener('DOMContentLoaded', () => {
+		connectionManager.init();
 
-	debugController.init();
-});
-
+		debugController.init();
+	});
 </script>
 {% endblock %}

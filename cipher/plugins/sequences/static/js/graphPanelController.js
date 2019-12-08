@@ -1,36 +1,82 @@
-var graphPanelController = {
-	nodes: null,
-	edges: null,
-	network: null,
+/* globals failAlert */
+/* globals vis */
 
-	init: function(){
-		this.bind();
-		this.render();
-	},
-	bind: function(){
-		$('#creation').on('open', () => {
-			this.network.focus('start');
+/* exported graphPanelController */
+const graphPanelController = (() => {
+	'use strict';
+
+	const DOM = {};
+
+	let nodes = null;
+	let edges = null;
+	let network = null;
+
+	/* PUBLIC METHODS */
+	function init(){
+		cacheDom();
+		bindUIEvents();
+	}
+
+	/**
+	* Check if all nodes have at least one parent node
+	* @return {boolean}
+	*/
+	function graphIsValid() {
+		return nodes.get().filter((n) => {
+			return n.id != 'start';
+		}).every((n1) => {
+			return edges.get().some((e) => {
+				return e.to == n1.id;
+			});
 		});
-	},
-	render: function(){
+	}
+
+	/**
+	 * Update nodes and edges of the graph.
+	 * @param {*} n Nodes in JSON.
+	 * @param {*} e Edges in JSON.
+	 */
+	function updateGraph(n, e) {
+		nodes.clear();
+		edges.clear();
+		nodes.update(n);
+		edges.update(e);
+		network.focus('start');
+	}
+
+	/**
+	 * Get graph as JSON.
+	 */
+	function getGraph() {
+		const graph = {};
+		graph.nodes = nodes.get();
+		graph.edges = edges.get();
+		return graph;
+	}
+
+	/* PRIVATE METHODS */
+	function bindUIEvents(){
+		document.getElementById('creation').addEventListener('open', () => {
+			network.focus('start');
+		});
 		// create an array with nodes
-		this.nodes = new vis.DataSet();
-		this.nodes.add([{
+		nodes = new vis.DataSet();
+		nodes.add([{
 			id: 'start',
 			label: 'Start',
 			color: 'red'
 		}]);
 
 		// create an array with edges
-		this.edges = new vis.DataSet();
+		edges = new vis.DataSet();
 		
 		// create a network
-		let container = document.getElementById('network');
-		let data = {
-			nodes: this.nodes,
-			edges: this.edges
+		const container = document.getElementById('network');
+		const data = {
+			nodes: nodes,
+			edges: edges
 		};
-		let locales = {
+		const locales = {
 			fr: {
 				edit: 'Editer',
 				del: 'Supprimer la sélection',
@@ -47,18 +93,18 @@ var graphPanelController = {
 				editClusterError: 'Clusters cannot be edited.'
 			}
 		};
-		let options = {
+		const options = {
 			locale: 'fr',
 			locales: locales,
 			manipulation: {
 				addNode: (nodeData, callback) => {
-					if(this.handleNodeToAdd(nodeData)){
+					if(handleNodeToAdd(nodeData)){
 						callback(nodeData);
 					}
 				},
 				editNode: (nodeData, callback) => {
 					if (nodeData.id !== 'start') {
-						this.handleNodeToAdd(nodeData);
+						handleNodeToAdd(nodeData);
 						callback(nodeData);
 					} else{
 						failAlert('Impossible de modifier le noeud de départ.');
@@ -74,11 +120,11 @@ var graphPanelController = {
 					}
 				},
 				addEdge: (edgeData, callback) => {
-					if(this.handleEdgeToAdd(edgeData))
+					if(handleEdgeToAdd(edgeData))
 						callback(edgeData);
 				},
 				editEdge: (edgeData, callback) => {
-					if(this.handleEdgeToAdd(edgeData))
+					if(handleEdgeToAdd(edgeData))
 						callback(edgeData);
 				}
 			},
@@ -91,129 +137,165 @@ var graphPanelController = {
 				randomSeed: 2 //layout will be always the same
 			}
 		};
-		this.network = new vis.Network(container, data, options);
-		this.network.focus('start');
-	},
+		network = new vis.Network(container, data, options);
+		network.focus('start');
+	}
 
-	/**
-	* Check if all nodes have at least one parent node
-	* @return {boolean}
-	*/
-	graphIsValid: function() {
-		return this.nodes.get().filter((n) => {
-			return n.id != 'start';
-		}).every((n1) => {
-			return this.edges.get().some((e) => {
-				return e.to == n1.id;
-			});
-		});
-	},
+	function cacheDom() {
+		DOM.$selectedAction = document.querySelector('select[name=newNodeTypeChoice]');
+
+		DOM.$motion_direction = document.getElementById('motion_direction');
+		DOM.$motion_speed = document.getElementById('motion_speed');
+
+		DOM.$servo = document.getElementById('servo');
+		DOM.$servo_position = document.getElementById('servo_position');
+		DOM.$servo_speed = document.getElementById('servo_speed');
+
+		DOM.$relay = document.getElementById('relay');
+		DOM.$relay_on_off = document.getElementById('relay_on_off');
+
+		DOM.$speech_sentence = document.getElementById('speech_sentence');
+
+		DOM.$script_name = document.getElementById('script_name');
+
+		DOM.$sound_name = document.getElementById('sound_name');
+
+		DOM.$pause = document.getElementById('pause');
+
+		DOM.$servo_sequence = document.getElementById('servo_sequence');
+
+	}
 
 	/**
 	* Create an edge and check if it is correct.
 	* @param {Object} edgeData the data of the node to add
 	* @return {boolean} false if the options aren't correct
 	*/
-	handleEdgeToAdd: function(edgeData) {
+	function handleEdgeToAdd(edgeData) {
 		edgeData.arrows = 'to';
-		if(edgeData.from === edgeData.to)
+		if(edgeData.from === edgeData.to || edgeData.to === 'start')
 			return false;
 		
 		return true;
-
-	},
-
+	}
 
 	/**
 	* Create a specific node corresponding to the options chosen
 	* @param {Object} nodeData the data of the node to add
 	* @return {boolean} false if the options aren't correct
 	*/
-	handleNodeToAdd: function(nodeData) {
+	function handleNodeToAdd(nodeData) {
 		let label = '';
-		let action = {};
-		let selectedAction = $('select[name=newNodeTypeChoice]').val();
+		const action = {};
 		nodeData.shape = 'box';
-		if (selectedAction == 'motion') {
+		switch (DOM.$selectedAction.value) {
+		case ('motion'): {
 			action.type = 'motion';
-			action.direction = $('#motion_direction').val();
+			action.direction = DOM.$motion_direction.value;
 			if(action.direction == null){
 				failAlert('Aucune direction sélectionnée.');
 				return false;
 			}
-			action.speed = parseInt($('#motion_speed').val());
-			if(!this.isInputNumberValid(action.speed, 0, 100)){
+			action.speed = parseInt(DOM.$motion_speed.value);
+			if(!isInputNumberValid(action.speed, 0, 100)){
 				failAlert('La vitesse doit être comprise entre 0 et 100.');
 				return false;
 			}
 			label += 'motion:' + action.direction + ',' + action.speed;
-		} else if (selectedAction == 'servo') {
+			break;
+		}
+		case ('servo'): {
 			action.type = 'servo';
-			action.servo = $('#servo').val();
-			if(action.servo == null){
+			const $selected_servo = DOM.$servo.options[DOM.$servo.selectedIndex];
+			action.servo = $selected_servo.value;
+			if(action.servo == null || action.servo === ''){
 				failAlert('Aucun servomoteur sélectionné.');
 				return false;
 			}
-			action.position = parseInt($('#servo_position').val());
-			let min_pulse_width = parseInt($('#servo option:selected').data('min'));
-			let max_pulse_width = parseInt($('#servo option:selected').data('max'));
-			if(!this.isInputNumberValid(action.position, min_pulse_width, max_pulse_width)){
+			action.position = parseInt(DOM.$servo_position.value);
+			const min_pulse_width = parseInt($selected_servo.dataset.min);
+			const max_pulse_width = parseInt($selected_servo.dataset.max);
+			if(!isInputNumberValid(action.position, min_pulse_width, max_pulse_width)){
 				failAlert('La position doit être comprise entre ' + min_pulse_width + ' et ' + max_pulse_width + '.');
 				return false;
 			}
-			action.speed = parseInt($('#servo_speed').val());
-			if(!this.isInputNumberValid(action.speed, 0, 100)){
+			action.speed = parseInt(DOM.$servo_speed.value);
+			if(!isInputNumberValid(action.speed, 0, 100)){
 				failAlert('La vitesse doit être comprise entre 0 et 100.');
 				return false;
 			}
 			label += 'servo:' + action.servo + ',' + action.position + ',' + action.speed;
-		} else if (selectedAction == 'relay') {
+			break;
+		}
+		case ('relay'): {
 			action.type = 'relay';
-			action.relay = $('#relay').val();
+			action.relay = DOM.$relay.value;
 			if(action.relay == null){
 				failAlert('Aucun relai sélectionné.');
 				return false;
 			}
-			action.state = ($('#relayOnOff').prop('checked')?1:0);
+			action.state = (DOM.$relay_on_off.checked?1:0);
 			label += 'relay:' + action.relay + ',' + action.state;
-		} else if (selectedAction == 'speech') {
+			break;
+		}
+		case ('speech'): {
 			action.type = 'speech';
-			action.speech = $('#sentence').val();
+			action.speech = DOM.$speech_sentence.value;
 			label += 'speech:\'' + action.speech + '\'';
-		} else if (selectedAction == 'script') {
+			break;
+		}
+		case ('script'): {
 			action.type = 'script';
-			action.script = $('#script').val();
+			action.script = DOM.$script_name.value;
 			if(action.script == null){
 				failAlert('Aucun script sélectionné.');
 				return false;
 			}
 			label += 'script:' + action.script;
-		} else if (selectedAction == 'sound') {
+			break;
+		}
+		case ('sound'): {
 			action.type = 'sound';
-			action.sound = $('#sound').val();
+			action.sound = DOM.$sound_name.value;
 			if(action.sound == null){
 				failAlert('Aucun son sélectionné.');
 				return false;
 			}
 			label += 'sound:' + action.sound;
-		} else if (selectedAction == 'pause') {
+			break;
+		}
+		case ('pause'): {
 			nodeData.shape = 'circle';
 			action.type = 'pause';
-			action.time = parseInt($('#pause').val());
+			action.time = parseInt(DOM.$pause.value);
 			label += 'pause:' + action.time + 'ms';
-		} else if (selectedAction == 'servoSequence'){ //COMPATIBILITY REASON
+			break;
+		}
+		case ('servoSequence'): { // COMPATIBILITY REASON
 			action.type = 'servo_sequence';
-			action.sequence = parseInt($('#sequence').val());
+			action.sequence = parseInt(DOM.$servo_sequence.value);
 			nodeData.shape = 'circle';
 			label += 'servo_sequence:' + action.sequence;
-		} else
+			break;
+		}
+		default: {
 			return false;
+		}
+		}
 		nodeData.label = label;
 		nodeData.action = action;
 		return true;
-	},
+	}
 
-	isInputNumberValid: function(value, min, max){
+	function isInputNumberValid(value, min, max){
 		return !isNaN(parseInt(value)) && value <= max && value >= min;
 	}
-};
+
+	return {
+		init: init,
+		graphIsValid: graphIsValid,
+		updateGraph: updateGraph,
+		getGraph: getGraph
+	};
+
+})();

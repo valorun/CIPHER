@@ -58,11 +58,11 @@
 </div>
 
 <script>
-$(document).ready(function() {
-	connectionManager.init();
+    document.addEventListener('DOMContentLoaded', () => {
+		connectionManager.init();
 
-	editorController.init();
-});
+		editorController.init();
+	});
 
 </script>
 {% endblock %}

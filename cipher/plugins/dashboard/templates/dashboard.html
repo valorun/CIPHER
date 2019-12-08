@@ -25,7 +25,7 @@
 {% include 'dashboardCameraPanel.html' %}
 
 <script>
-	$(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', () => {
 		connectionManager.init();
 
 		raspiesController.init();
