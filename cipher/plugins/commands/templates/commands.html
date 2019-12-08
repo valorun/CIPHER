@@ -1,35 +1,46 @@
 {% extends 'template.html' %}
 {% block content %}
 <script src="{{ url_for('static', filename='js/connection.js') }}"></script>
-<script src="{{ url_for('commands.static', filename='js/draggablesGrid.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='vendor/muuri/muuri.min.js') }}"></script>
+<script src="{{ url_for('commands.static', filename='js/gridItem.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/commandButton.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/colorpickerController.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/gridController.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/gridFormController.js') }}"></script>
 
 <style type="text/css">
+	.grid {
+		position: relative;
+	}
 
-.grid-cell {
-	float: left;
-	width: 150px;
-	height: 100px;
-	margin: 10px;
-	padding: 10px;
-	display: table;
-}
+	.grid-item {
+		display: table;
+		position: absolute;
+		margin: 5px;
+		z-index: 1;
+	}
 
-.trashbin {
-	height: 100px;
-	margin-bottom: 20px;
-	background: rgba(255, 0, 0);
-	position: relative;
-	opacity: 0.1;
-}
+	.grid-item.muuri-item-dragging {
+		z-index: 3;
+	}
 
-.color-item{
-	height: 75px
-}
+	.grid-item.muuri-item-releasing {
+		z-index: 2;
+	}
 
+	.grid-item.muuri-item-hidden {
+		z-index: 0;
+	}
+
+	.grid-item-content {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+
+	.color-item {
+		height: 75px
+	}
 </style>
 <div class="cell mobile">
 	{% include 'sequencePanel.html' %}
@@ -60,7 +71,7 @@
 						<option value="" disabled selected>Choisir un relai</option>
 						{% for r in relays %}
 						{% if r.enabled %}
-						<option value="{{ r.label }}" >{{ r.label }}</option>
+						<option value="{{ r.label }}">{{ r.label }}</option>
 						{% endif %}
 						{% endfor %}
 					</select>
@@ -70,7 +81,7 @@
 						<option value="" disabled selected>Choisir une séquence</option>
 						{% for s in sequences %}
 						{% if s.enabled %}
-						<option value="{{ s.id }}" >{{ s.id }}</option>
+						<option value="{{ s.id }}">{{ s.id }}</option>
 						{% endif %}
 						{% endfor %}
 					</select>
@@ -79,7 +90,7 @@
 					<select class="select border half" name="sounds" id="sounds">
 						<option value="" disabled selected>Choisir un son</option>
 						{% for s in sounds %}
-						<option value="{{ s }}" >{{ s }}</option>
+						<option value="{{ s }}">{{ s }}</option>
 						{% endfor %}
 					</select>
 				</div>
@@ -98,13 +109,21 @@
 	</div>
 
 	<div id="panel" class="border container white" style="width:100%">
-		<div class="row-padding">
-			<div class="trashbin center text-white row" id="trashbin">
-				<h1 class="cell-middle"><i class="fas fa-trash"></i></h1>
+		<div class="grid" id="grid">
+			
+			<!--<div class="grid-item">
+				<div class="grid-item-content">
+					This can be anything.
+				</div>
 			</div>
-		</div>
-		<div class="row-padding" id="grid">
 
+			<div class="grid-item">
+				<div class="grid-item-content">
+					<div class="my-custom-content">
+						Yippee!
+					</div>
+				</div>
+			</div>-->
 		</div>
 	</div>
 </div>
@@ -113,7 +132,8 @@
 <div id="color-picker" class="modal" style="z-index:4;">
 	<div class="modal-content animate-top card-4">
 		<header class="container primary">
-			<span onclick="document.getElementById('color-picker').style.display = 'none'" class="button display-topright xlarge">&times;</span>
+			<span onclick="document.getElementById('color-picker').style.display = 'none'"
+				class="button display-topright xlarge">&times;</span>
 			<h2>Selectionnez la couleur du bouton</h2>
 		</header>
 		<div class="container center">
@@ -127,7 +147,8 @@
 				<input type="button" value="Gris" class="btn quarter color-item grey" data-color="grey">
 				<input type="button" value="Noir" class="btn quarter color-item black" data-color="black">
 				<input type="button" value="Bordeau" class="btn quarter color-item dark-red" data-color="dark-red">
-				<input type="button" value="Bleu-marine" class="btn quarter color-item dark-blue" data-color="dark-blue">
+				<input type="button" value="Bleu-marine" class="btn quarter color-item dark-blue"
+					data-color="dark-blue">
 			</div>
 		</div>
 
@@ -136,8 +157,7 @@
 
 
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', () => {
-
+	document.addEventListener('DOMContentLoaded', () => {
 		gridFormController.init();
 	});
 </script>

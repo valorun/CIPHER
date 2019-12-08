@@ -1,6 +1,7 @@
 /* globals CommandButton */
 /* globals RelayButton */
-/* globals DraggablesGrid */
+/* globals GridItem */
+/* globals Muuri */
 
 /* exported gridController */
 const gridController = (() => {
@@ -8,81 +9,83 @@ const gridController = (() => {
 	
 	const DOM = {};
 
-	const buttons = [];
 	let grid = null;
+	const gridItems = [];
 
 
 	/* PUBLIC METHODS */
 	function init() {
 		cacheDom();
 		bindUIEvents();
-		grid.addCells(30);
 	}
 
 	function addButton(buttonData, index = 0) {
 		if (actionAlreadyUsed(buttonData.action))
 			throw new AlreadyUsedError('Action is already used');
 		const newButton = CommandButton.fromJSON(buttonData);
-		grid.addDraggableElement(newButton.$el, index);
-		buttons.push(newButton);
+
+		// containers elements needed for animation and position
+		const $outerWrapper = document.createElement('div');
+		$outerWrapper.classList.add('grid-item');
+		const $innerWrapper = document.createElement('div');
+		$innerWrapper.classList.add('grid-item-content');
+		$innerWrapper.appendChild(newButton.$el);
+		$outerWrapper.appendChild($innerWrapper);
+
+		const newItem = grid.add($outerWrapper, {index: index});
+		newItem.commandButton = newButton; // link grid item to our custom button object
+
+		const newGridItem = new GridItem(newButton, newItem[0]);
+		newGridItem.onClose((gridItem) => {
+			const buttonIndex = gridItems.findIndex(gi => JSON.stringify(gi.commandButton) === JSON.stringify(gridItem.commandButton) );
+			gridItems.splice(buttonIndex, 1);
+			grid.remove(gridItem.item, {removeElements: true});
+		});
+
+		gridItems.push(newGridItem);
+		
 		return newButton;
 	}
 
 	function disableButtons() {
-		buttons.forEach(b => {
-			b.disable();
+		gridItems.forEach(gi => {
+			gi.commandButton.disable();
 		});
-		grid.enableDrag();
 	}
 
 	function enableButtons() {
-		buttons.forEach(b => {
-			b.enable();
+		gridItems.forEach(gi => {
+			gi.commandButton.enable();
 		});
-		grid.disableDrag();
 	}
 
 	function updateRelayButtons(relaysStates) {
-		//get the relays and update the associated state
-		const relaysButtons = buttons.filter(b => b instanceof RelayButton);
+		// get the relays and update the associated state
+		const relaysButtons = gridItems.map(gi => gi.commandButton).filter(b => b instanceof RelayButton);
 		relaysStates.map(r => r.relay = relaysButtons.find(b => b.action.relay === r.relay))
 			.forEach(r => r.state === 1 ? r.relay.activate() : r.relay.desactivate());
 	}
 
-	function hideTrashbin() {
-		DOM.$trashbin.classList.add('hide');
-	}
-
-	function showTrashbin() {
-		DOM.$trashbin.classList.remove('hide');
-	}
-
 	function clear() {
-		grid.clearDraggables();
+		grid.remove(grid.getItems(), {removeElements: true});
 	}
 
 	function toJSON() {
-		return buttons
-			.map(b => {
-				const json = b.toJSON();
+		return gridItems
+			.map(gi => {
+				const json = gi.commandButton.toJSON();
 				// add position information
-				json.index = grid.draggables.find(d => d.element.innerHTML === b.$el.innerHTML).index;
+				json.index = grid.getItems().findIndex(item => item.getElement().innerHTML === gi.item.getElement().innerHTML);
 				return json;
 			});
 	}
 
 	/* PRIVATE METHODS */
 	function bindUIEvents() {
-		grid = new DraggablesGrid(DOM.$grid, DOM.$trashbin);
-		grid.$grid_element.addEventListener('delete', (e) =>{
-			// delete the button assiated with the deleted element
-			const buttonIndex = buttons.findIndex(b => b.$el.innerHTML === e.target.innerHTML);
-			buttons.splice(buttonIndex, 1);
-		});
+		grid = new Muuri('.grid', {dragEnabled: true});
 	}
 
 	function cacheDom() {
-		DOM.$trashbin = document.getElementById('trashbin');
 		DOM.$grid = document.getElementById('grid');
 	}
 
@@ -91,7 +94,7 @@ const gridController = (() => {
 	 */
 	function actionAlreadyUsed(action){
 		let found = false;
-		buttons.forEach(b => {
+		gridItems.map(gi => gi.commandButton).forEach(b => {
 			if(JSON.stringify(b.action) === JSON.stringify(action)){
 				found = true;
 				return false;
@@ -106,8 +109,6 @@ const gridController = (() => {
 		disableButtons: disableButtons,
 		enableButtons: enableButtons,
 		updateRelayButtons: updateRelayButtons,
-		hideTrashbin: hideTrashbin,
-		showTrashbin: showTrashbin,
 		clear: clear,
 		toJSON: toJSON
 	};

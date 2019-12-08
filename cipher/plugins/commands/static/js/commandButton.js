@@ -18,15 +18,27 @@ class CommandButton {
 		this.action = {};
 		this.action.type = type;
 		this.color = color;
-		this.$el = document.createElement('button');
-		this.$el.id = '_' + Math.random().toString(36).substr(2, 9);
 
-		this.$el.classList.add('btn');
+		this.$el = document.createElement('div');
+
+		this.$button = document.createElement('button');
+		this.$button.id = '_' + Math.random().toString(36).substr(2, 9);
+		this.$button.classList.add('button', 'display-container');
 		if(color != null) {
-			this.$el.dataset.color = color;
-			this.$el.classList.add(color);
+			this.$button.dataset.color = color;
+			this.$button.classList.add(color);
 		}
-		this.$el.innerHTML = label;
+		this.$button.innerHTML = label;
+		this.$el.appendChild(this.$button);
+
+		// cross element
+		this.$cross = document.createElement('span');
+		this.$cross.type = 'button';
+		this.$cross.classList.add('button', 'display-topright');
+		this.$cross.innerHTML = '&times';
+		this.$el.appendChild(this.$cross);
+
+		this.enable();
 	}
 
 	show() {
@@ -38,15 +50,17 @@ class CommandButton {
 	}
 
 	enable() {
-		this.$el.classList.remove('disabled');
+		this.$button.classList.remove('disabled');
+		this.$cross.classList.add('hide');
 	}
 
 	disable() {
-		this.$el.classList.add('disabled');
+		this.$button.classList.add('disabled');
+		this.$cross.classList.remove('hide');
 	}
 
 	addEventListener(event, callback) {
-		this.$el.addEventListener(event, callback);
+		this.$button.addEventListener(event, callback);
 	}
 
 	executeAction() {
@@ -94,13 +108,13 @@ class RelayButton extends CommandButton {
 	}
 
 	activate() {
-		this.$el.classList.add('border-green');
-		this.$el.classList.remove('border-dark-red');
+		this.$button.classList.add('border-green');
+		this.$button.classList.remove('border-dark-red');
 	}
 
 	desactivate() {
-		this.$el.classList.add('border-dark-red');
-		this.$el.classList.remove('border-green');
+		this.$button.classList.add('border-dark-red');
+		this.$button.classList.remove('border-green');
 	}
 }
 

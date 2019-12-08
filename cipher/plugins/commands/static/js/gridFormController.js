@@ -22,7 +22,7 @@ const gridFormController = (() => {
 		grid.init();
 		cacheDom();
 		bindUIEvents();
-		//initialize the grid at his initial state in disabled edition mode
+		// initialize the grid at his initial state in disabled edition mode
 		loadGrid();
 		disableEditionMode();
 	}
@@ -42,7 +42,7 @@ const gridFormController = (() => {
 			socket.emit('update_all_relays_state');
 		});
 
-		//update status information about a specified relay
+		// update status information about a specified relay
 		socket.on('update_relays_state', (relays_list) => 
 			grid.updateRelaysButtons(relays_list));
 	}
@@ -98,9 +98,9 @@ const gridFormController = (() => {
 		try {
 			const newButton = grid.addButton(buttonData);
 			
-			if(editionMode){
+			if(editionMode)
 				newButton.disable();
-			}
+			
 			newButton.addEventListener('click', () =>{
 				if(!editionMode){
 					newButton.executeAction();
@@ -108,10 +108,9 @@ const gridFormController = (() => {
 			});
 			
 		} catch (e) {
+			console.error(e);
 			if(e instanceof AlreadyUsedError)
 				failAlert('Un bouton correspondant à la même action existe déjà');
-			else if(e instanceof RangeError)
-				failAlert('La grille est déjà pleine');
 			
 			return false;
 		}
@@ -139,6 +138,7 @@ const gridFormController = (() => {
 	 * Save the grid on the server
 	 */
 	function saveGrid() {
+		console.log(grid.toJSON());
 		fetchJson('/save_buttons', 'POST', {data: JSON.stringify(grid.toJSON())})
 			.then(() => {
 				console.log('Buttons saved');
@@ -151,7 +151,6 @@ const gridFormController = (() => {
 	function enableEditionMode(){
 		editionMode = true;
 		grid.disableButtons();
-		grid.showTrashbin();
 		DOM.$editPanelButton.classList.add('fa-check');
 		DOM.$editPanelButton.classList.remove('fa-edit');
 		DOM.$newButtonPanel.classList.remove('hide');
@@ -164,7 +163,6 @@ const gridFormController = (() => {
 	function disableEditionMode(){
 		editionMode = false;
 		grid.enableButtons();
-		grid.hideTrashbin();
 		DOM.$editPanelButton.classList.remove('fa-check');
 		DOM.$editPanelButton.classList.add('fa-edit');
 		DOM.$newButtonPanel.classList.add('hide');
