@@ -11,6 +11,7 @@ const gridController = (() => {
 
 	let grid = null;
 	const gridItems = [];
+	let buttonsDisabled = false;
 
 
 	/* PUBLIC METHODS */
@@ -51,12 +52,14 @@ const gridController = (() => {
 		gridItems.forEach(gi => {
 			gi.commandButton.disable();
 		});
+		buttonsDisabled = false;
 	}
 
 	function enableButtons() {
 		gridItems.forEach(gi => {
 			gi.commandButton.enable();
 		});
+		buttonsDisabled = true;
 	}
 
 	function updateRelayButtons(relaysStates) {
@@ -82,7 +85,9 @@ const gridController = (() => {
 
 	/* PRIVATE METHODS */
 	function bindUIEvents() {
-		grid = new Muuri('.grid', {dragEnabled: true});
+		grid = new Muuri('.grid', {dragEnabled: true,
+			dragStartPredicate: () => {return !buttonsDisabled;}
+		});
 	}
 
 	function cacheDom() {
