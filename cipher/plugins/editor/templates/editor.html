@@ -1,6 +1,5 @@
 {% extends 'template.html' %}
 {% block content %}
-<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
 <script src="{{ url_for('editor.static', filename='vendor/ace/ace.js') }}"></script>
 <script src="{{ url_for('editor.static', filename='js/editorController.js') }}"></script>
 
@@ -59,8 +58,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-		connectionManager.init();
-
 		editorController.init();
 	});
 

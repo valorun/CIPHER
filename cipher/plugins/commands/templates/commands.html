@@ -1,6 +1,5 @@
 {% extends 'template.html' %}
 {% block content %}
-<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='vendor/muuri/muuri.min.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/gridItem.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/commandButton.js') }}"></script>
@@ -110,20 +109,7 @@
 
 	<div id="panel" class="border container white" style="width:100%">
 		<div class="grid" id="grid">
-			
-			<!--<div class="grid-item">
-				<div class="grid-item-content">
-					This can be anything.
-				</div>
-			</div>
-
-			<div class="grid-item">
-				<div class="grid-item-content">
-					<div class="my-custom-content">
-						Yippee!
-					</div>
-				</div>
-			</div>-->
+	
 		</div>
 	</div>
 </div>

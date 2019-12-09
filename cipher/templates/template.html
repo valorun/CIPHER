@@ -14,6 +14,8 @@
 
 	<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/templateController.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
+
 </head>
 
 <body class="background">
@@ -96,6 +98,7 @@
 	<script>
     	document.addEventListener('DOMContentLoaded', () => {
 			templateController.init();
+			connectionManager.init();
 		});
 	</script>
 

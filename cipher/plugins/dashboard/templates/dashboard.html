@@ -1,6 +1,5 @@
 {% extends 'template.html' %}
 {% block content %}
-<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
 <script src="{{ url_for('dashboard.static', filename='js/raspiesController.js') }}"></script>
 
 <div class="panel">
@@ -26,8 +25,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-		connectionManager.init();
-
 		raspiesController.init();
 	});
 </script>
