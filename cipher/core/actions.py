@@ -44,14 +44,14 @@ def relay(label: str, state=None):
 
         # if the relay is paired
         if parity != '':
-            # recover all the peer relays
-            peers_rel = Relay.query.filter(Relay.parity == parity, Relay.label != label)
-            # check if the peers relays aren't activated
-            if all(peer.label not in relay_states or relay_states[peer.label] == 0 for peer in peers_rel):
+            # recover all the pair relays
+            pairs_rel = Relay.query.filter(Relay.parity == parity, Relay.label != label)
+            # check if the pairs relays aren't activated
+            if all(pair.label not in relay_states or relay_states[pair.label] == 0 for pair in pairs_rel):
                 # activate the relay on the corresponding raspberry
                 mqtt.publish('raspi/' + raspi_id + '/relay/activate', json.dumps({'gpio': pin, 'state': state}))
             else:
-                logging.warning("Cannot activate relay '" + label + "', peer already activated")
+                logging.warning("Cannot activate relay '" + label + "', pair already activated")
 
         else:
             mqtt.publish('raspi/' + raspi_id + '/relay/activate', json.dumps({'gpio': pin, 'state': state}))
