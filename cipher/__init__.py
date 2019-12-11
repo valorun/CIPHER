@@ -15,15 +15,16 @@ from flask_socketio import SocketIO
 from .model import db
 from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_PORT
 
-socketio = SocketIO(logger=True) # socketio server used to communicate with web client
-mqtt = Mqtt() # mqtt client, need to be connected to a brocker (in local)
+socketio = SocketIO(logger=True)  # socketio server used to communicate with web client
+mqtt = Mqtt()  # mqtt client, need to be connected to a brocker (in local)
 
-plugins = [ 'dashboard', 'commands', 'speech', 'editor', 'debug', 'sequences', 'settings' ] # all the different  page available in the navbar
+plugins = ['dashboard', 'commands', 'speech', 'editor', 'debug', 'sequences', 'settings']  # all the different  page available in the navbar
+
 
 def create_app(debug=False):
     app = Flask(__name__)
 
-    app.debug = debug
+    app.debug = False  # weid behavior, create two instances of flask
     app.secret_key = urandom(12)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = SERVER_DATABASE
@@ -51,7 +52,7 @@ def create_app(debug=False):
         except Exception as e:
             logging.error("Failed to load plugin '" + p_name + "': {0}".format(e))
             exit(1)
- 
+
     db.app = app
     db.init_app(app)
     db.create_all()
@@ -60,8 +61,9 @@ def create_app(debug=False):
     mqtt.init_app(app)
     mqtt.subscribe('server/#')
     mqtt.subscribe('hermes/intent/#')
-    
+
     return app
+
 
 def setup_logger(debug=False):
     if debug:
@@ -74,13 +76,13 @@ def setup_logger(debug=False):
         'formatters': {'default': {
             'format': '%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s',
         }},
-        'handlers': { 
-            'default': { 
+        'handlers': {
+            'default': {
                 'formatter': 'default',
                 'class': 'logging.StreamHandler',
                 'stream': 'ext://sys.stdout',  # Default is stderr
             },
-            'file': { 
+            'file': {
                 'formatter': 'default',
                 'class': 'logging.handlers.RotatingFileHandler',
                 'filename': LOG_FILE,
@@ -94,7 +96,7 @@ def setup_logger(debug=False):
         },
         'loggers': {
             'socketio': {},
-            'flask': {},
+            'flask.flask_mqtt': {},
             'sqlalchemy': {},
         }
     })

@@ -24,7 +24,7 @@ const raspiesController = (() => {
 	}
 
 	function bindSocketIOEvents() {
-		socket.on('get_raspies', (raspies) => {
+		socket.on('receive_raspies', (raspies) => {
 			updateRaspies(raspies);
 		});
 	}
