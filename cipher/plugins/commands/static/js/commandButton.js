@@ -37,7 +37,11 @@ class CommandButton {
 		this.$cross.classList.add('button', 'display-topright');
 		this.$cross.innerHTML = '&times';
 		this.$el.appendChild(this.$cross);
-
+		
+		this.addEventListener('click', () => {
+			if(!this.$button.classList.contains('disabled'))
+				this.executeAction();
+		});
 		this.enable();
 	}
 
@@ -100,6 +104,8 @@ class RelayButton extends CommandButton {
 			throw new TypeError('Invalid relay parameter');
 
 		this.action.relay = relay;
+
+		this.$button.style.border = '4px solid';
 	}
 
 	executeAction() {
@@ -112,7 +118,7 @@ class RelayButton extends CommandButton {
 		this.$button.classList.remove('border-dark-red');
 	}
 
-	desactivate() {
+	deactivate() {
 		this.$button.classList.add('border-dark-red');
 		this.$button.classList.remove('border-green');
 	}

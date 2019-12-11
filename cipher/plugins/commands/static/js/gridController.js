@@ -62,11 +62,14 @@ const gridController = (() => {
 		buttonsDisabled = true;
 	}
 
-	function updateRelayButtons(relaysStates) {
+	function updateRelaysButtons(relaysStates) {
 		// get the relays and update the associated state
 		const relaysButtons = gridItems.map(gi => gi.commandButton).filter(b => b instanceof RelayButton);
-		relaysStates.map(r => r.relay = relaysButtons.find(b => b.action.relay === r.relay))
-			.forEach(r => r.state === 1 ? r.relay.activate() : r.relay.desactivate());
+		relaysStates.map(r => {
+			r.relay = relaysButtons.find(b => b.action.relay === r.relay);
+			return r;
+		}).filter(r => r.relay !== undefined)
+			.forEach(r => r.state === 1 ? r.relay.activate() : r.relay.deactivate());
 	}
 
 	function clear() {
@@ -113,7 +116,7 @@ const gridController = (() => {
 		addButton: addButton,
 		disableButtons: disableButtons,
 		enableButtons: enableButtons,
-		updateRelayButtons: updateRelayButtons,
+		updateRelaysButtons: updateRelaysButtons,
 		clear: clear,
 		toJSON: toJSON
 	};

@@ -40,6 +40,5 @@ def load_buttons():
 	if db_command_panel is not None:
 		logging.info("Loading buttons grid for user '" + session['username'] + "'.")
 		grid = json.loads(db_command_panel.grid)
-		logging.info(grid)
 		return jsonify(grid), 200
 	return jsonify("Aucune grille associée à l'utilisateur"), 400

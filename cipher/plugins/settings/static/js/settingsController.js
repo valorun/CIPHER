@@ -29,7 +29,7 @@ const settingsController = (() => {
 		});
 
 		//raspies autocompletes
-		socket.on('get_raspies', (raspies) => {
+		socket.on('receive_raspies', (raspies) => {
 			raspies = raspies.map(r => r.id);
 			document.querySelectorAll('#newRelayRaspiIdData,#newServoRaspiIdData,#motionRaspiIdData').forEach((e) => {
 				empty(e);

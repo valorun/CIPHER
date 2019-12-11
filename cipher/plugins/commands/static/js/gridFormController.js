@@ -39,12 +39,11 @@ const gridFormController = (() => {
 		DOM.$editPanelButton.addEventListener('click', () => {
 			updateMode();
 			saveGrid();
-			socket.emit('update_all_relays_state');
 		});
 
 		// update status information about a specified relay
-		socket.on('update_relays_state', (relays_list) => 
-			grid.updateRelaysButtons(relays_list));
+		socket.on('receive_relays_state', (relaysStates) => 
+			grid.updateRelaysButtons(relaysStates));
 	}
 
 	function cacheDom() {
@@ -101,12 +100,6 @@ const gridFormController = (() => {
 			if(editionMode)
 				newButton.disable();
 			
-			newButton.addEventListener('click', () =>{
-				if(!editionMode){
-					newButton.executeAction();
-				}
-			});
-			
 		} catch (e) {
 			console.error(e);
 			if(e instanceof AlreadyUsedError)
@@ -128,7 +121,7 @@ const gridFormController = (() => {
 				data.forEach((button) => {
 					grid.addButton(button, button.index);
 				});
-				socket.emit('update_all_relays_state');
+				socket.emit('get_relays_state');
 			});
 
 		return false;
