@@ -1,6 +1,6 @@
 /* globals failAlert */
 /* globals templateController */
-/* globals graphPanelController */
+/* globals graphController */
 /* globals fetchJson */
 
 
@@ -10,7 +10,7 @@ const graphFormController = (() => {
 
 	const DOM = {};
 
-	const graphPanel = graphPanelController;
+	const graphPanel = graphController;
 
 	/* PUBLIC METHODS */
 	function init() {
@@ -84,6 +84,7 @@ const graphFormController = (() => {
 	 */
 	function saveGraph() {
 		const sequence = graphPanel.getGraph();
+		console.log(sequence);
 
 		fetchJson('/save_sequence', 'POST', {seq_name:DOM.$name.value, seq_data:sequence})
 			.then(()=> {
@@ -93,13 +94,13 @@ const graphFormController = (() => {
 
 	/**
 	 * Edit the specified sequence
-	 * @param {string} seq_name the name of the sequence to edit
+	 * @param {string} seqName the name of the sequence to edit
 	 */
-	function editSequence(seq_name) {
-		DOM.$name.value = seq_name;
-		const sequenceData = document.getElementById('data_' + seq_name).innerHTML;
+	function editSequence(seqName) {
+		DOM.$name.value = seqName;
+		const sequenceData = document.getElementById('data_' + seqName).innerHTML;
 		const json = JSON.parse(sequenceData);
-		graphPanel.updateGraph(json.nodes, json.edges);
+		graphPanel.updateGraph(json);
 	}
 
 	return {

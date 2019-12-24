@@ -136,7 +136,7 @@ class SoundButton extends CommandButton {
 
 	executeAction() {
 		super.executeAction();
-		socket.emit('play_sound', this.actionParameter);
+		socket.emit('play_sound', this.action.sound);
 	}
 }
 
@@ -152,6 +152,6 @@ class SequenceButton extends CommandButton {
 
 	executeAction() {
 		super.executeAction();
-		socket.emit('play_sequence', this.actionParameter);
+		socket.emit('play_sequence', this.action.sequence);
 	}
 }

@@ -1,7 +1,8 @@
 import logging
+import traceback
 from flask import request
 from flask_socketio import SocketIO
-from .actions import motion
+from .actions import MotionAction
 from cipher import socketio
 
 
@@ -19,9 +20,9 @@ def client_disconnect():
     Function called when a client disconnects.
     """
     logging.info("Client " + str(request.remote_addr) + " disconnected.")
-    motion('stop', 0)
+    MotionAction('stop', 0).execute()
 
 
 @socketio.on_error_default
 def default_error_handler(e):
-    logging.error(e)
+    logging.error("".join(traceback.TracebackException.from_exception(e).format()))

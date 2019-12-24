@@ -114,10 +114,9 @@
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-	intentsController.init();
-	speechDetectionController.init();
-});
-
+    document.addEventListener('DOMContentLoaded', () => {
+		intentsController.init();
+		speechDetectionController.init();
+	});
 </script>
 {% endblock %}

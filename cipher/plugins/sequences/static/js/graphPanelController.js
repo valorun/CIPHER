@@ -188,11 +188,13 @@ const graphPanelController = (() => {
 		let label = '';
 		const action = {};
 		nodeData.shape = 'box';
+		nodeData.font = {};
+		nodeData.font.face = 'Electrolize';
+		action.type = DOM.$selectedAction.value;
 		switch (DOM.$selectedAction.value) {
 		case ('motion'): {
-			action.type = 'motion';
 			action.direction = DOM.$motion_direction.value;
-			if(action.direction == null){
+			if(action.direction == null || action.direction === ''){
 				failAlert('Aucune direction sélectionnée.');
 				return false;
 			}
@@ -205,7 +207,6 @@ const graphPanelController = (() => {
 			break;
 		}
 		case ('servo'): {
-			action.type = 'servo';
 			const $selected_servo = DOM.$servo.options[DOM.$servo.selectedIndex];
 			action.servo = $selected_servo.value;
 			if(action.servo == null || action.servo === ''){
@@ -228,9 +229,8 @@ const graphPanelController = (() => {
 			break;
 		}
 		case ('relay'): {
-			action.type = 'relay';
 			action.relay = DOM.$relay.value;
-			if(action.relay == null){
+			if(action.relay == null || action.relay === ''){
 				failAlert('Aucun relai sélectionné.');
 				return false;
 			}
@@ -239,15 +239,13 @@ const graphPanelController = (() => {
 			break;
 		}
 		case ('speech'): {
-			action.type = 'speech';
 			action.speech = DOM.$speech_sentence.value;
 			label += 'speech:\'' + action.speech + '\'';
 			break;
 		}
 		case ('script'): {
-			action.type = 'script';
 			action.script = DOM.$script_name.value;
-			if(action.script == null){
+			if(action.script == null || action.script === ''){
 				failAlert('Aucun script sélectionné.');
 				return false;
 			}
@@ -255,9 +253,8 @@ const graphPanelController = (() => {
 			break;
 		}
 		case ('sound'): {
-			action.type = 'sound';
 			action.sound = DOM.$sound_name.value;
-			if(action.sound == null){
+			if(action.sound == null || action.sound === ''){
 				failAlert('Aucun son sélectionné.');
 				return false;
 			}
@@ -266,7 +263,6 @@ const graphPanelController = (() => {
 		}
 		case ('pause'): {
 			nodeData.shape = 'circle';
-			action.type = 'pause';
 			action.time = parseInt(DOM.$pause.value);
 			label += 'pause:' + action.time + 'ms';
 			break;
