@@ -14,7 +14,7 @@ def play_sequence(seq_name: str):
     Function called when the client want to execute a sequence.
     """
     logging.debug("Client triggered sequence: '" + seq_name + "'")
-    sequence_reader.launchSequence(seq_name)
+    sequence_reader.launch_sequence(seq_name)
 
 
 @socketio.on('activate_relay', namespace='/client')
@@ -47,7 +47,7 @@ def move(direction: str, speed: int):
 @socketio.on('get_relays_state', namespace='/client')
 def get_relays_state():
     global RelayAction
-    emit('receive_relays_state', [{'relay': l, 'state': RelayAction.relayStates[l]} for l in RelayAction.relayStates], namespace='/client', broadcast=False)
+    emit('receive_relays_state', [{'relay': l, 'state': RelayAction.relay_states[l]} for l in RelayAction.relay_states], namespace='/client', broadcast=False)
 
 
 @mqtt.on_topic('server/update_relays_state')
@@ -57,7 +57,7 @@ def update_relays_state(client, userdata, msg):
     """
     global RelayAction
     logging.info("Updating relay status")
-    relaysList = []  # relays to update
+    relays_list = []  # relays to update
     data = json.loads(msg.payload.decode('utf-8'))
     # for each specified relay ...
     for rel in data['relays']:
@@ -65,10 +65,10 @@ def update_relays_state(client, userdata, msg):
         pin = rel['gpio']
         state = rel['state']
         # retrieve the missing information: the label corresponding to the pin
-        for dbRel in Relay.query.filter_by(pin=pin, raspi_id=raspi_id):
-            label = dbRel.label
-            relaysList.append({'relay': label, 'state': state})
+        for db_rel in Relay.query.filter_by(pin=pin, raspi_id=raspi_id):
+            label = db_rel.label
+            relays_list.append({'relay': label, 'state': state})
         # update the local state dictionnary
-        RelayAction.relayStates[label] = state
+        RelayAction.relay_states[label] = state
     # finally send the list of the relays to update on the clients
-    socketio.emit('receive_relays_state', relaysList, namespace="/client", broadcast=True)
+    socketio.emit('receive_relays_state', relays_list, namespace="/client", broadcast=True)

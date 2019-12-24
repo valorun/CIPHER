@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template
 from cipher.model import config
 
+
 class Plugin():
     def __init__(self, name, import_name, label, icon):
         self.plugins = {}
@@ -15,7 +16,7 @@ class Plugin():
         app.register_blueprint(self.blueprint)
 
     def render_page(self, template_name_or_list, **context):
-        return render_template(template_name_or_list, plugins=self.plugins, label=self.label, icon=self.icon, robot_name=config.getRobotName(), **context)
+        return render_template(template_name_or_list, plugins=self.plugins, label=self.label, icon=self.icon, robot_name=config.get_robot_name(), **context)
 
     def route(self, rule, **options):
         def decorator(f):

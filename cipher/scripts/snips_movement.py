@@ -1,6 +1,7 @@
 from cipher.core.sequence_reader import sequence_reader
 
-def getSequenceName(slots):
+
+def get_sequence_name(slots):
     sequence_name = ''
     member = None
     movement = None
@@ -16,7 +17,7 @@ def getSequenceName(slots):
         elif slot['slotName'] == 'chosen_duplicated_member':
             chosen_duplicated_member = slot['value']['value']
     if movement is None:
-       return None
+        return None
     else:
         sequence_name += movement
     if member is not None:
@@ -27,10 +28,11 @@ def getSequenceName(slots):
         sequence_name += '_' + direction
     return sequence_name
 
+
 def main(**kwargs):
     if 'slots' not in kwargs or len(kwargs['slots']) < 1:
         return
 
-    sequence_name = getSequenceName(kwargs['slots'])
+    sequence_name = get_sequence_name(kwargs['slots'])
     if sequence_name is not None:
-        sequence_reader.launchSequence(sequence_name)
+        sequence_reader.launch_sequence(sequence_name)

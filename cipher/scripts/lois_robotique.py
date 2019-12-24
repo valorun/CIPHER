@@ -5,13 +5,13 @@ lois = [
     "un robot doit obéir aux ordres qui lui sont donnés par un être humain, sauf si de tels ordres entrent en conflit avec la première loi ",
     "un robot doit protéger son existence tant que cette protection n'entre pas en conflit avec la première ou la deuxième loi"
 ]
+
+
 def main(**kwargs):
     if 'slots' not in kwargs or len(kwargs['slots']) < 1:
         for loi in lois:
             speech(loi)
         return True
-
-
     selected_lois = []
     for slot in kwargs['slots']:
         number = slot['value']['value']
@@ -23,6 +23,6 @@ def main(**kwargs):
             return False
 
     for number in selected_lois:
-        speech(lois[number-1])
+        speech(lois[number - 1])
 
     return True

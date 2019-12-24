@@ -32,13 +32,13 @@
 					<form id="cameraUrlForm">
 						<label for="cameraUrl">URL de la caméra: </label>
 						<div class="row">
-							<input id="cameraUrl" type="text" class="input border col" style="width: 80%" placeholder="ex: http://ma-camera-ip.com" value="{{ cameraUrl }}">
+							<input id="cameraUrl" type="text" class="input border col" style="width: 80%" placeholder="ex: http://ma-camera-ip.com" value="{{ camera_url }}">
 							<button type="submit" class="button secondary col" style="width:20%"><i class="fa fa-check"></i></button>
 						</div>
 					</form>
 				</p>
 				<p>
-					{% if audioOnServer==True %}
+					{% if audio_on_server==True %}
 					<input id="audioOnServer" type="checkbox" name="audioOnServer" checked="checked" class="check">
 					{% else %}
 					<input id="audioOnServer" type="checkbox" name="audioOnServer" class="check">
@@ -49,7 +49,7 @@
 					<form id="motionRaspiIdForm">
 						<label for="motionRaspiId">Id du Raspberry attribué aux déplacements: </label>
 						<div class="row">
-							<input id="motionRaspiId" type="text" class="input border col" style="width: 80%" placeholder="ex: raspi_###" value="{{ motionRaspiId }}" list="motionRaspiIdData">
+							<input id="motionRaspiId" type="text" class="input border col" style="width: 80%" placeholder="ex: raspi_###" value="{{ motion_raspi_id }}" list="motionRaspiIdData">
 							<datalist id="motionRaspiIdData"></datalist>
 							<button type="submit" class="button secondary col" style="width:20%"><i class="fa fa-check"></i></button>
 						</div>

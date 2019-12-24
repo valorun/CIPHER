@@ -57,7 +57,7 @@ class ConfigFile():
     def __init__(self, filepath):
         self.filepath = filepath
 
-    def saveOption(self, key: str, data):
+    def save_option(self, key: str, data):
         """
         Save an option into the config file.
         """
@@ -74,7 +74,7 @@ class ConfigFile():
         with open(self.filepath, 'w') as f:
             json.dump(content, f)
 
-    def loadOption(self, key: str):
+    def load_option(self, key: str):
         """
         Load an option from the config file.
         """
@@ -97,46 +97,39 @@ class CoreConfigFile(ConfigFile):
         ConfigFile.__init__(self, filepath)
 
     # CAMERA URL
-    def setCameraUrl(self, url: str):
+    def set_camera_url(self, url: str):
         if not url.strip():
             url = None
-        self.saveOption('camera_url', url)
+        self.save_option('camera_url', url)
 
-    def getCameraUrl(self) -> str:
-        return self.loadOption('camera_url')
-
-    # COMMANDS GRID
-    def setCommandsGrid(self, grid: {}):
-        self.saveOption('commands_grid', grid)
-
-    def getCommandsGrid(self) -> {}:
-        return self.loadOption('commands_grid')
+    def get_camera_url(self) -> str:
+        return self.load_option('camera_url')
 
     # AUDIO SOURCE
-    def setAudioOnServer(self, mode: bool):
-        self.saveOption('audio_on_server', mode)
+    def set_audio_on_server(self, mode: bool):
+        self.save_option('audio_on_server', mode)
 
-    def getAudioOnServer(self) -> bool:
-        mode = self.loadOption('audio_on_server')
+    def get_audio_on_server(self) -> bool:
+        mode = self.load_option('audio_on_server')
         return mode or False
 
     # MOTION RASPI ID
-    def setMotionRaspiId(self, raspi_id: str):
+    def set_motion_raspi_id(self, raspi_id: str):
         if not raspi_id.strip():
             raspi_id = None
-        self.saveOption('motion_raspi_id', raspi_id)
+        self.save_option('motion_raspi_id', raspi_id)
 
-    def getMotionRaspiId(self) -> str:
-        return self.loadOption('motion_raspi_id')
+    def get_motion_raspi_id(self) -> str:
+        return self.load_option('motion_raspi_id')
 
     # ROBOT NAME
-    def setRobotName(self, name: str):
+    def set_robot_name(self, name: str):
         if not name.strip():
             name = 'My robot'
-        self.saveOption('robot_name', name)
+        self.save_option('robot_name', name)
 
-    def getRobotName(self) -> str:
-        name = self.loadOption('robot_name')
+    def get_robot_name(self) -> str:
+        name = self.load_option('robot_name')
         return name or 'My robot'
 
 
@@ -144,36 +137,36 @@ class Resources():
     """
     Class used to store and manage ressources such as sounds or scripts
     """
-    def __init__(self, scriptsPath, soundsPath):
-        self.scriptsPath = scriptsPath
-        self.soundsPath = soundsPath
+    def __init__(self, scripts_path, sounds_path):
+        self.scripts_path = scripts_path
+        self.sounds_path = sounds_path
 
-    def getScripts(self):
-        if not exists(self.scriptsPath):
-            makedirs(self.scriptsPath)
-        return [f for f in listdir(self.scriptsPath) if isfile(join(self.scriptsPath, f))]
+    def get_scripts(self):
+        if not exists(self.scripts_path):
+            makedirs(self.scripts_path)
+        return [f for f in listdir(self.scripts_path) if isfile(join(self.scripts_path, f))]
 
-    def deleteScript(self, script_name):
-        path = join(self.scriptsPath, script_name)
+    def delete_script(self, script_name):
+        path = join(self.scripts_path, script_name)
         if isfile(path):
             remove(path)
 
-    def saveScript(self, script_name, data):
-        path = join(self.scriptsPath, script_name)
+    def save_script(self, script_name, data):
+        path = join(self.scripts_path, script_name)
         with open(path, encoding='utf-8', mode='w+') as file:
             file.write(data)
 
-    def readScript(self, script_name):
-        path = join(self.scriptsPath, script_name)
+    def read_script(self, script_name):
+        path = join(self.scripts_path, script_name)
         if not exists(path):
             return None
         with open(path, encoding='utf-8', mode='r') as file:
             return file.read()
 
-    def getSounds(self):
-        if not exists(self.soundsPath):
-            makedirs(self.soundsPath)
-        return [f for f in listdir(self.soundsPath) if isfile(join(self.soundsPath, f))]
+    def get_sounds(self):
+        if not exists(self.sounds_path):
+            makedirs(self.sounds_path)
+        return [f for f in listdir(self.sounds_path) if isfile(join(self.sounds_path, f))]
 
 
 config = CoreConfigFile(CONFIG_FILE)

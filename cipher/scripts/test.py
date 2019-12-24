@@ -1,7 +1,8 @@
-from cipher.core.actions import speech
+from cipher.core.actions import SpeechAction
+
 
 def main(**kwargs):
     if 'slots' not in kwargs or len(kwargs['slots']) < 1:
         return
 
-    speech(kwargs['slots'][0])
+    SpeechAction(kwargs['slots'][0]).execute()

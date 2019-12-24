@@ -1,6 +1,7 @@
 {% extends 'template.html' %}
 {% block content %}
 <script src="{{ url_for('dashboard.static', filename='js/raspiesController.js') }}"></script>
+<script src="{{ url_for('dashboard.static', filename='js/logController.js') }}"></script>
 
 <div class="panel">
 	<div class="card tertiary">
@@ -21,11 +22,14 @@
 	</div>
 </div>
 
+{% include 'dashboardLogPanel.html' %}
 {% include 'dashboardCameraPanel.html' %}
+
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 		raspiesController.init();
+		logController.init();
 	});
 </script>
 

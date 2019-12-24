@@ -12,13 +12,13 @@ def handle_intents(client, userdata, message):
         intent = json.loads(intent)
     except Exception:
         return
-    intentName = intent['intent']['intentName']
-    logging.info("Received intent '" + intentName + "' with slots '" + str(intent['slots']) + "'")
-    dbIntent = Intent.query.filter_by(intent=intentName).first()
+    intent_name = intent['intent']['intentName']
+    logging.info("Received intent '" + intent_name + "' with slots '" + str(intent['slots']) + "'")
+    db_intent = Intent.query.filter_by(intent=intent_name).first()
     kwargs = {}
     kwargs['slots'] = intent['slots']
-    if(dbIntent is not None):
-        if dbIntent.sequence is not None:
-            sequence_reader.launchSequence(dbIntent.sequence.id, **kwargs)
-        elif dbIntent.script_name is not None:
-            ScriptAction(dbIntent.script_name).execute(**kwargs)
+    if(db_intent is not None):
+        if db_intent.sequence is not None:
+            sequence_reader.launch_sequence(db_intent.sequence.id, **kwargs)
+        elif db_intent.script_name is not None:
+            ScriptAction(db_intent.script_name).execute(**kwargs)

@@ -25,11 +25,11 @@ def on_raspi_connect(client, userdata, msg):
     data = json.loads(msg.payload.decode('utf-8'))
     raspi_id = data['id']
     logging.info("Raspberry " + raspi_id + " connected.")
-    newRaspi = {}
-    newRaspi['id'] = raspi_id
+    new_raspi = {}
+    new_raspi['id'] = raspi_id
     mqtt.subscribe('raspi/' + raspi_id + '/#')
     raspies = [r for r in raspies if r['id'] != raspi_id]  # delete already existing one with the same id
-    raspies.append(newRaspi)
+    raspies.append(new_raspi)
 
     relays_list = []
     # add its relays to the list ...

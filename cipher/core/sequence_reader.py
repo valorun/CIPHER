@@ -11,18 +11,18 @@ class SequenceReader:
     Classe reading sequences.
     """
     def __init__(self):
-        self.currentSequence = None
+        self.current_sequence = None
 
-    def getSequenceFromJson(self, jsonList: list):
+    def get_sequence_from_json(self, json_list: list):
         """
         Create a sequence object from JSON.
         """
-        if jsonList is None:
+        if json_list is None:
             return []
 
-        return Sequence([self._getActionFromJson(n) for n in jsonList])
+        return Sequence([self._get_action_from_json(n) for n in json_list])
 
-    def _getActionFromJson(self, json: dict):
+    def _get_action_from_json(self, json: dict):
         """
         Create a action node object from JSON.
         """
@@ -47,22 +47,22 @@ class SequenceReader:
             # if 'flags' not in kwargs or json['flag'] not in kwargs['flags']:
                 # if there is no flag, or the specified flag is missing, stop the execution
                 # return False
-        return Node(action, [self._getActionFromJson(c) for c in json['children']])
+        return Node(action, [self._get_action_from_json(c) for c in json['children']])
 
-    def readSequence(self, json: list, **kwargs):
+    def read_sequence(self, json: list, **kwargs):
         """
         Launch the sequence execution from a JSON object.
         """
         # wait for the current sequence to be completed to launch a new one
-        if self.currentSequence is not None and self.currentSequence.inExecution():
+        if self.current_sequence is not None and self.current_sequence.in_execution():
             logging.warning("Cannot execute sequence, another one is already running.")
             return
 
-        seq = self.getSequenceFromJson(json)
-        self.currentSequence = seq
+        seq = self.get_sequence_from_json(json)
+        self.current_sequence = seq
         seq.execute(**kwargs)
 
-    def launchSequence(self, name: str, **kwargs):
+    def launch_sequence(self, name: str, **kwargs):
         """
         Searches for the sequence in the database from its name, and then launches it.
         """

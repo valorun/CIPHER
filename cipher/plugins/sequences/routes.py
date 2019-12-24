@@ -14,8 +14,8 @@ def sequences_page():
     relays = Relay.query.all()
     sequences_list = Sequence.query.all()
     servos = Servo.query.all()
-    sounds = resources.getSounds()
-    scripts = resources.getScripts()
+    sounds = resources.get_sounds()
+    scripts = resources.get_scripts()
     return sequences.render_page('sequences.html', sequences=sequences_list, servos=servos, relays=relays, sounds=sounds, scripts=scripts)
 
 
@@ -25,22 +25,22 @@ def save_sequence():
     """
     Save a sequence in the database.
     """
-    seqName = request.json.get('seq_name')
-    seqData = request.json.get('seq_data')
-    if not seqName or ' ' in seqName:
+    seq_name = request.json.get('seq_name')
+    seq_data = request.json.get('seq_data')
+    if not seq_name or ' ' in seq_name:
         return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
-    if seqData is None:
+    if seq_data is None:
         return jsonify("La séquence est vide."), 400
-    if Sequence.query.filter_by(id=seqName).first() is not None:
+    if Sequence.query.filter_by(id=seq_name).first() is not None:
         return jsonify("Une sequence portant le même nom existe déjà."), 400
-    sequence = sequence_reader.getSequenceFromJson(seqData)
+    sequence = sequence_reader.getSequenceFromJson(seq_data)
     if sequence is None:
         return jsonify("La séquence n'est pas valide."), 400
-    logging.info("Saving sequence '" + seqName + "'")
-    dbSequence = Sequence(id=seqName, value=json.dumps(seqData), enabled=True)
-    db.session.merge(dbSequence)
+    logging.info("Saving sequence '" + seq_name + "'")
+    db_sequence = Sequence(id=seq_name, value=json.dumps(seq_data), enabled=True)
+    db.session.merge(db_sequence)
     db.session.commit()
-    return jsonify("La séquence '" + seqName + "' a été sauvegardée avec succès."), 200
+    return jsonify("La séquence '" + seq_name + "' a été sauvegardée avec succès."), 200
 
 
 @sequences.route('/enable_sequence', methods=['POST'])
@@ -49,17 +49,17 @@ def enable_sequence():
     """
     Enable or disable a equence stored in the database.
     """
-    seqName = request.json.get('seq_name')
+    seq_name = request.json.get('seq_name')
     value = request.json.get('value')
-    if not seqName or ' ' in seqName:
+    if not seq_name or ' ' in seq_name:
         return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Updating '" + seqName + "'")
-    dbSeq = Sequence.query.filter_by(id=seqName).first()
+    logging.info("Updating '" + seq_name + "'")
+    db_seq = Sequence.query.filter_by(id=seq_name).first()
     if dbSeq is None:
         return jsonify("La séquence est inconnue."), 400
-    dbSeq.enabled = value
+    db_seq.enabled = value
     db.session.commit()
-    return jsonify("L'état de la séquence '" + seqName + "' a été modifié."), 200
+    return jsonify("L'état de la séquence '" + seq_name + "' a été modifié."), 200
 
 
 @sequences.route('/delete_sequence', methods=['POST'])
@@ -68,13 +68,13 @@ def delete_sequence():
     """
     Delete a sequence stored in the database.
     """
-    seqName = request.json.get('seq_name')
-    if not seqName or ' ' in seqName:
+    seq_name = request.json.get('seq_name')
+    if not seq_name or ' ' in seq_name:
         return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Deleting " + seqName + "'")
-    dbSeq = Sequence.query.filter_by(id=seqName).first()
-    if dbSeq is None:
+    logging.info("Deleting " + seq_name + "'")
+    db_seq = Sequence.query.filter_by(id=seq_name).first()
+    if db_seq is None:
         return jsonify("La séquence est inconnue."), 400
-    db.session.delete(dbSeq)
+    db.session.delete(db_seq)
     db.session.commit()
-    return jsonify("La séquence '" + seqName + "' a été supprimée avec succès."), 200
+    return jsonify("La séquence '" + seq_name + "' a été supprimée avec succès."), 200

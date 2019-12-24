@@ -1,4 +1,5 @@
-from cipher.core.actions import servo
+from cipher.core.actions import ServoAction
+
 
 def main(**kwargs):
-    servo('test', 1200, 25)
+    ServoAction('test', 1200, 25).execute()
