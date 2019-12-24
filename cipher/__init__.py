@@ -13,12 +13,10 @@ from flask import Flask
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from .model import db
-from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_PORT
+from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_PORT, PLUGINS
 
 socketio = SocketIO(logger=True)  # socketio server used to communicate with web client
 mqtt = Mqtt()  # mqtt client, need to be connected to a brocker (in local)
-
-plugins = ['dashboard', 'commands', 'speech', 'editor', 'debug', 'sequences', 'settings']  # all the different  page available in the navbar
 
 
 def create_app(debug=False):
@@ -39,18 +37,18 @@ def create_app(debug=False):
     app.register_blueprint(core_blueprint)
     app.register_blueprint(security_blueprint)
 
-    loaded_plugins = []
+    loadedPlugins = []
     # load all specified plugins
-    for p_name in plugins:
+    for pPame in PLUGINS:
         try:
             # find the plugin object ...
-            module = importlib.import_module('.plugins.' + p_name, package='cipher')
-            p = getattr(module, p_name)
-            loaded_plugins.append(p)
+            module = importlib.import_module('.plugins.' + pPame, package='cipher')
+            p = getattr(module, pPame)
+            loadedPlugins.append(p)
             # then register its blueprint
-            p.register(app, loaded_plugins)
+            p.register(app, loadedPlugins)
         except Exception as e:
-            logging.error("Failed to load plugin '" + p_name + "': {0}".format(e))
+            logging.error("Failed to load plugin '" + pPame + "': {0}".format(e))
             exit(1)
 
     db.app = app

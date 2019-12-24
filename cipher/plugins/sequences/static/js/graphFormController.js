@@ -75,7 +75,7 @@ const graphFormController = (() => {
 			const selectedNodeType = document.querySelector('select[name=newNodeTypeChoice]');
 			document.getElementById(selectedNodeType.value + 'Options').classList.remove('hide');
 		} else {
-			failAlert('Aucune action n\'a été selectionnée !');
+			console.warn('Aucune action n\'a été selectionnée !');
 		}
 	}
 
