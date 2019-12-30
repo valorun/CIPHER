@@ -13,4 +13,4 @@ SCRIPTS_LOCATION = os.path.join(os.path.dirname(__file__), 'scripts/')
 
 SOUNDS_LOCATION = os.path.join(os.path.dirname(__file__), 'sounds/')
 
-PLUGINS = ['dashboard', 'commands', 'speech', 'editor', 'debug', 'sequences', 'settings']  # all plugins to load, corresponds to the different pages available on the navbar
+PLUGINS = ['dashboard', 'commands', 'speech', 'editor', 'debug', 'sequences', 'armor', 'settings']  # all plugins to load, corresponds to the different pages available on the navbar

@@ -1,0 +1,22 @@
+.battery {
+    padding: 10px 10px;
+    width: 325px;
+    border: solid #00dd00;
+    position: relative;
+    display: inline-block;
+}
+
+.battery-bar {
+    display: inline-block;
+    width: 0px;
+    border: solid thin rgba(0, 255, 0, .3);
+    padding-left: 20px;
+    margin: -5px;
+    height: 34px;
+    background: transparent;
+
+}
+
+.battery-bar.active {
+    background: #00dd00;
+}

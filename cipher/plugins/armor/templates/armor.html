@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+	<meta charset="utf-8">
+	<title>Robot panel</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome.css') }}">
+	<script src="{{ url_for('static', filename='vendor/js.cookie.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='vendor/socket.io.js') }}"></script>
+	<link rel="stylesheet" href="{{ url_for('armor.static', filename='css/style.css') }}">
+	<link rel="stylesheet" href="{{ url_for('armor.static', filename='css/pulse.css') }}">
+	<link rel="stylesheet" href="{{ url_for('armor.static', filename='css/battery.css') }}">
+	<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
+	<script src="{{ url_for('armor.static', filename='js/armorController.js') }}"></script>
+
+</head>
+
+<body>
+	<div class="overlay"></div>
+	<div class="scanline"></div>
+	<div class="container">
+		<svg x="0px" y="0px" viewBox="0 0 298 53.9">
+			<path class="st0" d="M297.5,41.2h-76.6c-0.5,0-0.9,0.4-1,0.8l-1.6,11.3l-3.1-32c0-0.5-0.4-0.9-0.9-0.9c-0.5,0-0.9,0.3-1,0.8
+									l-5.3,25.5l-2.3-10.9c-0.1-0.4-0.4-0.7-0.9-0.8c-0.4,0-0.8,0.2-1,0.6l-2.3,4.8h-107c0,0,0,0,0,0H82c-1.6,0-2.2,1.1-2.2,1.6
+									l-1.6,11.3l-3.1-52c0-0.5-0.4-0.9-0.9-0.9c-0.5,0-0.9,0.3-1,0.8l-9.3,45.5l-2.3-10.9c-0.1-0.4-0.4-0.7-0.9-0.8c-0.4,0-0.8,0.2-1,0.6
+									l-2.3,4.8H0.5"/>
+		</svg>
+		<div class="container">
+			<span>Energy</span>
+			<div class="battery">
+				<div class="battery-bar active" data-power="10"></div>
+				<div class="battery-bar active" data-power="20"></div>
+				<div class="battery-bar" data-power="30"></div>
+				<div class="battery-bar" data-power="40"></div>
+				<div class="battery-bar" data-power="50"></div>
+				<div class="battery-bar" data-power="60"></div>
+				<div class="battery-bar" data-power="70"></div>
+				<div class="battery-bar" data-power="80"></div>
+				<div class="battery-bar" data-power="90"></div>
+				<div class="battery-bar" data-power="100"></div>
+			</div>
+		</div>
+		<span class="relay">desactivated</span>
+		<span class="relay activated">activated</span>
+		
+		<div class=""><image width="100px" src="{{ url_for('armor.static', filename='img/shield.svg') }}" /></div>
+
+		<div class="log-container">
+			<pre><output id="log"></output></pre>
+		</div>
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			armorController.init();
+		});
+	</script>
+</body>
+
+</html>
