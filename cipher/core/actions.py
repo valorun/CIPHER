@@ -141,7 +141,7 @@ class SoundAction(Action):
     """
     Execute the requested sound from the 'sounds' directory
     """
-    curent_sound = None
+    current_sound = None
 
     def __init__(self, sound_name: str):
         self.sound_name = sound_name
@@ -152,11 +152,11 @@ class SoundAction(Action):
             return
 
         if config.get_audio_on_server():
-            logging.info("Playing sound '" + join(SOUNDS_LOCATION, self.sound_name) + "\' on server")
-            if SoundAction.curent_sound is None or SoundAction.curent_sound.poll() is None:  # if no sound is played or the current sound ended
-                curent_sound = Popen(['mplayer', join(SOUNDS_LOCATION, self.sound_name)])
+            if SoundAction.current_sound is None or SoundAction.current_sound.poll() is None:  # if no sound is played or the current sound ended
+                logging.info("Playing sound '" + join(SOUNDS_LOCATION, self.sound_name) + "\' on server")
+                SoundAction.current_sound = Popen(['mplayer', join(SOUNDS_LOCATION, self.sound_name)])
             else:
-                curent_sound.terminate()
+                SoundAction.current_sound.terminate()
         else:
             logging.info("Playing sound '" + self.sound_name + "' on client")
             socketio.emit('play_sound', self.sound_name, namespace='/client')
