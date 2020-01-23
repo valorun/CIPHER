@@ -151,7 +151,7 @@ class SoundAction(Action):
             logging.warning("Cannot load sound '" + self.sound_name + "'")
             return
 
-        if config.getAudioOnServer():
+        if config.get_audio_on_server():
             logging.info("Playing sound '" + join(SOUNDS_LOCATION, self.sound_name) + "\' on server")
             if SoundAction.curent_sound is None or SoundAction.curent_sound.poll() is None:  # if no sound is played or the current sound ended
                 curent_sound = Popen(['mplayer', join(SOUNDS_LOCATION, self.sound_name)])
