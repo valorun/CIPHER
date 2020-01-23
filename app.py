@@ -15,6 +15,6 @@ if __name__ == '__main__':
     app = create_app(debug=DEBUG)
     logging.info("Application started")
     if DEBUG:
-        socketio.run(app, host = '0.0.0.0', port = 5000)
+        socketio.run(app, host='0.0.0.0', port=5000)
     else:
-        socketio.run(app, host = '0.0.0.0', port = 5000, certfile=certfile, keyfile=keyfile)
+        socketio.run(app, host='0.0.0.0', port=5000, certfile=certfile, keyfile=keyfile)

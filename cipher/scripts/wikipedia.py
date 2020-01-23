@@ -1,7 +1,8 @@
 import json
 import requests
 import logging
-from cipher.core.actions import speech
+from cipher.core.actions import SpeechAction
+
 
 def main(**kwargs):
     if 'slots' not in kwargs or len(kwargs['slots']) < 1:
@@ -15,5 +16,5 @@ def main(**kwargs):
             extract = page['extract']
     except Exception:
         logging.error("not found")
-    speech(extract)
+    SpeechAction(extract).execute()
     return True

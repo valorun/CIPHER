@@ -1,6 +1,5 @@
 {% extends 'template.html' %}
 {% block content %}
-<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
 <script src="{{ url_for('debug.static', filename='js/debugController.js') }}"></script>
 
 <div class="panel">
@@ -18,11 +17,8 @@
 	</div>
 </div>
 <script>
-$(document).ready(function() {
-	connectionManager.init();
-
-	debugController.init();
-});
-
+	document.addEventListener('DOMContentLoaded', () => {
+		debugController.init();
+	});
 </script>
 {% endblock %}

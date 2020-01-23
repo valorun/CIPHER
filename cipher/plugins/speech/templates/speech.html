@@ -1,7 +1,5 @@
 {% extends 'template.html' %}
 {% block content %}
-<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
-<!-- Include the WebRTC adapter -->
 <script src="{{ url_for('speech.static', filename='js/intentsController.js') }}"></script>
 <script src="{{ url_for('speech.static', filename='js/speechDetectionController.js') }}"></script>
 
@@ -116,12 +114,9 @@
 </div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-	connectionManager.init();
-
-	intentsController.init();
-	speechDetectionController.init();
-});
-
+    document.addEventListener('DOMContentLoaded', () => {
+		intentsController.init();
+		speechDetectionController.init();
+	});
 </script>
 {% endblock %}

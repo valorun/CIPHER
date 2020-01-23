@@ -1,0 +1,27 @@
+<style>
+.log-container {
+    background-color: black;
+    background-image: radial-gradient(
+      rgba(0, 150, 0, 0.75), black 120%
+    );
+    height: 50vh;
+    margin: 0;
+    overflow: auto;
+    padding: 2rem;
+    color: white;
+    font: 1rem Inconsolata, monospace;
+    text-shadow: 0 0 5px #C8C8C8;
+}
+
+pre {
+    margin: 0;
+}
+</style>
+
+<div class="panel">
+	<div class="card tertiary">
+		<div class="container log-container">
+			<pre><output id="log"></output></pre>
+		</div>
+	</div>
+</div>

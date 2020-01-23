@@ -9,14 +9,13 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome.css') }}">
-	<script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='vendor/jquery/jquery-ui.min.js') }}"></script>
-	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/jquery/jquery-ui.min.css') }}">
 	<script src="{{ url_for('static', filename='vendor/js.cookie.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='vendor/socket.io.js') }}"></script>
 
 	<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/templateController.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
+
 </head>
 
 <body class="background">
@@ -97,9 +96,10 @@
 	</div>
 
 	<script>
-	$(document).ready(function() {
-		templateController.init();
-	});
+    	document.addEventListener('DOMContentLoaded', () => {
+			templateController.init();
+			connectionManager.init();
+		});
 	</script>
 
 	<div class="alert-modal bottom"></div>

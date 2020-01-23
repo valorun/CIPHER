@@ -1,58 +1,61 @@
-var sequencesController = {
-	init: function(){
-		this.bind();
-	},
-	bind: function(){
-		$('input[name=enableSeq]').on('change', (e) => {
-			//get the sequence name by getting the second part of the id, after '_'
-			let seq_name = e.currentTarget.id.substr(e.currentTarget.id.indexOf('_') + 1);
-			this.enableSequence(seq_name, $(e.currentTarget).prop('checked'));
+/* globals fetchJson */
+
+/* exported sequencesController */
+const sequencesController = (() => {
+	'use strict';
+
+	/* PUBLIC METHODS */
+	function init(){
+		bindUIEvents();
+	}
+
+	/* PRIVATE METHODS */
+	function bindUIEvents() {
+
+		document.querySelectorAll('input[name=enableSeq]').forEach((e) => {
+			const seq_name = e.id.substring(e.id.indexOf('_') + 1);
+			e.addEventListener('click', () => {
+				enableSequence(seq_name, e.checked);
+			});
 		});
-		$('a[name=deleteSeq]').on('click', (e) => {
-			//get the sequence name by getting the second part of the id, after '_'
-			let seq_name = e.currentTarget.id.substr(e.currentTarget.id.indexOf('_') + 1);
-			this.deleteSequence(seq_name);
+		document.querySelectorAll('a[name=deleteSeq]').forEach((e) => {
+			const seq_name = e.id.substring(e.id.indexOf('_') + 1);
+			e.addEventListener('click', () => {
+				deleteSequence(seq_name);
+			});
 		});
-	},
+	}
 
 	/**
 	* Enable OR disable a sequence
 	* @param {string} seq_name the name of the sequence to enable or disable
 	* @param {boolean} value the new state for the sequence
 	*/
-	enableSequence: function(seq_name, value){
-		$.ajax({
-			type: 'POST',
-			url: '/enable_sequence',
-			data: {seq_name:seq_name, value:value},
-			success: function(){
+	function enableSequence(seq_name, value){
+		fetchJson('/enable_sequence', 'POST', {seq_name:seq_name, value:value})
+			.then(()=> {
 				console.log(seq_name + ' updated');
-			},
-			error: function(request){
-				failAlert(request.responseText);
-			}
-		});
-	},
+			});
+	}
 
 	/**
 	* Completely delete a sequence
 	* @param {string} seq_name the name of the sequence to delete
 	*/
-	deleteSequence: function(seq_name){
-		let confirm = window.confirm('Etes vous sûr de vouloir supprimer la séquence \'' + seq_name + '\' ?');
+	function deleteSequence(seq_name){
+		const confirm = window.confirm('Etes vous sûr de vouloir supprimer la séquence \'' + seq_name + '\' ?');
+		
 		if(confirm){
-			$.ajax({
-				type: 'POST',
-				url: '/delete_sequence',
-				data: {seq_name:seq_name},
-				success: function(){
+			fetchJson('/delete_sequence', 'POST', {seq_name:seq_name})
+				.then(()=> {
 					console.log(seq_name + ' deleted');
-					$('#' + seq_name).remove();
-				},
-				error: function(request){
-					failAlert(request.responseText);
-				}
-			});
+					const $seq_el = document.getElementById(seq_name);
+					$seq_el.parentNode.removeChild($seq_el);
+				});
 		}
 	}
-}
+
+	return {
+		init: init
+	};
+})();

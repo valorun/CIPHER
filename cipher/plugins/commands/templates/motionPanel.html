@@ -1,6 +1,6 @@
 <script src="{{ url_for('commands.static', filename='js/motionController.js') }}"></script>
 
-{% if motionRaspiId!=None %}
+{% if motion_raspi_id!=None %}
 <div class="panel">
     <div class="card round-large tertiary" id="motion">
         <button class="btn container primary block left-align accordion-header">
@@ -27,15 +27,15 @@
                     </tr>
                 </table>
                 <div class="container cell">
-                    <div id="motion_speed" style="height:100px;"></div>
+                    <input type="range" id="motion_speed" name="motion_speed" min="0" max="100">
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', () => {
         motionController.init();
-    });
+    })
 </script>
 {% endif %}

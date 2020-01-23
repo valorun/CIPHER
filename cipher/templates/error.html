@@ -8,7 +8,6 @@
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
-	<script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
 </head>
 
 <body class="background">
@@ -17,7 +16,7 @@
 		<div class="container card-4 dark-red padding-64">
             <h1><strong>{{ error_code }}</strong></h1>
             <h1>{{ error_message }}</h1>
-            <a href="/"><input type="button" value="Retour" class="button white"></a>
+            <!-- <a href="/"><input type="button" value="Retour" class="button white"></a> -->
 		</div>
 	</div>
 </body>

@@ -1,0 +1,17 @@
+path {
+    stroke: #00dd00;
+    stroke-width: 1px;
+    fill: none;
+    stroke-dasharray: 150, 200;
+    stroke-dashoffset: 0;
+    animation: pulse 8s infinite linear;
+}
+
+@keyframes pulse {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 1050;
+  }
+}

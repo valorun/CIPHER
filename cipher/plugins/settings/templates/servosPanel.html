@@ -17,7 +17,8 @@
                 </div>
                 <div class="third">
                     <label for="newServoRaspiId">Raspberry: </label>
-                    <input id="newServoRaspiId" type="text" value="" class="input border">
+                    <input id="newServoRaspiId" type="text" value="" class="input border" list="newServoRaspiIdData">
+                    <datalist id="newServoRaspiIdData"></datalist>
                 </div>
             </div>
             <div class="container padding">
@@ -93,7 +94,7 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', () => {
         servosSettingsController.init();
     });
 </script>

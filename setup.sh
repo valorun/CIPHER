@@ -84,7 +84,6 @@ then
             read -p "Do you wish to add this program on startup ? " yn
             case $yn in
                 [Yy]* ) sed -i -e "\$i \\nohup sudo $APP_PATH/app.py &\\n" /etc/rc.local; break;;
-                #[Yy]* ) sed -i -e "\$i \\sudo python3 $APP_PATH/app.py &\\n" ./test; break;;
                 [Nn]* ) exit;;
                 * ) echo "Please answer yes or no.";;
             esac

@@ -8,5 +8,5 @@ from cipher.security import login_required
 @dashboard.route('/dashboard')
 @login_required
 def dashboard_page():
-    cameraUrl=config.getCameraUrl()
-    return dashboard.render_page('dashboard.html', cameraUrl=cameraUrl)
+    camera_url = config.get_camera_url() or ''
+    return dashboard.render_page('dashboard.html', camera_url=camera_url)

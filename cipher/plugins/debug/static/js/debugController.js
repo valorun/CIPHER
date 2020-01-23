@@ -1,11 +1,29 @@
-var debugController = {
-	init: function(){
-		this.bind();
-	},
-	bind: function(){
-		$('#sendStatementButton').on('click', function(){
-			socket.emit('speech_detected', $('#statement').val());
-		});
+/* globals socket */
+
+/* exported debugController */
+const debugController = (() => {
+	'use strict';
+
+	const DOM = {};
+
+	/* PUBLIC METHODS */
+	function init(){
+		cacheDom();
+		bindUIEvents();
 	}
 
-};
+	/* PRIVATE METHODS */
+	function bindUIEvents(){
+		document.getElementById('sendStatementButton').addEventListener('click', () =>{
+			socket.emit('speech_detected', DOM.$statement.value);
+		});
+	}
+	
+	function cacheDom() {
+		DOM.$statement = document.getElementById('statement');
+	}
+
+	return {
+		init: init
+	};
+})();
