@@ -19,6 +19,8 @@ def login():
     db_user = User.query.filter_by(username=request.form['username']).first()
     if db_user is not None and db_user.active:
         decoded_password = base64.b64decode(db_user.password).decode('utf-8', 'ignore')
+        print(decoded_password)
+        print(request.form['password'])
         if request.form['password'] == decoded_password:
             session['username'] = request.form['username']
             session['logged_in'] = True

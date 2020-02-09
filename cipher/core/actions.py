@@ -152,7 +152,7 @@ class SoundAction(Action):
             return
 
         if config.get_audio_on_server():
-            if SoundAction.current_sound is None or SoundAction.current_sound.poll() is None:  # if no sound is played or the current sound ended
+            if SoundAction.current_sound is None or SoundAction.current_sound.poll() is not None:  # if no sound is played or the current sound ended
                 logging.info("Playing sound '" + join(SOUNDS_LOCATION, self.sound_name) + "\' on server")
                 SoundAction.current_sound = Popen(['mplayer', join(SOUNDS_LOCATION, self.sound_name)])
             else:
