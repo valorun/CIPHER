@@ -49,7 +49,7 @@ class Sequence:
         for n in self.start_nodes:
             n.execute(**kwargs)
 
-    def inExecution(self):
+    def is_in_execution(self):
         """
         Check if the sequence is currently in execution.
         """

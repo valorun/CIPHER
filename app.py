@@ -2,11 +2,11 @@
 # coding: utf-8
 
 from cipher import create_app, setup_logger, socketio, mqtt
-import os
+from os.path import join, dirname
 import logging
 
-certfile = os.path.join(os.path.dirname(__file__), 'cert.pem')
-keyfile = os.path.join(os.path.dirname(__file__), 'key.pem')
+certfile = join(dirname(__file__), 'cert.pem')
+keyfile = join(dirname(__file__), 'key.pem')
 
 DEBUG = True
 
