@@ -33,7 +33,7 @@ def save_sequence():
         return jsonify("La séquence est vide."), 400
     if Sequence.query.filter_by(id=seq_name).first() is not None:
         return jsonify("Une sequence portant le même nom existe déjà."), 400
-    sequence = sequence_reader.getSequenceFromJson(seq_data)
+    sequence = sequence_reader.get_sequence_from_json(seq_data)
     if sequence is None:
         return jsonify("La séquence n'est pas valide."), 400
     logging.info("Saving sequence '" + seq_name + "'")
