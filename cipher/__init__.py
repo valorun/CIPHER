@@ -12,7 +12,7 @@ from logging.config import dictConfig
 from flask import Flask
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
-from .model import db
+from .model import db, User
 from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_PORT, PLUGINS
 
 socketio = SocketIO(logger=True)  # socketio server used to communicate with web client
@@ -54,6 +54,13 @@ def create_app(debug=False):
     db.app = app
     db.init_app(app)
     db.create_all()
+
+    # create admin if not exists
+    exists = User.query.filter_by(username='admin').first()
+    if not exists:
+        new_db_user = User(username='admin', password='cGFzc3dvcmQ=', active=True)
+        db.session.merge(new_db_user)
+        db.session.commit()
 
     socketio.init_app(app)
     mqtt.init_app(app)

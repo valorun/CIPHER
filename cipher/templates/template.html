@@ -15,6 +15,7 @@
 	<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/templateController.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/raspiesController.js') }}"></script>
 
 </head>
 
@@ -22,7 +23,7 @@
 
 	<!-- Top container -->
 	<div class="bar top black large card-4" style="z-index:4; position:sticky">
-		<div class="bar-item hide-large">
+		<div class="bar-item left hide-large">
 			<button class="btn hover-text-light-grey" id="sidebar_button"><i class="fa fa-bars"></i>  Menu</button>
 		</div>
 		<div class="bar-item left hide-small hide-medium">
@@ -34,8 +35,8 @@
 	</div>
 
 	<!-- Sidebar/menu -->
-	<nav class="sidebar collapse primary animate-left" style="z-index:3;width:300px;" id="sidebar"><br>
-		<div class="center">
+	<nav class="sidebar collapse primary animate-left" style="z-index:3;width:300px;bottom: 0px;top: 58px;display: block;height: inherit;" id="sidebar"><br>
+		<div class="container center">
 			<h3 class="tag tertiary">{{ robot_name }}</h3>
 			{% if session.logged_in %}
 			<h3>Bienvenue {{ session['username'] }} !</h3>
@@ -99,6 +100,7 @@
     	document.addEventListener('DOMContentLoaded', () => {
 			templateController.init();
 			connectionManager.init();
+			raspiesController.init();
 		});
 	</script>
 

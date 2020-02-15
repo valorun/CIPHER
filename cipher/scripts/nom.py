@@ -1,6 +1,6 @@
-from cipher.core.actions import speech
+from cipher.core.actions import SpeechAction
 from cipher.model import config
 
 
 def main(**kwargs):
-    speech("Je m'appelle " + config.get_robot_name())
+    SpeechAction("Je m'appelle " + config.get_robot_name()).execute()

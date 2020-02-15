@@ -16,9 +16,9 @@ function alert(title, message, color) {
 				'<span onclick=\'this.parentElement.style.display=\'none\'\' ' +
 				'class=\'button large display-topright ' + color + '\'>&times;' +
 				'</span>' +
-				'<h3>' + title + '</h3>' +
+				'<h4>' + title + '</h4>' +
 				'<p>' +
-					'<strong>' + message + '</strong>' +
+					message +
 				'</p>' +
 			'</div>' +
 		'</div>');

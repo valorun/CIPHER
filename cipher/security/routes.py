@@ -8,9 +8,6 @@ from . import security
 @security.route('/login', methods=['GET'])
 def login_page():
     session['logged_in'] = False
-    new_db_user = User(username='admin', password='cGFzc3dvcmQ=', active=True)
-    db.session.merge(new_db_user)
-    db.session.commit()
     return render_template('login.html')
 
 
