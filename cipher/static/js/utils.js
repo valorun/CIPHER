@@ -10,6 +10,7 @@ function successAlert(message) {
 
 function alert(title, message, color) {
 	const $el = document.getElementsByClassName('alert-modal')[0];
+	$el.innerHTML = '';
 	$el.insertAdjacentHTML('beforeend',
 		'<div class=\'display-bottomright\'>' +
 			'<div class=\'panel card-4 animate-bottom display-container ' + color + '\'>' +

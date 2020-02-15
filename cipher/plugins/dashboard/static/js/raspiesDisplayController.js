@@ -44,7 +44,6 @@ const raspiesDisplayController = (() => {
 
     function removeRaspiCard(raspi) {
         const el = document.getElementById(raspi.id + '_card');
-        console.log(raspi);
         if(el != null)
             el.parentNode.removeChild(el);
     }
