@@ -6,7 +6,6 @@ from os.path import join, exists
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
 from cipher import socketio, mqtt
-from cipher.constants import SCRIPTS_LOCATION, SOUNDS_LOCATION
 from cipher.model import db, Servo, Relay, config
 
 
@@ -147,14 +146,14 @@ class SoundAction(Action):
         self.sound_name = sound_name
 
     def execute(self, **kwargs):
-        if not exists(join(SOUNDS_LOCATION, self.sound_name)):
+        if not exists(join(config.get_sounds_location(), self.sound_name)):
             logging.warning("Cannot load sound '" + self.sound_name + "'")
             return
 
         if config.get_audio_on_server():
             if SoundAction.current_sound is None or SoundAction.current_sound.poll() is not None:  # if no sound is played or the current sound ended
-                logging.info("Playing sound '" + join(SOUNDS_LOCATION, self.sound_name) + "\' on server")
-                SoundAction.current_sound = Popen(['mplayer', join(SOUNDS_LOCATION, self.sound_name)])
+                logging.info("Playing sound '" + join(config.get_sounds_location(), self.sound_name) + "\' on server")
+                SoundAction.current_sound = Popen(['mplayer', join(config.get_sounds_location(), self.sound_name)])
             else:
                 SoundAction.current_sound.terminate()
         else:
@@ -170,10 +169,10 @@ class ScriptAction():
         self.script_name = script_name
 
     def execute(self, **kwargs):
-        if not exists(join(SCRIPTS_LOCATION, self.script_name)):
+        if not exists(join(config.get_scipts_location(), self.script_name)):
             logging.warning("Cannot load script '" + self.script_name + "'")
             return
-        spec = importlib.util.spec_from_file_location('script', join(SCRIPTS_LOCATION, self.script_name))
+        spec = importlib.util.spec_from_file_location('script', join(config.get_scipts_location(), self.script_name))
         script = importlib.util.module_from_spec(spec)
         logging.info("Executing script '" + self.script_name + "'")
         spec.loader.exec_module(script)

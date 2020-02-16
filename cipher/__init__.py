@@ -12,8 +12,7 @@ from logging.config import dictConfig
 from flask import Flask
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
-from .model import db, User
-from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_PORT, PLUGINS
+from .model import config, db, User
 
 socketio = SocketIO(logger=True)  # socketio server used to communicate with web client
 mqtt = Mqtt()  # mqtt client, need to be connected to a brocker (in local)
@@ -25,10 +24,10 @@ def create_app(debug=False):
     app.debug = False  # weid behavior, create two instances of flask
     app.secret_key = urandom(12)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = SERVER_DATABASE
+    app.config['SQLALCHEMY_DATABASE_URI'] = config.get_database_file()
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['MQTT_BROKER_URL'] = MQTT_BROKER_URL
-    app.config['MQTT_BROKER_PORT'] = MQTT_BROKER_PORT
+    app.config['MQTT_BROKER_URL'] = config.get_mqtt_broker_url()
+    app.config['MQTT_BROKER_PORT'] = config.get_mqtt_broker_port()
     app.config['MQTT_KEEPALIVE'] = 5
 
     from .core import core as core_blueprint
@@ -39,7 +38,7 @@ def create_app(debug=False):
 
     loaded_plugins = []
     # load all specified plugins
-    for p_name in PLUGINS:
+    for p_name in config.get_plugins():
         try:
             # find the plugin object ...
             module = importlib.import_module('.plugins.' + p_name, package='cipher')
@@ -96,7 +95,7 @@ def setup_logger(debug=False):
             'file': {
                 'formatter': 'default',
                 'class': 'logging.handlers.RotatingFileHandler',
-                'filename': LOG_FILE,
+                'filename': config.get_log_file(),
                 'maxBytes': 1024
             },
             'socketio': {

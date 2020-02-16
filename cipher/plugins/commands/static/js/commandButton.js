@@ -106,6 +106,7 @@ class RelayButton extends CommandButton {
         this.action.relay = relay;
 
         this.$button.style.border = '4px solid';
+        this.deactivate();
     }
 
     executeAction() {

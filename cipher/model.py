@@ -1,12 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
 from os import listdir, makedirs, remove
-from os.path import isfile, join, exists
-from .constants import CONFIG_FILE, SCRIPTS_LOCATION, SOUNDS_LOCATION
-import json
+from os.path import isfile, join, exists, dirname
+from .constants import CONFIG_FILE
+from configparser import ConfigParser
 
 db = SQLAlchemy()
-
 
 class User(db.Model):
     username = db.Column(db.String(50), primary_key=True)
@@ -49,88 +47,95 @@ class Servo(db.Model):
     def __repr__(self):
         return '<Servo %r>' % self.label
 
-
-class ConfigFile():
+class ConfigFile(ConfigParser):
     """
     Class used to generate and manage a config file
     """
     def __init__(self, filepath):
+        ConfigParser.__init__(self)
         self.filepath = filepath
+        if exists(filepath):
+            self.read(filepath)
 
-    def save_option(self, key: str, data):
+    def set(self, section: str, option: str, data):
         """
         Save an option into the config file.
         """
-        try:
-            with open(self.filepath, 'r') as f:
-                content = json.load(f)
-        except IOError:  # if no file exists, or if the data is not in json
-            with open(self.filepath, 'w') as f:
-                f.write("")  # create a new one
-            content = {}
-        except ValueError:
-            content = {}
-        content[key] = data
+        self.set(section, option, data)
         with open(self.filepath, 'w') as f:
-            json.dump(content, f)
-
-    def load_option(self, key: str):
-        """
-        Load an option from the config file.
-        """
-        try:
-            with open(self.filepath, 'r') as f:
-                content = json.load(f)
-                option = content[key]
-        except (IOError):
-            with open(self.filepath, 'w') as f:
-                f.write("")
-            option = None
-        except (KeyError, ValueError):
-            option = None
-        return option
+            self.write(f)
 
 
-class CoreConfigFile(ConfigFile):
+class CoreConfig(ConfigFile):
 
     def __init__(self, filepath):
         ConfigFile.__init__(self, filepath)
+
+    # MQTT BROKER URL
+    def get_mqtt_broker_url(self):
+        return self.get('MQTT_BROKER', 'URL', fallback='localhost')
+
+    # MQTT BROKER PORT
+    def get_mqtt_broker_port(self):
+        return self.get('MQTT_BROKER', 'PORT', fallback=1883)
+
+    # SERVER DATABASE
+    def get_database_file(self):
+        return self.get('SERVER', 'DATABASE_FILE', fallback='sqlite:///' + join(dirname(__file__), 'server_data.db'))
+
+    # LOG FILE
+    def get_log_file(self):
+        return self.get('SERVER', 'LOG_FILE', fallback=join(dirname(__file__), 'app.log'))
+
+    # SCRIPTS LOCATION
+    def get_scipts_location(self):
+        return self.get('SERVER', 'SCRIPTS_LOCATION', fallback=join(dirname(__file__), 'scripts/'))
+
+    # SOUNDS LOCATION
+    def get_sounds_location(self):
+        return self.get('SERVER', 'SOUNDS_LOCATION', fallback=join(dirname(__file__), 'sounds/'))
+
+    # PLUGINS
+    def get_plugins(self):
+        return self.get('SERVER', 'PLUGINS', fallback=['dashboard', 'commands', 'speech', 'editor', 'debug', 'sequences', 'armor', 'settings'])  # all plugins to load, corresponds to the different pages available on the navbar
 
     # CAMERA URL
     def set_camera_url(self, url: str):
         if not url.strip():
             url = None
-        self.save_option('camera_url', url)
+        self.set('GENERAL', 'CAMERA_URL', url)
 
     def get_camera_url(self) -> str:
-        return self.load_option('camera_url')
+        return self.get('GENERAL', 'CAMERA_URL', fallback=None)
 
     # AUDIO SOURCE
     def set_audio_on_server(self, mode: bool):
-        self.save_option('audio_on_server', mode)
+        self.set('GENERAL', 'AUDIO_ON_SERVER', mode)
 
     def get_audio_on_server(self) -> bool:
-        mode = self.load_option('audio_on_server')
-        return mode or False
+        return self.getboolean('GENERAL', 'AUDIO_ON_SERVER', fallback=False)
 
     # MOTION RASPI ID
     def set_motion_raspi_id(self, raspi_id: str):
         if not raspi_id.strip():
             raspi_id = None
-        self.save_option('motion_raspi_id', raspi_id)
+        self.set('GENERAL', 'MOTION_RASPI_ID', raspi_id)
 
     def get_motion_raspi_id(self) -> str:
-        return self.load_option('motion_raspi_id')
+        return self.get('GENERAL', 'MOTION_RASPI_ID', fallback=None)
 
     # ROBOT NAME
     def set_robot_name(self, name: str):
         if not name.strip():
             name = 'My robot'
-        self.save_option('robot_name', name)
+        self.set('GENERAL', 'ROBOT_NAME', name)
 
     def get_robot_name(self) -> str:
-        name = self.load_option('robot_name')
-        return name or 'My robot'
+        return self.get('GENERAL', 'ROBOT_NAME', fallback='My robot')
+
+    # DEBUG
+    def get_debug_mode(self) -> bool:
+        return self.getboolean('SERVER', 'DEBUG', fallback=False)
 
 
 class Resources():
@@ -169,5 +174,5 @@ class Resources():
         return [f for f in listdir(self.sounds_path) if isfile(join(self.sounds_path, f))]
 
 
-config = CoreConfigFile(CONFIG_FILE)
-resources = Resources(SCRIPTS_LOCATION, SOUNDS_LOCATION)
+config = CoreConfig(CONFIG_FILE)
+resources = Resources(config.get_scipts_location(), config.get_sounds_location())

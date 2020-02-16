@@ -2,7 +2,7 @@ import logging
 from flask import Flask, Response, render_template, flash, send_from_directory, jsonify
 from os.path import join
 from . import core
-from cipher.constants import SOUNDS_LOCATION
+from cipher.model import config
 from cipher.security import login_required
 
 
@@ -33,7 +33,7 @@ def play_sound(sound_name):
     Stream the specified sound to the client.
     """
     def generate():
-        with open(join(SOUNDS_LOCATION, sound_name), 'rb') as fwav:
+        with open(join(config.get_sounds_location(), sound_name), 'rb') as fwav:
             data = fwav.read(1024)
             while data:
                 yield data
