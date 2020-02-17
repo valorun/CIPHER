@@ -2,14 +2,14 @@
 # coding: utf-8
 
 from cipher import create_app, setup_logger, socketio, mqtt
-from cipher.model import config
+from cipher.config import core_config
 from os.path import join, dirname
 import logging
 
 certfile = join(dirname(__file__), 'cert.pem')
 keyfile = join(dirname(__file__), 'key.pem')
 
-DEBUG = config.get_debug_mode()
+DEBUG = core_config.get_debug_mode()
 if __name__ == '__main__':
     setup_logger(debug=DEBUG)
     app = create_app(debug=DEBUG)
