@@ -83,4 +83,4 @@ class Resources():
         return [f for f in listdir(self.sounds_path) if isfile(join(self.sounds_path, f))]
 
 
-resources = Resources(core_config.get_scipts_location(), core_config.get_sounds_location())
+resources = Resources(core_config.SCRIPTS_LOCATION, core_config.SOUNDS_LOCATION)

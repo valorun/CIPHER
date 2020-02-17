@@ -33,7 +33,7 @@ def play_sound(sound_name):
     Stream the specified sound to the client.
     """
     def generate():
-        with open(join(core_config.get_sounds_location(), sound_name), 'rb') as fwav:
+        with open(join(core_config.SOUNDS_LOCATION, sound_name), 'rb') as fwav:
             data = fwav.read(1024)
             while data:
                 yield data

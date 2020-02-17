@@ -32,40 +32,33 @@ class CoreConfig(ConfigFile):
     def __init__(self, filepath):
         ConfigFile.__init__(self, filepath)
 
-    # MQTT BROKER URL
-    def get_mqtt_broker_url(self):
-        return self.get('MQTT_BROKER', 'URL', 
+        # MQTT BROKER URL
+        self.MQTT_BROKER_URL = self.get('MQTT_BROKER', 'URL', 
             fallback='localhost')
 
-    # MQTT BROKER PORT
-    def get_mqtt_broker_port(self):
-        return self.get('MQTT_BROKER', 'PORT', 
-            fallback=1883)
+        # MQTT BROKER PORT
+        self.MQTT_BROKER_PORT = self.get('MQTT_BROKER', 'PORT', 
+                fallback=1883)
 
-    # SERVER DATABASE
-    def get_database_file(self):
-        return self.get('SERVER', 'DATABASE_FILE', 
-            fallback='sqlite:///' + join(dirname(__file__), 'server_data.db'))
+        # SERVER DATABASE
+        self.DATABASE_FILE = self.get('SERVER', 'DATABASE_FILE', 
+                fallback='sqlite:///' + join(dirname(__file__), 'server_data.db'))
 
-    # LOG FILE
-    def get_log_file(self):
-        return self.get('SERVER', 'LOG_FILE', 
-            fallback=join(dirname(__file__), 'app.log'))
+        # LOG FILE
+        self.LOG_FILE = self.get('SERVER', 'LOG_FILE', 
+                fallback=join(dirname(__file__), 'app.log'))
 
-    # SCRIPTS LOCATION
-    def get_scipts_location(self):
-        return self.get('SERVER', 'SCRIPTS_LOCATION', 
-            fallback=join(dirname(__file__), 'scripts/'))
+        # SCRIPTS LOCATION
+        self.SCRIPTS_LOCATION = self.get('SERVER', 'SCRIPTS_LOCATION', 
+                fallback=join(dirname(__file__), 'scripts/'))
 
-    # SOUNDS LOCATION
-    def get_sounds_location(self):
-        return self.get('SERVER', 'SOUNDS_LOCATION', 
-            fallback=join(dirname(__file__), 'sounds/'))
+        # SOUNDS LOCATION
+        self.SOUNDS_LOCATION = self.get('SERVER', 'SOUNDS_LOCATION', 
+                fallback=join(dirname(__file__), 'sounds/'))
 
-    # PLUGINS
-    def get_plugins(self):
-        return self.getlist('SERVER', 'PLUGINS', 
-            fallback=['dashboard', 'commands', 'speech', 'editor', 'debug', 'sequences', 'settings'])  # all plugins to load, corresponds to the different pages available on the navbar
+        # PLUGINS
+        self.PLUGINS = self.getlist('SERVER', 'PLUGINS', 
+                fallback=['dashboard', 'commands', 'speech', 'editor', 'debug', 'sequences', 'settings'])  # all plugins to load, corresponds to the different pages available on the navbar
 
     # CAMERA URL
     def set_camera_url(self, url: str):
