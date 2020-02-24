@@ -3,7 +3,8 @@ from flask import Flask, request, jsonify, session
 import json
 from . import commands
 from .model import UserCommandPanel
-from cipher.model import db, Sequence, Relay, User, config, resources
+from cipher.model import db, Sequence, Relay, User, resources
+from cipher.config import core_config
 from cipher.security import login_required
 
 
@@ -12,9 +13,9 @@ from cipher.security import login_required
 def commands_page():
     sequences = Sequence.query.all()
     relays = Relay.query.all()
-    camera_url = config.get_camera_url()
+    camera_url = core_config.get_camera_url()
     sounds = resources.get_sounds()
-    motion_raspi_id = config.get_motion_raspi_id()  # used to check if a raspi is specified, if not, then hide the motion panel
+    motion_raspi_id = core_config.get_motion_raspi_id()  # used to check if a raspi is specified, if not, then hide the motion panel
     return commands.render_page('commands.html', sequences=sequences, relays=relays, sounds=sounds, camera_url=camera_url, motion_raspi_id=motion_raspi_id)
 
 

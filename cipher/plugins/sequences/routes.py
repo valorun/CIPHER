@@ -2,9 +2,8 @@ import logging
 from flask import Flask, session, request, jsonify
 import json
 from . import sequences
-from cipher.model import Sequence, Servo, Relay, db
+from cipher.model import Sequence, Servo, Relay, db, resources
 from cipher.security import login_required
-from cipher.model import resources
 from cipher.core.sequence_reader import sequence_reader
 
 
@@ -33,7 +32,7 @@ def save_sequence():
         return jsonify("La séquence est vide."), 400
     if Sequence.query.filter_by(id=seq_name).first() is not None:
         return jsonify("Une sequence portant le même nom existe déjà."), 400
-    sequence = sequence_reader.getSequenceFromJson(seq_data)
+    sequence = sequence_reader.get_sequence_from_json(seq_data)
     if sequence is None:
         return jsonify("La séquence n'est pas valide."), 400
     logging.info("Saving sequence '" + seq_name + "'")

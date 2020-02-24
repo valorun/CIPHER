@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # coding: utf-8
 
 import eventlet
@@ -12,8 +11,8 @@ from logging.config import dictConfig
 from flask import Flask
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
-from .model import db
-from .constants import SERVER_DATABASE, LOG_FILE, MQTT_BROKER_URL, MQTT_BROKER_PORT, PLUGINS
+from .config import core_config
+from .model import db, User
 
 socketio = SocketIO(logger=True)  # socketio server used to communicate with web client
 mqtt = Mqtt()  # mqtt client, need to be connected to a brocker (in local)
@@ -25,10 +24,10 @@ def create_app(debug=False):
     app.debug = False  # weid behavior, create two instances of flask
     app.secret_key = urandom(12)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = SERVER_DATABASE
+    app.config['SQLALCHEMY_DATABASE_URI'] = core_config.DATABASE_FILE
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['MQTT_BROKER_URL'] = MQTT_BROKER_URL
-    app.config['MQTT_BROKER_PORT'] = MQTT_BROKER_PORT
+    app.config['MQTT_BROKER_URL'] = core_config.MQTT_BROKER_URL
+    app.config['MQTT_BROKER_PORT'] = core_config.MQTT_BROKER_PORT
     app.config['MQTT_KEEPALIVE'] = 5
 
     from .core import core as core_blueprint
@@ -39,7 +38,7 @@ def create_app(debug=False):
 
     loaded_plugins = []
     # load all specified plugins
-    for p_name in PLUGINS:
+    for p_name in core_config.PLUGINS:
         try:
             # find the plugin object ...
             module = importlib.import_module('.plugins.' + p_name, package='cipher')
@@ -54,6 +53,13 @@ def create_app(debug=False):
     db.app = app
     db.init_app(app)
     db.create_all()
+
+    # create admin if not exists
+    exists = User.query.filter_by(username='admin').first()
+    if not exists:
+        new_db_user = User(username='admin', password='cGFzc3dvcmQ=', active=True)
+        db.session.merge(new_db_user)
+        db.session.commit()
 
     socketio.init_app(app)
     mqtt.init_app(app)
@@ -89,7 +95,7 @@ def setup_logger(debug=False):
             'file': {
                 'formatter': 'default',
                 'class': 'logging.handlers.RotatingFileHandler',
-                'filename': LOG_FILE,
+                'filename': core_config.LOG_FILE,
                 'maxBytes': 1024
             },
             'socketio': {

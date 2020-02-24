@@ -2,7 +2,8 @@ import logging
 import json
 from flask import Flask, flash, request, session, jsonify
 from . import settings
-from cipher.model import db, Relay, Servo, config
+from cipher.model import db, Relay, Servo
+from cipher.config import core_config
 from cipher.security import login_required
 
 
@@ -11,9 +12,9 @@ from cipher.security import login_required
 def settings_page():
     relays = Relay.query.all()
     servos = Servo.query.all()
-    camera_url = config.get_camera_url() or ''
-    audio_on_server = config.get_audio_on_server()
-    motion_raspi_id = config.get_motion_raspi_id() or ''
+    camera_url = core_config.get_camera_url() or ''
+    audio_on_server = core_config.get_audio_on_server()
+    motion_raspi_id = core_config.get_motion_raspi_id() or ''
     return settings.render_page('settings.html', relays=relays, servos=servos, camera_url=camera_url, audio_on_server=audio_on_server, motion_raspi_id=motion_raspi_id)
 
 
@@ -145,7 +146,7 @@ def update_camera_url():
     if url and ' ' in url:  # if the string is empty, update is accepted
         return jsonify("L'url ne doit pas contenir d'espace."), 400
     logging.info("Updating camera URL: " + url)
-    config.set_camera_url(url)
+    core_config.set_camera_url(url)
     return jsonify("L'URL de la caméra a été mis à jour."), 200
 
 
@@ -154,14 +155,14 @@ def update_camera_url():
 def update_audio_source():
     value = request.json.get('value')
     logging.info("Updating audio source")
-    config.set_audio_on_server(value)
+    core_config.set_audio_on_server(value)
     return jsonify("La source audio a été mise à jour."), 200
 
 
 @settings.route('/get_audio_source', methods=['POST'])
 @login_required
 def get_audio_mode():
-    return jsonify(config.get_audio_on_server())
+    return jsonify(core_config.get_audio_on_server())
 
 
 @settings.route('/update_motion_raspi_id', methods=['POST'])
@@ -169,7 +170,7 @@ def get_audio_mode():
 def update_motion_raspi_id():
     id = request.json.get('raspi_id')
     logging.info("Updating motion raspi id: " + id)
-    config.set_motion_raspi_id(id)
+    core_config.set_motion_raspi_id(id)
     return jsonify("L\'id du raspberry chargé des déplacements a été mis à jour."), 200
 
 
@@ -178,5 +179,5 @@ def update_motion_raspi_id():
 def update_robot_name():
     name = request.json.get('robot_name')
     logging.info("Updating robot name: " + name)
-    config.set_robot_name(name)
+    core_config.set_robot_name(name)
     return jsonify("Le nom du robot a été mis à jour."), 200

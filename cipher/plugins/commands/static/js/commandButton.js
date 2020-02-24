@@ -4,154 +4,155 @@
 
 /* exported CommandButton */
 class CommandButton {
-	
-	/**
-	 * 
-	 * @param {string} label 
-	 * @param {string} color 
-	 */
-	constructor(label, type, color){
-		if (new.target === CommandButton) {
-			throw new TypeError('Cannot construct CommandButton instances directly');
-		}
-		this.label = label;
-		this.action = {};
-		this.action.type = type;
-		this.color = color;
 
-		this.$el = document.createElement('div');
+    /**
+     * 
+     * @param {string} label 
+     * @param {string} color 
+     */
+    constructor(label, type, color) {
+        if (new.target === CommandButton) {
+            throw new TypeError('Cannot construct CommandButton instances directly');
+        }
+        this.label = label;
+        this.action = {};
+        this.action.type = type;
+        this.color = color;
 
-		this.$button = document.createElement('button');
-		this.$button.id = '_' + Math.random().toString(36).substr(2, 9);
-		this.$button.classList.add('button', 'display-container');
-		if(color != null) {
-			this.$button.dataset.color = color;
-			this.$button.classList.add(color);
-		}
-		this.$button.innerHTML = label;
-		this.$el.appendChild(this.$button);
+        this.$el = document.createElement('div');
 
-		// cross element
-		this.$cross = document.createElement('span');
-		this.$cross.type = 'button';
-		this.$cross.classList.add('button', 'display-topright');
-		this.$cross.innerHTML = '&times';
-		this.$el.appendChild(this.$cross);
-		
-		this.addEventListener('click', () => {
-			if(!this.$button.classList.contains('disabled'))
-				this.executeAction();
-		});
-		this.enable();
-	}
+        this.$button = document.createElement('button');
+        this.$button.id = '_' + Math.random().toString(36).substr(2, 9);
+        this.$button.classList.add('button', 'display-container');
+        if (color != null) {
+            this.$button.dataset.color = color;
+            this.$button.classList.add(color);
+        }
+        this.$button.innerHTML = label;
+        this.$el.appendChild(this.$button);
 
-	show() {
-		this.$el.classList.remove('hide');
-	}
+        // cross element
+        this.$cross = document.createElement('span');
+        this.$cross.type = 'button';
+        this.$cross.classList.add('button', 'display-topright');
+        this.$cross.innerHTML = '&times';
+        this.$el.appendChild(this.$cross);
 
-	hide() {
-		this.$el.classList.add('hide');
-	}
+        this.addEventListener('click', () => {
+            if (!this.$button.classList.contains('disabled'))
+                this.executeAction();
+        });
+        this.enable();
+    }
 
-	enable() {
-		this.$button.classList.remove('disabled');
-		this.$cross.classList.add('hide');
-	}
+    show() {
+        this.$el.classList.remove('hide');
+    }
 
-	disable() {
-		this.$button.classList.add('disabled');
-		this.$cross.classList.remove('hide');
-	}
+    hide() {
+        this.$el.classList.add('hide');
+    }
 
-	addEventListener(event, callback) {
-		this.$button.addEventListener(event, callback);
-	}
+    enable() {
+        this.$button.classList.remove('disabled');
+        this.$cross.classList.add('hide');
+    }
 
-	executeAction() {
-		console.log('Executed action: ' + JSON.stringify(this.action));
-	}
+    disable() {
+        this.$button.classList.add('disabled');
+        this.$cross.classList.remove('hide');
+    }
 
-	static fromJSON(json){
-		if(!('action' in json) || !('type' in json.action))
-			throw new TypeError('Invalid JSON CommandButton format');
+    addEventListener(event, callback) {
+        this.$button.addEventListener(event, callback);
+    }
 
-		switch (json.action.type) {
-		case 'relay':
-			return new RelayButton(json.label, json.action.relay, json.color);
-		case 'sound':
-			return new SoundButton(json.label, json.action.sound, json.color);
-		case 'sequence':
-			return new SequenceButton(json.label, json.action.sequence, json.color);
-		default:
-			throw new TypeError('Invalid JSON CommandButton format');
-		}
-	}
+    executeAction() {
+        console.log('Executed action: ' + JSON.stringify(this.action));
+    }
 
-	toJSON() {
-		return {
-			label: this.label,
-			action: this.action,
-			color: this.color
-		};
-	}
+    static fromJSON(json) {
+        if (!('action' in json) || !('type' in json.action))
+            throw new TypeError('Invalid JSON CommandButton format');
+
+        switch (json.action.type) {
+        case 'relay':
+            return new RelayButton(json.label, json.action.relay, json.color);
+        case 'sound':
+            return new SoundButton(json.label, json.action.sound, json.color);
+        case 'sequence':
+            return new SequenceButton(json.label, json.action.sequence, json.color);
+        default:
+            throw new TypeError('Invalid JSON CommandButton format');
+        }
+    }
+
+    toJSON() {
+        return {
+            label: this.label,
+            action: this.action,
+            color: this.color
+        };
+    }
 }
 
 /* exported RelayButton */
 class RelayButton extends CommandButton {
-	constructor(label, relay, color) {
-		super(label, 'relay', color);
-		if(!relay)
-			throw new TypeError('Invalid relay parameter');
+    constructor(label, relay, color) {
+        super(label, 'relay', color);
+        if (!relay)
+            throw new TypeError('Invalid relay parameter');
 
-		this.action.relay = relay;
+        this.action.relay = relay;
 
-		this.$button.style.border = '4px solid';
-	}
+        this.$button.style.border = '4px solid';
+        this.deactivate();
+    }
 
-	executeAction() {
-		super.executeAction();
-		socket.emit('activate_relay', this.action.relay);
-	}
+    executeAction() {
+        super.executeAction();
+        socket.emit('activate_relay', this.action.relay);
+    }
 
-	activate() {
-		this.$button.classList.add('border-green');
-		this.$button.classList.remove('border-dark-red');
-	}
+    activate() {
+        this.$button.classList.add('border-green');
+        this.$button.classList.remove('border-dark-red');
+    }
 
-	deactivate() {
-		this.$button.classList.add('border-dark-red');
-		this.$button.classList.remove('border-green');
-	}
+    deactivate() {
+        this.$button.classList.add('border-dark-red');
+        this.$button.classList.remove('border-green');
+    }
 }
 
 /* exported SoundButton */
 class SoundButton extends CommandButton {
-	constructor(label, sound, color) {
-		super(label, 'sound', color);
-		if(!sound)
-			throw new TypeError('Invalid sound parameter');
+    constructor(label, sound, color) {
+        super(label, 'sound', color);
+        if (!sound)
+            throw new TypeError('Invalid sound parameter');
 
-		this.action.sound = sound;
-	}
+        this.action.sound = sound;
+    }
 
-	executeAction() {
-		super.executeAction();
-		socket.emit('play_sound', this.action.sound);
-	}
+    executeAction() {
+        super.executeAction();
+        socket.emit('play_sound', this.action.sound);
+    }
 }
 
 /* exported SequenceButton */
 class SequenceButton extends CommandButton {
-	constructor(label, sequence, color) {
-		super(label, 'sequence', color);
-		if(!sequence)
-			throw new TypeError('Invalid sequence parameter');
+    constructor(label, sequence, color) {
+        super(label, 'sequence', color);
+        if (!sequence)
+            throw new TypeError('Invalid sequence parameter');
 
-		this.action.sequence = sequence;
-	}
+        this.action.sequence = sequence;
+    }
 
-	executeAction() {
-		super.executeAction();
-		socket.emit('play_sequence', this.action.sequence);
-	}
+    executeAction() {
+        super.executeAction();
+        socket.emit('play_sequence', this.action.sequence);
+    }
 }

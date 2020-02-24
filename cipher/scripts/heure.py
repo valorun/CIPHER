@@ -1,8 +1,8 @@
 import datetime
-from cipher.core.actions import speech
+from cipher.core.actions import SpeechAction
 
 
 def main(**kwargs):
     now = datetime.datetime.now()
-    speech("Il est " + str(now.hour) + " heure " + str(now.minute))
+    SpeechAction("Il est " + str(now.hour) + " heure " + str(now.minute)).execute(**kargs)
     return True

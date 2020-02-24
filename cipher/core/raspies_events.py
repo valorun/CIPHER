@@ -39,7 +39,7 @@ def on_raspi_connect(client, userdata, msg):
     # then ask the state of these relays to the raspberry
     mqtt.publish('raspi/' + raspi_id + '/relay/update_state', json.dumps({'gpios': relays_list}))
 
-    socketio.emit('receive_raspies', raspies, namespace='/client', broadcast=True)
+    socketio.emit('raspi_connect', new_raspi, namespace='/client', broadcast=True)
 
 
 @mqtt.on_topic('server/raspi_disconnect')
@@ -50,10 +50,12 @@ def on_raspi_disconnect(client, userdata, msg):
     global raspies
     data = json.loads(msg.payload.decode('utf-8'))
     raspi_id = data['id']
+    old_raspi = {}
+    old_raspi['id'] = raspi_id
     logging.info("Raspberry " + raspi_id + " disconnected.")
     raspies = [r for r in raspies if r['id'] != raspi_id]
     mqtt.unsubscribe('raspi/' + raspi_id + '/#')
-    socketio.emit('receive_raspies', raspies, namespace='/client', broadcast=True)
+    socketio.emit('raspi_disconnect', old_raspi, namespace='/client', broadcast=True)
 
 
 @socketio.on('shutdown', namespace='/client')

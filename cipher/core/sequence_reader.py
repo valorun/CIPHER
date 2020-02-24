@@ -54,7 +54,7 @@ class SequenceReader:
         Launch the sequence execution from a JSON object.
         """
         # wait for the current sequence to be completed to launch a new one
-        if self.current_sequence is not None and self.current_sequence.in_execution():
+        if self.current_sequence is not None and self.current_sequence.is_in_execution():
             logging.warning("Cannot execute sequence, another one is already running.")
             return
 
@@ -72,7 +72,7 @@ class SequenceReader:
         if seq is not None and seq.enabled:
             seq_data = seq.value
             logging.info("Executing sequence " + name)
-            self.readSequence(json.loads(seq_data), **kwargs)
+            self.read_sequence(json.loads(seq_data), **kwargs)
 
 
 sequence_reader = SequenceReader()
