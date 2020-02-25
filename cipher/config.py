@@ -58,7 +58,7 @@ class CoreConfig(ConfigFile):
 
         # PLUGINS
         self.PLUGINS = self.getlist('SERVER', 'PLUGINS', 
-                fallback=['dashboard', 'commands', 'speech', 'editor', 'debug', 'sequences', 'settings'])  # all plugins to load, corresponds to the different pages available on the navbar
+                fallback='dashboard,commands,speech,editor,debug,sequences,settings')  # all plugins to load, corresponds to the different pages available on the navbar
 
     # CAMERA URL
     def set_camera_url(self, url: str):
