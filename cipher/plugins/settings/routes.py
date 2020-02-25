@@ -102,7 +102,7 @@ def save_servo():
     if Servo.query.filter_by(label=servo_label).first() is not None:
         return jsonify("Un servomoteur portant le même label existe déjà."), 400
     logging.info("Saving servo '" + servo_label + "'")
-    db_servo = Servo(label=servo_label, pin=servo_pin, enabled=True, min_pulse_width=servo_min_pulse_width, max_pulse_width=servo_max_pulse_width, def_pulse_width=servo_def_pulse_width, raspi_id=raspi_id, state=False)
+    db_servo = Servo(label=servo_label, pin=servo_pin, enabled=True, min_pulse_width=servo_min_pulse_width, max_pulse_width=servo_max_pulse_width, def_pulse_width=servo_def_pulse_width, raspi_id=raspi_id)
     db.session.add(db_servo)
     db.session.commit()
     return jsonify("Le servo moteur '" + servo_label + "' a été sauvegardé avec succès."), 200

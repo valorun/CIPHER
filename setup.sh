@@ -45,33 +45,6 @@ else
     echo "No requirements file found."
 fi
 
-### SSL certificate ###
-if type "openssl" &>/dev/null; then
-    echo "OpenSSL found"
-else
-    echo "OpenSSL not found"
-    install_program "openssl"
-fi
-
-generate_certificate(){
-    echo "Generating self-signed SSL certificate ..."
-    openssl req -x509 -newkey rsa:4096 -keyout $APP_PATH/key.pem -out $APP_PATH/cert.pem -days 365 -nodes
-}
-
-if [ -e $APP_PATH/key.pem -o -e $APP_PATH/cert.pem ]
-then
-    echo "Some certificates already exists in the application directory."
-    while true; do
-        read -p "Do you wish to generate a new certificate ? " yn
-        case $yn in
-            [Yy]* ) generate_certificate; break;;
-            [Nn]* ) break;;
-            * ) echo "Please answer yes or no.";;
-        esac
-    done
-else
-    generate_certificate
-fi
 
 ### add to startup ###
 if [ -e /etc/rc.local ]
