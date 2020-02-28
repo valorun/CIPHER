@@ -21,7 +21,7 @@ const motionController = (() => {
 		//selects different listeners depending on the type of device used.
 		let startActionEvent = 'mousedown';
 		let stopActionEvent = 'mouseup'; //mouseleave if we also want to stop when the cursor is out of the button
-		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Windows Phone|Lumia|Tablet/i.test(navigator.userAgent)) {
 			startActionEvent = 'touchstart';
 			stopActionEvent = 'touchend';
 		}
