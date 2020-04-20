@@ -29,7 +29,7 @@ def login():
 @security.route('/register', methods=['POST'])
 def register():
     if not request.form['username'] or ' ' in request.form['username']:
-        flash("Le nom d'utilisateur ne dois pas contenir d'espace.")
+        flash("Le nom d'utilisateur ne doit pas contenir d'espace.")
         return redirect('/register_page')
     if User.query.filter_by(username=request.form['username']).first() is None:
         encoded_password = base64.b64encode(bytes(request.form['password']))

@@ -21,7 +21,7 @@ mqtt = Mqtt()  # mqtt client, need to be connected to a brocker (in local)
 def create_app(debug=False):
     app = Flask(__name__)
 
-    app.debug = False  # weid behavior, create two instances of flask
+    app.debug = False  # weird behavior, create two instances of flask
     app.secret_key = urandom(12)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = core_config.DATABASE_FILE
@@ -65,7 +65,7 @@ def create_app(debug=False):
     mqtt.init_app(app)
     mqtt.subscribe('server/#')
     mqtt.subscribe('hermes/intent/#')
-
+    
     return app
 
 

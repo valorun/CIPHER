@@ -6,9 +6,6 @@ from cipher.config import core_config
 from os.path import join, dirname
 import logging
 
-certfile = join(dirname(__file__), 'cert.pem')
-keyfile = join(dirname(__file__), 'key.pem')
-
 DEBUG = core_config.get_debug_mode()
 if __name__ == '__main__':
     setup_logger(debug=DEBUG)

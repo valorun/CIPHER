@@ -14,8 +14,8 @@ node "raspberry server" as raspi_server{
         component "CIPHER client" as CIPHER_client_3
         CIPHER_client_3 -- MQTT
     }
-    node Snips
-    Snips -- MQTT : "MQTT"
+    node "CIPHER-speech" as speech
+    speech -- MQTT : "MQTT"
     CIPHER -- MQTT : "MQTT"
 
 }

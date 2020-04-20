@@ -20,8 +20,12 @@
 		</button>
 		<div  class="accordion-content">
 			<div class="container padding-16">
+				<i class="button secondary fas fa-plus" id="addNodeButton"></i>
+				<i class="button secondary fas fa-long-arrow-alt-right" id="addTransitionButton"></i>
+				<i class="button secondary fas fa-trash" id="delSelectionButton"></i>
 
-				<div class="container margin-bottom">
+				<div class="margin-bottom" id="newNodeForm">
+
 					<select class="select border margin-bottom" name="newNodeTypeChoice">
 						<option value="" disabled selected>Choisir une action</option>
 						<option value="motion">Déplacement</option>

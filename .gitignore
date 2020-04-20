@@ -8,6 +8,5 @@ __pycache__
 *.json
 *.log
 *.ini
-.eslintrc.js
+*.swp
 node_modules/
-package.json
