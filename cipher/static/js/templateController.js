@@ -18,7 +18,7 @@ const templateController = (() => {
      * Instanciate the accordion
      * @param {*} $header header element with class 'accordion-header'
      */
-    constructor ($header) {
+    constructor($header) {
       this.$element = $header.parentNode;
       this.$content = this.$element.getElementsByClassName('accordion-content')[0];
       this.$icon = this.$element.getElementsByClassName('accordion-icon')[0];
@@ -27,34 +27,35 @@ const templateController = (() => {
       this.$content.style.display = 'none';
 
       $header.addEventListener('click', () => {
-        if (this.isOpen)
+        if (this.isOpen) {
           this.close();
-        else
+        } else {
           this.open();
+        }
       });
     }
 
-    open () {
+    open() {
       this.$icon.classList.add('fa-angle-down');
       this.$icon.classList.remove('fa-angle-right');
       this.$content.style.display = 'block';
       this.$element.dispatchEvent(openEvent);
     }
 
-    close () {
+    close() {
       this.$icon.classList.add('fa-angle-right');
       this.$icon.classList.remove('fa-angle-down');
       this.$content.style.display = 'none';
       this.$element.dispatchEvent(closeEvent);
     }
 
-    get isOpen () {
+    get isOpen() {
       return this.$content.style.display !== 'none';
     }
   }
 
   /* PUBLIC METHODS */
-  function init () {
+  function init() {
     cacheDom();
     bindUIEvents();
   }
@@ -63,25 +64,26 @@ const templateController = (() => {
    * Return the accordion with the given ID.
    * @param {*} accordionId ID of the accordion.
    */
-  function getAccordion (accordionId) {
+  function getAccordion(accordionId) {
     return accordions.filter(a => a.$element.id === accordionId)[0];
   }
 
   /* PRIVATE METHODS */
-  function bindUIEvents () {
+  function bindUIEvents() {
     document.getElementById('sidebar_button').addEventListener('click', () => {
-      if (isVisible(DOM.$sidebar))
-        close_sidebar();
-      else
-        open_sidebar();
+      if (isVisible(DOM.$sidebar)) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
     });
 
     document.getElementById('close_sidebar_button').addEventListener('click', () => {
-      close_sidebar();
+      closeSidebar();
     });
 
     document.getElementById('overlay').addEventListener('click', () => {
-      close_sidebar();
+      closeSidebar();
     });
 
     // setup collapse on accordions
@@ -90,17 +92,17 @@ const templateController = (() => {
     );
   }
 
-  function cacheDom () {
+  function cacheDom() {
     DOM.$sidebar = document.getElementById('sidebar');
     DOM.$overlayBg = document.getElementById('overlay');
   }
 
-  function open_sidebar () {
+  function openSidebar() {
     DOM.$sidebar.style.display = 'block';
     DOM.$overlayBg.style.display = 'block';
   }
 
-  function close_sidebar() {
+  function closeSidebar() {
     DOM.$sidebar.style.display = 'none';
     DOM.$overlayBg.style.display = 'none';
   }

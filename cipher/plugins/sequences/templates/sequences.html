@@ -3,7 +3,6 @@
 <script src="{{ url_for('sequences.static', filename='vendor/vis.js/vis.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/actionNode.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/graphController.js') }}"></script>
-<script src="{{ url_for('sequences.static', filename='js/graphFormController.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/sequencesController.js') }}"></script>
 <style type="text/css">
 #network {
@@ -22,9 +21,9 @@
 			<div class="container padding-16">
 				<i class="button secondary fas fa-plus" id="addNodeButton"></i>
 				<i class="button secondary fas fa-long-arrow-alt-right" id="addTransitionButton"></i>
-				<i class="button secondary fas fa-trash" id="delSelectionButton"></i>
+				<i class="button secondary fas fa-trash hide" id="delSelectionButton"></i>
 
-				<div class="margin-bottom" id="newNodeForm">
+				<div class="margin-bottom hide" id="newNodeForm">
 
 					<select class="select border margin-bottom" name="newNodeTypeChoice">
 						<option value="" disabled selected>Choisir une action</option>
@@ -182,7 +181,7 @@
 </div>
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', () => {
-		graphFormController.init();
+		graphController.init();
 		sequencesController.init();
 	});
 

@@ -1,6 +1,8 @@
 /* globals failAlert */
 /* globals vis */
 /* globals ActionNode */
+/* globals templateController */
+/* globals fetchJson */
 
 /* exported graphController */
 const graphController = (() => {
@@ -19,11 +21,14 @@ const graphController = (() => {
   let nodes = null;
   let edges = null;
   let network = null;
+  const ModeEnum = Object.freeze({ none: 0, addNode: 1, addTransition: 2 });
+  let mode = ModeEnum.none;
 
   /* PUBLIC METHODS */
   function init() {
     cacheDom();
     bindUIEvents();
+    updateForm();
   }
 
   /**
@@ -87,18 +92,6 @@ const graphController = (() => {
     return graph;
   }
 
-  function addActionNode(action) {
-    const node = ActionNode.fromJSON(action);
-    nodes.add([node]);
-    return node;
-  }
-
-  function addTransition(fromId, toId) {
-    const edge = { 'from': fromId, 'to': toId };
-    edges.add([edge]);
-    return edge;
-  }
-
   /* PRIVATE METHODS */
   function bindUIEvents() {
     document.getElementById('creation').addEventListener('open', () => {
@@ -112,7 +105,6 @@ const graphController = (() => {
     edges = new vis.DataSet();
 
     // create a network
-    const container = document.getElementById('network');
     const data = {
       nodes: nodes,
       edges: edges
@@ -124,6 +116,7 @@ const graphController = (() => {
         addNode: (nodeData, callback) => {
           if (handleNodeToAdd(nodeData)) {
             callback(nodeData);
+            resetMode();
           }
         },
         editNode: (nodeData, callback) => {
@@ -163,19 +156,59 @@ const graphController = (() => {
         randomSeed: 2 // layout will be always the same
       }
     };
-    network = new vis.Network(container, data, options);
+    network = new vis.Network(DOM.$networkContainer, data, options);
     network.focus('start');
+    network.on('selectNode', () => DOM.$delSelectionButton.classList.remove('hide'));
+    network.on('selectEdge', () => DOM.$delSelectionButton.classList.remove('hide'));
+    network.on('deselectNode', () => DOM.$delSelectionButton.classList.add('hide'));
+    network.on('deselectNode', () => DOM.$delSelectionButton.classList.add('hide'));
+
+    document.getElementById('saveButton').addEventListener('click', () => {
+      if (graphIsValid()) {
+        saveGraph();
+      } else {
+        failAlert('La séquence n\'est pas valide, certains noeuds n\'ont pas de parent.');
+      }
+    });
+
+    document.querySelector('select[name=newNodeTypeChoice]').addEventListener('change', () => {
+      updateForm();
+    });
+
+    document.querySelectorAll('a[name=editSeq]').forEach((e) => {
+      e.addEventListener('click', () => {
+        const seqName = e.id.substring(e.id.indexOf('_') + 1);
+        console.log(seqName);
+
+        editSequence(seqName);
+        templateController.getAccordion('creation').open();
+        window.location.hash = '#creation';
+      });
+    });
 
     DOM.$addNodeButton.addEventListener('click', () => {
-      console.log("changed mod");
-      network.addNodeMode();
-      // display form
-      // change icon
-      // change cursor
+      if (mode === ModeEnum.addNode) {
+        resetMode();
+      } else {
+        enableAddNodeMode();
+      }
     });
+
+    DOM.$addTransitionButton.addEventListener('click', () => {
+      if (mode === ModeEnum.addTransition) {
+        resetMode();
+      } else {
+        enableAddTransitionMode();
+      }
+    });
+
+    DOM.$delSelectionButton.addEventListener('click', () => network.deleteSelected());
   }
 
   function cacheDom() {
+    DOM.$networkContainer = document.getElementById('network');
+    DOM.$newNodeForm = document.getElementById('newNodeForm');
+
     DOM.$addNodeButton = document.getElementById('addNodeButton');
     DOM.$addTransitionButton = document.getElementById('addTransitionButton');
     DOM.$delSelectionButton = document.getElementById('delSelectionButton');
@@ -201,6 +234,54 @@ const graphController = (() => {
     DOM.$pause = document.getElementById('pause');
 
     DOM.$servo_sequence = document.getElementById('servo_sequence');
+
+    DOM.$motionOptions = document.getElementById('motionOptions');
+    DOM.$servoOptions = document.getElementById('servoOptions');
+    DOM.$relayOptions = document.getElementById('relayOptions');
+    DOM.$speechOptions = document.getElementById('speechOptions');
+    DOM.$scriptOptions = document.getElementById('scriptOptions');
+    DOM.$soundOptions = document.getElementById('soundOptions');
+    DOM.$pauseOptions = document.getElementById('pauseOptions');
+    DOM.$servoSequenceOptions = document.getElementById('servoSequenceOptions');
+    DOM.$name = document.getElementById('name');
+  }
+
+  function enableAddNodeMode() {
+    resetMode();
+    mode = ModeEnum.addNode;
+    network.addNodeMode();
+    DOM.$newNodeForm.classList.remove('hide');
+    DOM.$addNodeButton.classList.add('disabled');
+    DOM.$networkContainer.style.cursor = 'crosshair';
+  }
+
+  function enableAddTransitionMode() {
+    resetMode();
+    mode = ModeEnum.addTransition;
+    network.addEdgeMode();
+    DOM.$addTransitionButton.classList.add('disabled');
+    DOM.$networkContainer.style.cursor = 'crosshair';
+  }
+
+  function resetMode() {
+    mode = ModeEnum.none;
+    network.disableEditMode();
+    DOM.$newNodeForm.classList.add('hide');
+    DOM.$addNodeButton.classList.remove('disabled');
+    DOM.$addTransitionButton.classList.remove('disabled');
+    DOM.$networkContainer.style.cursor = 'default';
+  }
+
+  function addActionNode(action) {
+    const node = ActionNode.fromJSON(action);
+    nodes.add([node]);
+    return node;
+  }
+
+  function addTransition(fromId, toId) {
+    const edge = { from: fromId, to: toId };
+    edges.add([edge]);
+    return edge;
   }
 
   /**
@@ -210,9 +291,9 @@ const graphController = (() => {
    */
   function handleEdgeToAdd(edgeData) {
     edgeData.arrows = 'to';
-    if (edgeData.from === edgeData.to || edgeData.to === 'start')
+    if (edgeData.from === edgeData.to || edgeData.to === 'start') {
       return false;
-
+    }
     return true;
   }
 
@@ -231,17 +312,17 @@ const graphController = (() => {
         break;
       }
       case ('servo'): {
-        const $selected_servo = DOM.$servo.options[DOM.$servo.selectedIndex];
-        action.servo = $selected_servo.value;
+        const $selectedServo = DOM.$servo.options[DOM.$servo.selectedIndex];
+        action.servo = $selectedServo.value;
         action.position = parseInt(DOM.$servo_position.value);
-        action.minPulseWidth = parseInt($selected_servo.dataset.min);
-        action.maxPulseWidth = parseInt($selected_servo.dataset.max);
+        action.minPulseWidth = parseInt($selectedServo.dataset.min);
+        action.maxPulseWidth = parseInt($selectedServo.dataset.max);
         action.speed = parseInt(DOM.$servo_speed.value);
         break;
       }
       case ('relay'): {
         action.relay = DOM.$relay.value;
-        action.state = (DOM.$relay_on_off.checked?1:0);
+        action.state = (DOM.$relay_on_off.checked ? 1 : 0);
         break;
       }
       case ('speech'): {
@@ -279,11 +360,54 @@ const graphController = (() => {
     return false;
   }
 
+  /**
+   * Update the form to display the options corresponding to the type of button chosen
+   */
+  function updateForm() {
+    DOM.$motionOptions.classList.add('hide');
+    DOM.$servoOptions.classList.add('hide');
+    DOM.$relayOptions.classList.add('hide');
+    DOM.$speechOptions.classList.add('hide');
+    DOM.$scriptOptions.classList.add('hide');
+    DOM.$soundOptions.classList.add('hide');
+    DOM.$pauseOptions.classList.add('hide');
+    DOM.$servoSequenceOptions.classList.add('hide'); // COMPATIBILITY REASON
+    if (document.querySelector('select[name=newNodeTypeChoice]').value !== '') {
+      const selectedNodeType = document.querySelector('select[name=newNodeTypeChoice]');
+      document.getElementById(selectedNodeType.value + 'Options').classList.remove('hide');
+    } else {
+      console.warn('Aucune action n\'a été selectionnée !');
+    }
+  }
+
+  /**
+   * Save the graph on the server
+   */
+  function saveGraph() {
+    const sequence = getGraph();
+    console.log(sequence);
+
+    fetchJson('/save_sequence', 'POST', { seq_name: DOM.$name.value, seq_data: sequence })
+      .then(() => {
+        location.reload();
+      });
+  }
+
+  /**
+   * Edit the specified sequence
+   * @param {string} seqName the name of the sequence to edit
+   */
+  function editSequence(seqName) {
+    DOM.$name.value = seqName;
+    const sequenceData = document.getElementById('data_' + seqName).innerHTML;
+    const json = JSON.parse(sequenceData);
+    updateGraph(json);
+  }
+
   return {
     init: init,
     graphIsValid: graphIsValid,
     updateGraph: updateGraph,
     getGraph: getGraph
   };
-
 })();
