@@ -246,6 +246,10 @@ const graphController = (() => {
     DOM.$name = document.getElementById('name');
   }
 
+  /**
+   * Disable other modes and allow user to add a new node.
+   * Display a form allowing to select all informations for the new node.
+   */
   function enableAddNodeMode() {
     resetMode();
     mode = ModeEnum.addNode;
@@ -255,6 +259,9 @@ const graphController = (() => {
     DOM.$networkContainer.style.cursor = 'crosshair';
   }
 
+  /**
+   * Disable other modes and allow user to create a transition between two nodes.
+   */
   function enableAddTransitionMode() {
     resetMode();
     mode = ModeEnum.addTransition;
@@ -263,6 +270,9 @@ const graphController = (() => {
     DOM.$networkContainer.style.cursor = 'crosshair';
   }
 
+  /**
+   * Disable all modes and hide all associated forms.
+   */
   function resetMode() {
     mode = ModeEnum.none;
     network.disableEditMode();
@@ -272,12 +282,23 @@ const graphController = (() => {
     DOM.$networkContainer.style.cursor = 'default';
   }
 
+  /*
+   * Manually add a new node in the graph.
+   * @param {Object} action informations related to the new action node to add.
+   * @return {ActionNode} the added action node.
+   */
   function addActionNode(action) {
     const node = ActionNode.fromJSON(action);
     nodes.add([node]);
     return node;
   }
 
+  /*
+   * Manually add a new transition between two nodes.
+   * @param {string} fromId the source node id.
+   * @param {string} toId the target node id.
+   * @return {Object} the new transition between the nodes.
+   */
   function addTransition(fromId, toId) {
     const edge = { from: fromId, to: toId };
     edges.add([edge]);
