@@ -1,8 +1,6 @@
 /* globals failAlert */
 /* globals vis */
 /* globals ActionNode */
-/* globals templateController */
-/* globals fetchJson */
 
 /* exported graphController */
 const graphController = (() => {
@@ -139,6 +137,7 @@ const graphController = (() => {
         addEdge: (edgeData, callback) => {
           if (handleEdgeToAdd(edgeData)) {
             callback(edgeData);
+            enableAddTransitionMode();
           }
         },
         editEdge: (edgeData, callback) => {
@@ -158,32 +157,15 @@ const graphController = (() => {
     };
     network = new vis.Network(DOM.$networkContainer, data, options);
     network.focus('start');
+
+    // show or hide the delete button according to the selection.
     network.on('selectNode', () => DOM.$delSelectionButton.classList.remove('hide'));
     network.on('selectEdge', () => DOM.$delSelectionButton.classList.remove('hide'));
     network.on('deselectNode', () => DOM.$delSelectionButton.classList.add('hide'));
     network.on('deselectNode', () => DOM.$delSelectionButton.classList.add('hide'));
 
-    document.getElementById('saveButton').addEventListener('click', () => {
-      if (graphIsValid()) {
-        saveGraph();
-      } else {
-        failAlert('La séquence n\'est pas valide, certains noeuds n\'ont pas de parent.');
-      }
-    });
-
     document.querySelector('select[name=newNodeTypeChoice]').addEventListener('change', () => {
       updateForm();
-    });
-
-    document.querySelectorAll('a[name=editSeq]').forEach((e) => {
-      e.addEventListener('click', () => {
-        const seqName = e.id.substring(e.id.indexOf('_') + 1);
-        console.log(seqName);
-
-        editSequence(seqName);
-        templateController.getAccordion('creation').open();
-        window.location.hash = '#creation';
-      });
     });
 
     DOM.$addNodeButton.addEventListener('click', () => {
@@ -243,7 +225,6 @@ const graphController = (() => {
     DOM.$soundOptions = document.getElementById('soundOptions');
     DOM.$pauseOptions = document.getElementById('pauseOptions');
     DOM.$servoSequenceOptions = document.getElementById('servoSequenceOptions');
-    DOM.$name = document.getElementById('name');
   }
 
   /**
@@ -399,30 +380,6 @@ const graphController = (() => {
     } else {
       console.warn('Aucune action n\'a été selectionnée !');
     }
-  }
-
-  /**
-   * Save the graph on the server
-   */
-  function saveGraph() {
-    const sequence = getGraph();
-    console.log(sequence);
-
-    fetchJson('/save_sequence', 'POST', { seq_name: DOM.$name.value, seq_data: sequence })
-      .then(() => {
-        location.reload();
-      });
-  }
-
-  /**
-   * Edit the specified sequence
-   * @param {string} seqName the name of the sequence to edit
-   */
-  function editSequence(seqName) {
-    DOM.$name.value = seqName;
-    const sequenceData = document.getElementById('data_' + seqName).innerHTML;
-    const json = JSON.parse(sequenceData);
-    updateGraph(json);
   }
 
   return {
