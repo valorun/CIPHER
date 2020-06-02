@@ -35,10 +35,10 @@ const graphController = (() => {
    */
   function graphIsValid() {
     return nodes.get().filter((n) => {
-      return n.id != 'start';
+      return n.id !== 'start';
     }).every((n1) => {
       return edges.get().some((e) => {
-        return e.to == n1.id;
+        return e.to === n1.id;
       });
     });
   }
@@ -162,7 +162,7 @@ const graphController = (() => {
     network.on('selectNode', () => DOM.$delSelectionButton.classList.remove('hide'));
     network.on('selectEdge', () => DOM.$delSelectionButton.classList.remove('hide'));
     network.on('deselectNode', () => DOM.$delSelectionButton.classList.add('hide'));
-    network.on('deselectNode', () => DOM.$delSelectionButton.classList.add('hide'));
+    network.on('deselectEdge', () => DOM.$delSelectionButton.classList.add('hide'));
 
     document.querySelector('select[name=newNodeTypeChoice]').addEventListener('change', () => {
       updateForm();

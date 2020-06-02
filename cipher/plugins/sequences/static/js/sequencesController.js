@@ -33,7 +33,6 @@ const sequencesController = (() => {
     document.querySelectorAll('a[name=editSeq]').forEach((e) => {
       e.addEventListener('click', () => {
         const seqName = e.id.substring(e.id.indexOf('_') + 1);
-        console.log(seqName);
 
         editSequence(seqName);
         templateController.getAccordion('creation').open();
@@ -96,14 +95,22 @@ const sequencesController = (() => {
 
   /**
    * Save the graph on server
+   * @param {boolean} overwrite
    */
-  function saveGraph() {
+  function saveGraph(overwrite = false) {
     const sequence = graphController.getGraph();
-    console.log(sequence);
 
-    fetchJson('/save_sequence', 'POST', { seq_name: DOM.$name.value, seq_data: sequence })
+    fetchJson('/save_sequence', 'POST', { seq_name: DOM.$name.value, seq_data: sequence, seq_overwrite: overwrite })
       .then(() => {
         location.reload();
+      }).catch(e => {
+        console.log(e.code);
+        if (e.code === 409) {
+          const confirm = window.confirm('Une séquence portant le même nom existe déjà, voulez vous l\'écraser ?');
+          if (confirm) {
+            saveGraph(true);
+          }
+        }
       });
   }
 
