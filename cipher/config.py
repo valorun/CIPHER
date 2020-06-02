@@ -33,31 +33,31 @@ class CoreConfig(ConfigFile):
         ConfigFile.__init__(self, filepath)
 
         # MQTT BROKER URL
-        self.MQTT_BROKER_URL = self.get('MQTT_BROKER', 'URL', 
+        self.MQTT_BROKER_URL = self.get('MQTT_BROKER', 'URL',
             fallback='localhost')
 
         # MQTT BROKER PORT
-        self.MQTT_BROKER_PORT = self.get('MQTT_BROKER', 'PORT', 
+        self.MQTT_BROKER_PORT = self.get('MQTT_BROKER', 'PORT',
                 fallback=1883)
 
         # SERVER DATABASE
-        self.DATABASE_FILE = self.get('SERVER', 'DATABASE_FILE', 
+        self.DATABASE_FILE = self.get('SERVER', 'DATABASE_FILE',
                 fallback='sqlite:///' + join(dirname(__file__), 'server_data.db'))
 
         # LOG FILE
-        self.LOG_FILE = self.get('SERVER', 'LOG_FILE', 
+        self.LOG_FILE = self.get('SERVER', 'LOG_FILE',
                 fallback=join(dirname(__file__), 'app.log'))
 
         # SCRIPTS LOCATION
-        self.SCRIPTS_LOCATION = self.get('SERVER', 'SCRIPTS_LOCATION', 
+        self.SCRIPTS_LOCATION = self.get('SERVER', 'SCRIPTS_LOCATION',
                 fallback=join(dirname(__file__), 'scripts/'))
 
         # SOUNDS LOCATION
-        self.SOUNDS_LOCATION = self.get('SERVER', 'SOUNDS_LOCATION', 
+        self.SOUNDS_LOCATION = self.get('SERVER', 'SOUNDS_LOCATION',
                 fallback=join(dirname(__file__), 'sounds/'))
 
         # PLUGINS
-        self.PLUGINS = self.getlist('SERVER', 'PLUGINS', 
+        self.PLUGINS = self.getlist('SERVER', 'PLUGINS',
                 fallback='dashboard,commands,speech,editor,debug,sequences,settings')  # all plugins to load, corresponds to the different pages available on the navbar
 
     # CAMERA URL
@@ -97,6 +97,14 @@ class CoreConfig(ConfigFile):
     def get_robot_name(self) -> str:
         return self.get('GENERAL', 'ROBOT_NAME', 
             fallback='My robot')
+
+    # ENABLE MOTION
+    def set_enable_motion(self, enable: bool):
+        self.set('GENERAL', 'ENABLE_MOTION', enable)
+
+    def get_enable_motion(self) -> str:
+        return self.get('GENERAL', 'ENABLE_MOTION',
+            fallback=True)
 
     # DEBUG
     def get_debug_mode(self) -> bool:

@@ -24,7 +24,7 @@ function alert(title, message, color) {
       '</div>' +
     '</div>');
   setTimeout(() => {
-    while($el.firstChild) $el.removeChild($el.firstChild);
+    while ($el.firstChild) { $el.removeChild($el.firstChild); }
   }, 3000);
 }
 
@@ -35,7 +35,7 @@ function isVisible($el) {
 
 /* exported empty */
 function empty($el) {
-  while($el.firstChild) $el.removeChild($el.firstChild);
+  while ($el.firstChild) { $el.removeChild($el.firstChild); }
 }
 
 /* exported fetchJson */

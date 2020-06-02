@@ -15,7 +15,8 @@ def settings_page():
     camera_url = core_config.get_camera_url() or ''
     audio_on_server = core_config.get_audio_on_server()
     motion_raspi_id = core_config.get_motion_raspi_id() or ''
-    return settings.render_page('settings.html', relays=relays, servos=servos, camera_url=camera_url, audio_on_server=audio_on_server, motion_raspi_id=motion_raspi_id)
+    enable_motion = core_config.get_enable_motion()
+    return settings.render_page('settings.html', relays=relays, servos=servos, camera_url=camera_url, audio_on_server=audio_on_server, motion_raspi_id=motion_raspi_id, enable_motion=enable_motion)
 
 
 @settings.route('/save_relay', methods=['POST'])
@@ -154,9 +155,13 @@ def update_camera_url():
 @login_required
 def update_audio_source():
     value = request.json.get('value')
-    logging.info("Updating audio source")
+    logging.info("Updating audio source: " + str(value))
     core_config.set_audio_on_server(value)
-    return jsonify("La source audio a été mise à jour."), 200
+    if value:
+        response = "Le son sur le serveur a été activé."
+    else:
+        response = "Le son sur le serveur a été désactivé."
+    return jsonify(response), 200
 
 
 @settings.route('/get_audio_source', methods=['POST'])
@@ -173,6 +178,17 @@ def update_motion_raspi_id():
     core_config.set_motion_raspi_id(id)
     return jsonify("L\'id du raspberry chargé des déplacements a été mis à jour."), 200
 
+@settings.route('/update_enable_motion', methods=['POST'])
+@login_required
+def update_enable_motion():
+    value = request.json.get('value')
+    logging.info("Updating enable motion: " + str(value))
+    core_config.set_audio_on_server(value)
+    if value:
+        response = "Les déplacement ont été activés."
+    else:
+        response = "Les déplacements ont été désactivés."
+    return jsonify(response), 200
 
 @settings.route('/update_robot_name', methods=['POST'])
 @login_required

@@ -85,6 +85,8 @@ class MotionAction(Action):
             return
         if core_config.get_motion_raspi_id() is None:
             return
+        if not core_config.get_enable_motion():
+            return
 
         logging.info("Moving with values " + self.direction + ", " + str(self.speed))
         mqtt.publish('raspi/' + core_config.get_motion_raspi_id() + '/motion', json.dumps({'direction': self.direction, 'speed': self.speed}))

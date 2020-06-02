@@ -40,7 +40,7 @@ def move(direction: str, speed: int):
     """
     Function called when the client want to move the robot with the 2 motors.
     """
-    logging.debug("Client motion: " + direction + ", " + str(speed))
+    logging.debug("Client triggered motion: " + direction + ", " + str(speed))
     MotionAction(direction, int(speed)).execute()
 
 

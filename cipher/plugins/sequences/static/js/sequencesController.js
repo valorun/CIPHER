@@ -104,7 +104,6 @@ const sequencesController = (() => {
       .then(() => {
         location.reload();
       }).catch(e => {
-        console.log(e.code);
         if (e.code === 409) {
           const confirm = window.confirm('Une séquence portant le même nom existe déjà, voulez vous l\'écraser ?');
           if (confirm) {
