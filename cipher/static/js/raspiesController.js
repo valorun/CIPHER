@@ -37,22 +37,22 @@ const raspiesController = (() => {
     socket.on('receive_raspies', (raspies) => {
       connected_raspies = raspies;
       if(raspies.length > 0)
-        on_connect_listeners.forEach(l => raspies.forEach(r => l(r)));
+      on_connect_listeners.forEach(l => raspies.forEach(r => l(r)));
     });
   }
 
   function raspiConnectAlert(raspi_id) {
     alert('<i class=\'fab fa-raspberry-pi\'></i> Raspberry connecté !', 
-      'Le raspberry <strong>' + raspi_id + '</strong> s\'est connecté.',
-      'orange');
+    'Le raspberry <strong>' + raspi_id + '</strong> s\'est connecté.',
+    'orange');
   }
 
   function raspiDisconnectAlert(raspi_id) {
     alert('<i class=\'fab fa-raspberry-pi\'></i> Raspberry déconnecté !', 
-      'Le raspberry <strong>' + raspi_id + '</strong> s\'est déconnecté.',
-      'orange');
+    'Le raspberry <strong>' + raspi_id + '</strong> s\'est déconnecté.',
+    'orange');
   }
-
+  
   function addOnConnectListener(callback) {
     on_connect_listeners.push(callback);
   }

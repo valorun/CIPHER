@@ -3,86 +3,88 @@
 
 /* exported motionController */
 const motionController = (() => {
-	'use strict';
+  'use strict';
 
-	const DOM = {};
+  const DOM = {};
 
-	let key_pressed = false;
+  let keyPressed = false;
 
-	/* PUBLIC METHODS */
-	function init() {
-		cacheDom();
-		bindUIEvents();
-	}
+  /* PUBLIC METHODS */
+  function init() {
+    cacheDom();
+    bindUIEvents();
+  }
 
-	/* PRIVATE METHODS */
-	function bindUIEvents() {
+  /* PRIVATE METHODS */
+  function bindUIEvents() {
+    // selects different listeners depending on the type of device used.
+    let startActionEvent = 'mousedown';
+    let stopActionEvent = 'mouseup'; // mouseleave if we also want to stop when the cursor is out of the button
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Windows Phone|Lumia|Tablet/i.test(navigator.userAgent)) {
+      startActionEvent = 'touchstart';
+      stopActionEvent = 'touchend';
+    }
 
-		//selects different listeners depending on the type of device used.
-		let startActionEvent = 'mousedown';
-		let stopActionEvent = 'mouseup'; //mouseleave if we also want to stop when the cursor is out of the button
-		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Windows Phone|Lumia|Tablet/i.test(navigator.userAgent)) {
-			startActionEvent = 'touchstart';
-			stopActionEvent = 'touchend';
-		}
+    // carriage panel controller
+    [...document.getElementsByClassName('motion-direction')].forEach(e => {
+      const direction = e.getAttribute('value').split('_')[1];
+      e.addEventListener(startActionEvent, () => {
+        const speed = DOM.$motion_speed.value;
+        console.log(direction + ', ' + speed);
+        socket.emit('move', direction, speed);
+      });
+      e.addEventListener(stopActionEvent, () => {
+        console.log('stop, 0');
+        socket.emit('move', 'stop', 0);
+      });
+    });
 
-		//carriage panel controller
-		[...document.getElementsByClassName('motion-direction')].forEach(e => {
-			const direction = e.getAttribute('value').split('_')[1];
-			e.addEventListener(startActionEvent, () => {
-				const speed = DOM.$motion_speed.value;
-				console.log(direction + ', ' + speed);
-				socket.emit('move', direction, speed);
-			});
-			e.addEventListener(stopActionEvent, () => {
-				console.log('stop, 0');
-				socket.emit('move', 'stop', 0);
-			});
-		});
+    // carriage key controller
+    document.addEventListener('keydown', (e) => {
+      if (!templateController.getAccordion('motion').isOpen) {
+        return;
+      }
+      if (keyPressed) {
+        return;
+      }
+      e.preventDefault();
+      let direction = 'stop';
+      const speed = DOM.$motion_speed.value;
 
-		//carriage key controller
-		document.addEventListener('keydown', (e) => {
-			if (!templateController.getAccordion('motion').isOpen)
-				return;
-			if (key_pressed)
-				return;
-			e.preventDefault();
-			let direction = 'stop';
-			const speed = DOM.$motion_speed.value;
+      switch (e.keyCode) {
+        case 37:
+          direction = 'left';
+          break;
+        case 38:
+          direction = 'forwards';
+          break;
+        case 39:
+          direction = 'right';
+          break;
+        case 40:
+          direction = 'backwards';
+          break;
+      }
+      console.log(direction + ', ' + speed);
+      socket.emit('move', direction, speed);
+      keyPressed = true;
+    });
 
-			switch (e.keyCode) {
-			case 37:
-				direction = 'left';
-				break;
-			case 38:
-				direction = 'forwards';
-				break;
-			case 39:
-				direction = 'right';
-				break;
-			case 40:
-				direction = 'backwards';
-				break;
-			}
-			console.log(direction + ', ' + speed);
-			socket.emit('move', direction, speed);
-			key_pressed = true;
-		});
+    document.addEventListener('keyup', () => {
+      if (!templateController.getAccordion('motion').isOpen) {
+        return;
+      }
+      console.log('stop, 0');
+      socket.emit('move', 'stop', 0);
+      keyPressed = false;
+    });
+  }
 
-		document.addEventListener('keyup', () => {
-			if (!templateController.getAccordion('motion').isOpen)
-				return;
-			console.log('stop, 0');
-			socket.emit('move', 'stop', 0);
-			key_pressed = false;
-		});
-	}
+  function cacheDom() {
+    DOM.$motion_speed = document.getElementById('motion_speed');
+  }
 
-	function cacheDom() {
-		DOM.$motion_speed = document.getElementById('motion_speed');
-	}
-
-	return {
-		init: init
-	};
+  return {
+    init: init
+  };
 })();

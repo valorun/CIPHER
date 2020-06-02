@@ -148,7 +148,7 @@ const graphController = (() => {
       },
       layout: {
         hierarchical: {
-          enabled: true,
+          enabled: false,
           direction: 'DU',
           sortMethod: 'directed'
         },
