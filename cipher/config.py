@@ -81,12 +81,15 @@ class CoreConfig(ConfigFile):
     # MOTION RASPI ID
     def set_motion_raspi_id(self, raspi_id: str):
         if not raspi_id.strip():
-            raspi_id = None
+            raspi_id = ''
         self.set('GENERAL', 'MOTION_RASPI_ID', raspi_id)
 
     def get_motion_raspi_id(self) -> str:
-        return self.get('GENERAL', 'MOTION_RASPI_ID', 
+        value = self.get('GENERAL', 'MOTION_RASPI_ID', 
             fallback=None)
+        if value == '':
+            value = None
+        return value
 
     # ROBOT NAME
     def set_robot_name(self, name: str):
@@ -102,8 +105,8 @@ class CoreConfig(ConfigFile):
     def set_enable_motion(self, enable: bool):
         self.set('GENERAL', 'ENABLE_MOTION', enable)
 
-    def get_enable_motion(self) -> str:
-        return self.get('GENERAL', 'ENABLE_MOTION',
+    def get_enable_motion(self) -> bool:
+        return self.getboolean('GENERAL', 'ENABLE_MOTION',
             fallback=True)
 
     # DEBUG

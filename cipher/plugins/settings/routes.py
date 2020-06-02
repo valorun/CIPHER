@@ -183,7 +183,7 @@ def update_motion_raspi_id():
 def update_enable_motion():
     value = request.json.get('value')
     logging.info("Updating enable motion: " + str(value))
-    core_config.set_audio_on_server(value)
+    core_config.set_enable_motion(value)
     if value:
         response = "Les déplacement ont été activés."
     else:

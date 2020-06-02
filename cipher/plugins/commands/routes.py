@@ -16,7 +16,8 @@ def commands_page():
     camera_url = core_config.get_camera_url()
     sounds = resources.get_sounds()
     motion_raspi_id = core_config.get_motion_raspi_id()  # used to check if a raspi is specified, if not, then hide the motion panel
-    return commands.render_page('commands.html', sequences=sequences, relays=relays, sounds=sounds, camera_url=camera_url, motion_raspi_id=motion_raspi_id)
+    enable_motion = core_config.get_enable_motion()  #
+    return commands.render_page('commands.html', sequences=sequences, relays=relays, sounds=sounds, camera_url=camera_url, motion_raspi_id=motion_raspi_id, enable_motion=enable_motion)
 
 
 @commands.route('/save_buttons', methods=['POST'])
