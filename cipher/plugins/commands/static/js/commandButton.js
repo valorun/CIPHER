@@ -4,7 +4,6 @@
 
 /* exported CommandButton */
 class CommandButton {
-
   /**
   *
   * @param {string} label
@@ -73,18 +72,16 @@ class CommandButton {
   }
 
   static fromJSON(json) {
-    if (!('action' in json) || !('type' in json.action)) {
+    if (!('action' in json) || !('name' in json.action)) {
       throw new TypeError('Invalid JSON CommandButton format');
     }
-    switch (json.action.type) {
+    switch (json.action.name) {
       case 'relay':
         return new RelayButton(json.label, json.action.relay, json.color);
-      case 'sound':
-        return new SoundButton(json.label, json.action.sound, json.color);
       case 'sequence':
-        return new SequenceButton(json.label, json.action.sequence, json.color);
+        return new SequenceButton(json.label, json.action.parameters.name, json.color);
       default:
-        throw new TypeError('Invalid JSON CommandButton format');
+        return new GenericActionButton(json.label, json.action, json.color);
     }
   }
 
@@ -112,7 +109,7 @@ class RelayButton extends CommandButton {
 
   executeAction() {
     super.executeAction();
-    socket.emit('activate_relay', this.action.relay);
+    socket.emit('action', 'relay', { label: this.action.relay });
   }
 
   activate() {
@@ -126,19 +123,19 @@ class RelayButton extends CommandButton {
   }
 }
 
-/* exported SoundButton */
-class SoundButton extends CommandButton {
-  constructor(label, sound, color) {
+/* exported GenericActionButton */
+class GenericActionButton extends CommandButton {
+  constructor(label, action, color) {
     super(label, 'sound', color);
-    if (!sound) {
-      throw new TypeError('Invalid sound parameter');
+    if (!action) {
+      throw new TypeError('Invalid action parameter');
     }
-    this.action.sound = sound;
+    this.action = action;
   }
 
   executeAction() {
     super.executeAction();
-    socket.emit('play_sound', this.action.sound);
+    socket.emit('action', this.action.name, this.action.parameters);
   }
 }
 

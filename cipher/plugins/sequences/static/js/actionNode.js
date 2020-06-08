@@ -2,43 +2,44 @@
 
 /* exported ActionNode */
 class ActionNode {
-  constructor(type) {
+  constructor(name) {
     if (new.target === ActionNode) {
       throw new TypeError('Cannot construct ActionNode instances directly');
     }
     this.action = {};
-    this.action.type = type;
+    this.action.name = name;
+    this.action.parameters = {};
     this.shape = 'image';
     this.font = {};
     this.font.face = 'Electrolize';
     this.label = '';
-    this.image = '/sequences/static/img/' + type + '.png';
+    this.image = '/sequences/static/img/' + name + '.png';
   }
 
   static fromJSON(json) {
-    if (!('type' in json)) {
+    console.log(json)
+    if (!('name' in json)) {
       throw new TypeError('Invalid JSON ActionNode format');
     }
 
-    switch (json.type) {
+    switch (json.name) {
       case 'relay':
-        return new RelayAction(json.relay, json.state);
+        return new RelayAction(json.parameters.label, json.parameters.state);
       case 'sound':
-        return new SoundAction(json.sound);
+        return new SoundAction(json.parameters.name);
       case 'speech':
-        return new SpeechAction(json.speech);
-      case 'script':
-        return new ScriptAction(json.script);
+        return new SpeechAction(json.parameters.text);
       case 'motion':
-        return new MotionAction(json.direction, json.speed);
+        return new MotionAction(json.parameters.direction, json.parameters.speed);
       case 'servo':
-        return new ServoAction(json.servo, json.position, json.position, json.position, json.speed);
+        return new ServoAction(json.parameters.label, json.parameters.position, json.parameters.speed);
       case 'servoSequence':
-        return new ServoSequenceAction(json.sequence);
+        return new ServoSequenceAction(json.parameters.index);
       case 'pause':
-        return new PauseAction(json.time);
+        return new PauseAction(json.parameters.time);
       default:
-        throw new TypeError('Invalid JSON ActionNode format');
+        return new CustomAction(json.name, json.parameters);
+        // throw new TypeError('Invalid JSON ActionNode format');
     }
   }
 
@@ -52,51 +53,37 @@ class ActionNode {
 
 /* exported RelayAction */
 class RelayAction extends ActionNode {
-  constructor(relay, state) {
+  constructor(label, state) {
     super('relay');
-    if (!relay || relay === '') {
-      throw new TypeError('Invalid relay parameter');
+    if (!label || label === '') {
+      throw new TypeError('No relay parameter selected');
     }
-
-    this.action.relay = relay;
-    this.action.state = state;
-    this.label = relay + '⇨' + state;
+    this.action.parameters.label = label;
+    this.action.parameters.state = state;
+    this.label = label + '⇨' + state;
   }
 }
 
 /* exported SoundAction */
 class SoundAction extends ActionNode {
-  constructor(sound) {
+  constructor(name) {
     super('sound');
-    if (!sound || sound === '') {
-      throw new TypeError('Invalid sound parameter');
+    if (!name || name === '') {
+      throw new TypeError('No sound parameter selected');
     }
 
-    this.action.sound = sound;
-    this.label = sound;
+    this.action.parameters.name = name;
+    this.label = name;
   }
 }
 
 /* exported SpeechAction */
 class SpeechAction extends ActionNode {
-  constructor(speech) {
+  constructor(text) {
     super('speech');
-    this.action.speech = speech;
+    this.action.parameters.text = text;
 
-    this.label = '"' + speech + '"';
-  }
-}
-
-/* exported ScriptAction */
-class ScriptAction extends ActionNode {
-  constructor(script) {
-    super('script');
-    if (!script || script === '') {
-      throw new TypeError('Invalid script parameter');
-    }
-
-    this.action.script = script;
-    this.label = script;
+    this.label = '"' + text + '"';
   }
 }
 
@@ -105,37 +92,26 @@ class MotionAction extends ActionNode {
   constructor(direction, speed) {
     super('motion');
     if (!direction || direction === '') {
-      throw new TypeError('Invalid direction parameter');
+      throw new TypeError('No direction parameter selected');
     }
-    if (!isNumberBetween(speed, MotionAction.MIN_SPEED, MotionAction.MAX_SPEED)) {
-      throw new RangeError('Speed must be a value between ' + MotionAction.MIN_SPEED + ' and ' + MotionAction.MAX_SPEED);
-    }
-    this.action.direction = direction;
-    this.action.speed = speed;
+    this.action.parameters.direction = direction;
+    this.action.parameters.speed = speed;
 
     this.label = direction + ' | ' + speed + '%';
   }
 }
-MotionAction.MAX_SPEED = 100;
-MotionAction.MIN_SPEED = 0;
 
 /* exported ServoAction */
 class ServoAction extends ActionNode {
-  constructor(servo, position, minPulseWidth, maxPulseWidth, speed) {
+  constructor(label, position, speed) {
     super('servo');
-    if (!servo || servo === '') {
-      throw new TypeError('Invalid servo parameter');
+    if (!label || label === '') {
+      throw new TypeError('No label parameter selected');
     }
-    if (!isNumberBetween(speed, ServoAction.MIN_SPEED, ServoAction.MAX_SPEED)) {
-      throw new RangeError('Speed must be a value between ' + ServoAction.MIN_SPEED + ' and ' + ServoAction.MAX_SPEED);
-    }
-    if (!isNumberBetween(position, minPulseWidth, maxPulseWidth)) {
-      throw new RangeError('Position must be a value between ' + minPulseWidth + ' and ' + maxPulseWidth);
-    }
-    this.action.servo = servo;
-    this.action.position = position;
-    this.action.speed = speed;
-    this.label = servo + '⇨' + position + ' | ' + speed + '%';
+    this.action.parameters.label = label;
+    this.action.parameters.position = position;
+    this.action.parameters.speed = speed;
+    this.label = label + '⇨' + position + ' | ' + speed + '%';
   }
 }
 ServoAction.MAX_SPEED = 100;
@@ -143,15 +119,15 @@ ServoAction.MIN_SPEED = 0;
 
 /* exported ServoSequenceAction */
 class ServoSequenceAction extends ActionNode { // COMPATIBILITY REASON
-  constructor(sequence) {
+  constructor(index) {
     super('servoSequence');
-    if (sequence === undefined || sequence === '') {
+    if (index === undefined || index === '') {
       throw new TypeError('Invalid sequence parameter');
     }
 
-    this.action.sequence = sequence;
+    this.action.parameters.index = index;
     this.image = '/sequences/static/img/servo.png';
-    this.label = sequence + '';
+    this.label = index + '';
   }
 }
 
@@ -163,11 +139,17 @@ class PauseAction extends ActionNode {
       throw new TypeError('Invalid sequence parameter');
     }
 
-    this.action.time = time;
+    this.action.parameters.time = time;
     this.label = time + 'ms';
   }
 }
 
-function isNumberBetween(value, min, max) {
-  return !isNaN(parseInt(value)) && value <= max && value >= min;
+/* exported CustomAction */
+class CustomAction extends ActionNode {
+  constructor(name, parameters) {
+    super(name);
+    this.action.parameters = parameters;
+    this.label = name + ': ' + JSON.stringify(parameters);
+    this.image = '/sequences/static/img/default.png';
+  }
 }

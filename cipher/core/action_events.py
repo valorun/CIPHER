@@ -3,7 +3,7 @@ import json
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
 from .sequence_reader import sequence_reader
-from .actions import RelayAction, SoundAction, MotionAction
+from .actions import RelayAction, SoundAction, MotionAction, Action
 from cipher import socketio, mqtt
 from cipher.model import Relay
 
@@ -17,31 +17,39 @@ def play_sequence(seq_name: str):
     sequence_reader.launch_sequence(seq_name)
 
 
-@socketio.on('activate_relay', namespace='/client')
-def activate_relay(label: str):
-    """
-    Function called when the client want to activate a relay.
-    """
-    logging.debug("Client triggered relay: '" + label + "'")
-    RelayAction(label).execute()
+#@socketio.on('activate_relay', namespace='/client')
+#def activate_relay(label: str):
+#    """
+#    Function called when the client want to activate a relay.
+#    """
+#    logging.debug("Client triggered relay: '" + label + "'")
+#    RelayAction.execute(label)
 
 
-@socketio.on('play_sound', namespace='/client')
-def play_sound_event(sound_name: str):
-    """
-    Function called when the client want to play a sound.
-    """
-    logging.debug("Client triggered sound: '" + sound_name + "'")
-    SoundAction(sound_name).execute()
+#@socketio.on('play_sound', namespace='/client')
+#def play_sound_event(sound_name: str):
+#    """
+#    Function called when the client want to play a sound.
+#    """
+#    logging.debug("Client triggered sound: '" + sound_name + "'")
+#    SoundAction.execute(sound_name)
 
 
-@socketio.on('move', namespace='/client')
-def move(direction: str, speed: int):
+#@socketio.on('move', namespace='/client')
+#def move(direction: str, speed: int):
+#    """
+#    Function called when the client want to move the robot with the 2 motors.
+#    """
+#    logging.debug("Client triggered motion: " + direction + ", " + str(speed))
+#    MotionAction.execute(direction, int(speed))
+
+@socketio.on('action', namespace='/client')
+def action(name: str, parameters: dict):
     """
-    Function called when the client want to move the robot with the 2 motors.
+    Function called when the client want to execute an action.
     """
-    logging.debug("Client triggered motion: " + direction + ", " + str(speed))
-    MotionAction(direction, int(speed)).execute()
+    logging.debug("Client triggered action '" + name + "': " + str(parameters))
+    Action.get_from_name(name).execute(**parameters)
 
 
 @socketio.on('get_relays_state', namespace='/client')

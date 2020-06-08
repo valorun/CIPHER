@@ -38,9 +38,9 @@ const settingsController = (() => {
     });
 
     // camera url modification
-    document.getElementById('cameraUrlForm', (e) => {
+    document.getElementById('cameraUrlForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      fetchJson('/update_camera_url', 'POST', { camera_url: DOM.$cameraUrl })
+      fetchJson('/update_camera_url', 'POST', { camera_url: DOM.$cameraUrl.value })
         .then(r => successAlert(r));
     });
 

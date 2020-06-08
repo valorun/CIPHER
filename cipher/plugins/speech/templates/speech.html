@@ -32,23 +32,11 @@
 			</div>
 
 			<div class="row-padding">
-				<div class="third">
+				<div class="half">
 					<label for="currentIntent">Intention: </label>
 					<input id="currentIntent" type="text" value="" class="input border">
 				</div>
-				<div class="third">
-					<label for="currentScriptName">Script (optionnel): </label>
-					<select id="currentScriptName" class="select border" name="scriptName">
-						<option value="" disabled selected>Choisir un script</option>
-						<option value="" >Aucune</option>
-						{% for s in scripts %}
-						{% if s %}
-						<option value="{{ s }}" >{{ s }}</option>
-						{% endif %}
-						{% endfor %}
-					</select>
-				</div>
-				<div class="third">
+				<div class="half">
 					<label for="currentSequence">Séquence (optionnel): </label>
 					<select id="currentSequence" class="select border" name="sequence">
 						<option value="" disabled selected>Choisir une séquence</option>

@@ -27,106 +27,46 @@
 
 					<select class="select border margin-bottom" name="newNodeTypeChoice">
 						<option value="" disabled selected>Choisir une action</option>
-						<option value="motion">Déplacement</option>
-						<option value="servo">Servomoteur</option>
-						<option value="servoSequence">Séquence servomoteur (COMPATIBILITE)</option>
-						<option value="relay">Relai</option>
-						<option value="speech">Parole</option>
-						<option value="script">Script</option>
-						<option value="sound">Son</option>
-						<option value="pause">Pause</option>
+						{% for a_name, a in actions.items() %}
+						<option value="{{ a_name }}">{{ a.display_name }}</option>
+						{% endfor %}
 					</select>
 
-					<div id="motionOptions" class="row-padding">
-						<div class="half">
-							<label for="motion_direction">Direction:</label>
-							<select class="select border" name="motion_direction" id="motion_direction">
-								<option value="" disabled selected>Choisir une direction</option>
-								<option value="forwards">Avant</option>
-								<option value="backwards">Arrière</option>
-								<option value="left">Gauche</option>
-								<option value="right">Droite</option>
-								<option value="stop">Stop</option>
-							</select>
-						</div>
-						<div class="half">
-							<label for="motion_speed">Vitesse:</label>
-							<input type="number" id="motion_speed" value="0" class="input border" min="0" max="100">
-						</div>
-					</div>
-
-					<div id="servoOptions" class="container">
-						<div class="third">
-							<label for="servo">Servomoteur:</label>
-							<select class="select border" name="servo" id="servo">
-								<option value="" disabled selected>Choisir un servomoteur</option>
-								{% for s in servos %}
-								{% if s.enabled %}
-								<option value="{{ s.label }}"  data-default="{{ s.default_pulse_width }}" data-min="{{ s.min_pulse_width }}" data-max="{{ s.max_pulse_width }}">{{ s.label }}</option>
+					{% for a_name, a in actions.items() %}
+					<div id="{{ a_name }}_options" class="row-padding">
+						{% for p in a.get_parameters() %}
+						<div>
+							<label for="{{ a_name }}_{{ p.name }}">{{ p.display_name }}:</label>
+							{% if p.get_type() == 'str' %}
+								{% if p.possible_values is not none %}
+								<select class="select border" name="{{ a_name }}_{{ p.name }}" id="{{ a_name }}_{{ p.name }}">
+									<option value="" disabled selected>Choisir une valeur</option>
+									{% for p_key, p_value in p.possible_values.items() %}
+									<option value="{{ p_key }}">{{ p_value }}</option>
+									{% endfor %}
+								</select>
+								{% else %}
+								<input type="text" id="{{ a_name }}_{{ p.name }}" value="" class="input border" placeholder="{{ p.hint }}">
 								{% endif %}
-								{% endfor %}
-							</select>
-						</div>
-						<div class="third">
-							<label for="servo_position">Position:</label>
-							<input type="number" id="servo_position" value="0" class="input border">
-						</div>
-						<div class="third">
-							<label for="servo_speed">Vitesse:</label>
-							<input type="number" id="servo_speed" value="0" class="input border" min="0" max="100">
-						</div>
-					</div>
 
-					<div id="servoSequenceOptions" class="container">
-						<input type="number" id="servo_sequence" value="0" class="input border" min="0" max="100">
-					</div>
-
-					<div id="relayOptions" class="container">
-						<div class="half">
-							<select class="select border" name="relay" id="relay">
-								<option value="" disabled selected>Choisir un relai</option>
-								{% for r in relays %}
-								{% if r.enabled %}
-								<option value="{{ r.label }}" >{{ r.label }}</option>
+							{% elif p.get_type() == 'int' %}
+								<input type="number" id="{{ a_name }}_{{ p.name }}" value="{{ p.minValue }}" class="input border" 
+								{% if p.minValue is not none %}
+								min="{{ p.minValue }}"
 								{% endif %}
-								{% endfor %}
-							</select>
-						</div>
-						<div class="half">
-							<input class="check" type="checkbox" checked="checked" id="relay_on_off">
-							<label>On/Off</label>
-						</div>
-					</div>
-
-					<div id="speechOptions" class="container">
-						<label for="speech_sentence">Phrase:</label>
-						<input type="text" id="speech_sentence" value="" class="input border" placeholder="Exemple: bonjour, je suis un robot">
-					</div>
-
-					<div id="scriptOptions" class="container">
-						<select class="select border" name="script_name" id="script_name">
-							<option value="" disabled selected>Choisir un script</option>
-							{% for s in scripts %}
-							{% if s %}
-							<option value="{{ s }}" >{{ s }}</option>
+								{% if p.maxValue is not none %} 
+								max="{{ p.maxValue }}"
+								{% endif %}
+								>
+							{% elif p.get_type() == 'bool' %}
+								<input class="check" type="checkbox" checked="checked" id="{{ a_name }}_{{ p.name }}">
 							{% endif %}
-							{% endfor %}
-						</select>
+						</div>
+						{% endfor %}
 					</div>
+					{% endfor %}
 
-					<div id="soundOptions" class="container">
-						<select class="select border" name="sound_name" id="sound_name">
-							<option value="" disabled selected>Choisir un son</option>
-							{% for s in sounds %}
-							<option value="{{ s }}" >{{ s }}</option>
-							{% endfor %}
-						</select>
-					</div>
-
-					<div id="pauseOptions" class="container">
-						<label for="pause">Temps(ms):</label>
-						<input type="number" id="pause" value="0" class="input border" min="0">
-					</div>
+					
 				</div>
 
 				<div id="network"></div>
@@ -180,6 +120,7 @@
 	</div>
 </div>
 <script type="text/javascript">
+
     document.addEventListener('DOMContentLoaded', () => {
 		graphController.init();
 		sequencesController.init();

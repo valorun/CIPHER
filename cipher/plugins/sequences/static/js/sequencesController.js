@@ -99,7 +99,6 @@ const sequencesController = (() => {
    */
   function saveGraph(overwrite = false) {
     const sequence = graphController.getGraph();
-
     fetchJson('/save_sequence', 'POST', { seq_name: DOM.$name.value, seq_data: sequence, seq_overwrite: overwrite })
       .then(() => {
         location.reload();

@@ -5,17 +5,17 @@ from . import sequences
 from cipher.model import Sequence, Servo, Relay, db, resources
 from cipher.security import login_required
 from cipher.core.sequence_reader import sequence_reader
-
+from cipher.core.sequence import PauseAction
+from cipher.core.actions import CUSTOM_ACTIONS, DEFAULT_ACTIONS
 
 @sequences.route('/sequences')
 @login_required
 def sequences_page():
-    relays = Relay.query.all()
     sequences_list = Sequence.query.all()
-    servos = Servo.query.all()
-    sounds = resources.get_sounds()
-    scripts = resources.get_scripts()
-    return sequences.render_page('sequences.html', sequences=sequences_list, servos=servos, relays=relays, sounds=sounds, scripts=scripts)
+    actions = {}
+    actions.update(DEFAULT_ACTIONS)
+    actions.update(CUSTOM_ACTIONS)
+    return sequences.render_page('sequences.html', sequences=sequences_list, actions=actions)
 
 
 @sequences.route('/save_sequence', methods=['POST'])
@@ -55,7 +55,7 @@ def enable_sequence():
         return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
     logging.info("Updating '" + seq_name + "'")
     db_seq = Sequence.query.filter_by(id=seq_name).first()
-    if dbSeq is None:
+    if db_seq is None:
         return jsonify("La séquence est inconnue."), 400
     db_seq.enabled = value
     db.session.commit()

@@ -66,7 +66,7 @@ const motionController = (() => {
           break;
       }
       console.log(direction + ', ' + speed);
-      socket.emit('move', direction, speed);
+      socket.emit('action', 'move', { direction: direction, speed: speed });
       keyPressed = true;
     });
 
@@ -75,7 +75,7 @@ const motionController = (() => {
         return;
       }
       console.log('stop, 0');
-      socket.emit('move', 'stop', 0);
+      socket.emit('action', 'move', { direction: 'stop' });
       keyPressed = false;
     });
   }

@@ -58,6 +58,10 @@ const templateController = (() => {
   function init() {
     cacheDom();
     bindUIEvents();
+    // autohide bar when on small screen
+    if (isVisible(document.getElementById('sidebar_button'))) {
+      closeSidebar();
+    }
   }
 
   /**

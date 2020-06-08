@@ -12,9 +12,8 @@ from cipher.security import login_required
 @login_required
 def speech_page():
     sequences = Sequence.query.all()
-    scripts = resources.get_scripts()
     intents = Intent.query.all()
-    return speech.render_page('speech.html', sequences=sequences, scripts=scripts, intents=intents)
+    return speech.render_page('speech.html', sequences=sequences, intents=intents)
 
 
 @speech.route('/save_intent', methods=['POST'])
@@ -32,10 +31,8 @@ def save_intent():
         return jsonify("Un nom de script ne doit pas contenir d'espace."), 400
     if Intent.query.filter_by(intent=intent).first() is not None:
         return jsonify("Une intention portant le même nom existe déjà."), 400
-    if script_name and script_name not in resources.get_scripts():
-        return jsonify("Le script spécifié n'existe pas."), 400
     logging.info("Saving intent '" + intent + "'")
-    db_intent = Intent(intent=intent, script_name=script_name, sequence_id=seq_id, enabled=True)
+    db_intent = Intent(intent=intent, sequence_id=seq_id, enabled=True)
     db.session.merge(db_intent)
     db.session.commit()
     return jsonify("L'intention '" + intent + "' a été sauvegardée avec succès."), 200

@@ -22,34 +22,21 @@ class SequenceReader:
 
         return Sequence([self._get_action_from_json(n) for n in json_list])
 
-    def _get_action_from_json(self, json: dict):
+    def _get_action_from_json(self, data: dict):
         """
         Create a action node object from JSON.
         """
-        actionType = json['type']
-        if actionType == 'pause':
-            action = PauseAction(json['time'])
-        elif actionType == 'speech':
-            action = SpeechAction(json['speech'])
-        elif actionType == 'relay':
-            action = RelayAction(json['relay'], json['state'])
-        elif actionType == 'script':
-            action = ScriptAction(json['script'])
-        elif actionType == 'sound':
-            action = SoundAction(json['sound'])
-        elif actionType == 'motion':
-            action = MotionAction(json['direction'], json['speed'])
-        elif actionType == 'servo':
-            action = ServoAction(json['servo'], json['position'], json['speed'])
-        elif actionType == 'servoSequence':  # COMPATIBILITY REASON
-            action = ServoSequenceAction(json['sequence'])
-        # elif actionType == 'condition':
-            # if 'flags' not in kwargs or json['flag'] not in kwargs['flags']:
-                # if there is no flag, or the specified flag is missing, stop the execution
-                # return False
-        return Node(action, [self._get_action_from_json(c) for c in json['children']])
+        if 'name' not in data:
+            raise ValueError('Invalid JSON Action format')
+        action_name = data['name']
+        action_parameters = data['parameters']
+        if action_name == 'pause':
+            action = PauseAction
+        else:
+            action = Action.get_from_name(action_name)
+        return Node(action, action_parameters, [self._get_action_from_json(c) for c in data['children']])
 
-    def read_sequence(self, json: list, **kwargs):
+    def read_sequence(self, data: list, **kwargs):
         """
         Launch the sequence execution from a JSON object.
         """
@@ -58,7 +45,7 @@ class SequenceReader:
             logging.warning("Cannot execute sequence, another one is already running.")
             return
 
-        seq = self.get_sequence_from_json(json)
+        seq = self.get_sequence_from_json(data)
         self.current_sequence = seq
         seq.execute(**kwargs)
 
@@ -68,11 +55,14 @@ class SequenceReader:
         """
         if name is None or name == '':
             return
-        seq = DbSequence.query.filter_by(id=name).first()
-        if seq is not None and seq.enabled:
+        seq = DbSequence.query.filter_by(id=name, enabled=True).first()
+        if seq is not None:
             seq_data = seq.value
             logging.info("Executing sequence " + name)
             self.read_sequence(json.loads(seq_data), **kwargs)
+            return True
+        else:
+            return False
 
 
 sequence_reader = SequenceReader()

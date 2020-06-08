@@ -1,6 +1,7 @@
 /* globals failAlert */
 /* globals vis */
 /* globals ActionNode */
+/* globals fetchJson */
 
 /* exported graphController */
 const graphController = (() => {
@@ -47,7 +48,7 @@ const graphController = (() => {
    * Update nodes and edges of the graph.
    * @param {*} jsonNodes The graph in JSON.
    */
-  function updateGraph(json) {
+  async function updateGraph(json) {
     nodes.clear();
     edges.clear();
 
@@ -112,10 +113,8 @@ const graphController = (() => {
       manipulation: {
         enabled: false,
         addNode: (nodeData, callback) => {
-          if (handleNodeToAdd(nodeData)) {
-            callback(nodeData);
-            resetMode();
-          }
+          handleNodeToAdd(nodeData);
+          resetMode();
         },
         editNode: (nodeData, callback) => {
           if (nodeData.id !== 'start') {
@@ -184,7 +183,10 @@ const graphController = (() => {
       }
     });
 
-    DOM.$delSelectionButton.addEventListener('click', () => network.deleteSelected());
+    DOM.$delSelectionButton.addEventListener('click', () => {
+      network.deleteSelected();
+      resetMode();
+    });
   }
 
   function cacheDom() {
@@ -196,35 +198,6 @@ const graphController = (() => {
     DOM.$delSelectionButton = document.getElementById('delSelectionButton');
 
     DOM.$selectedAction = document.querySelector('select[name=newNodeTypeChoice]');
-
-    DOM.$motion_direction = document.getElementById('motion_direction');
-    DOM.$motion_speed = document.getElementById('motion_speed');
-
-    DOM.$servo = document.getElementById('servo');
-    DOM.$servo_position = document.getElementById('servo_position');
-    DOM.$servo_speed = document.getElementById('servo_speed');
-
-    DOM.$relay = document.getElementById('relay');
-    DOM.$relay_on_off = document.getElementById('relay_on_off');
-
-    DOM.$speech_sentence = document.getElementById('speech_sentence');
-
-    DOM.$script_name = document.getElementById('script_name');
-
-    DOM.$sound_name = document.getElementById('sound_name');
-
-    DOM.$pause = document.getElementById('pause');
-
-    DOM.$servo_sequence = document.getElementById('servo_sequence');
-
-    DOM.$motionOptions = document.getElementById('motionOptions');
-    DOM.$servoOptions = document.getElementById('servoOptions');
-    DOM.$relayOptions = document.getElementById('relayOptions');
-    DOM.$speechOptions = document.getElementById('speechOptions');
-    DOM.$scriptOptions = document.getElementById('scriptOptions');
-    DOM.$soundOptions = document.getElementById('soundOptions');
-    DOM.$pauseOptions = document.getElementById('pauseOptions');
-    DOM.$servoSequenceOptions = document.getElementById('servoSequenceOptions');
   }
 
   /**
@@ -301,82 +274,47 @@ const graphController = (() => {
 
   /**
    * Create a specific node corresponding to the options chosen
-   * @param {Object} nodeData the data of the node to add
-   * @return {boolean} false if the options aren't correct
    */
-  function handleNodeToAdd(nodeData) {
+  function handleNodeToAdd() {
     const action = {};
-    action.type = DOM.$selectedAction.value;
-    switch (DOM.$selectedAction.value) {
-      case ('motion'): {
-        action.direction = DOM.$motion_direction.value;
-        action.speed = parseInt(DOM.$motion_speed.value);
-        break;
+    action.name = DOM.$selectedAction.value;
+    action.parameters = {};
+
+    const $parameters = document.querySelectorAll('[id^=' + action.name + '_]:not([id$=_options])');
+    $parameters.forEach(e => {
+      const key = e.id.split(action.name + '_')[1];
+      if (e.type === 'number') {
+        action.parameters[key] = parseInt(e.value);
+      } else if (e.type === 'checkbox') {
+        action.parameters[key] = (e.checked ? 1 : 0);
+      } else {
+        action.parameters[key] = e.value;
       }
-      case ('servo'): {
-        const $selectedServo = DOM.$servo.options[DOM.$servo.selectedIndex];
-        action.servo = $selectedServo.value;
-        action.position = parseInt(DOM.$servo_position.value);
-        action.minPulseWidth = parseInt($selectedServo.dataset.min);
-        action.maxPulseWidth = parseInt($selectedServo.dataset.max);
-        action.speed = parseInt(DOM.$servo_speed.value);
-        break;
+    });
+    fetchJson('/check_action_parameters', 'POST', { action_name: action.name, parameters: action.parameters }).then(validation => {
+      if (!validation[0]) {
+        throw new TypeError(validation[1]);
       }
-      case ('relay'): {
-        action.relay = DOM.$relay.value;
-        action.state = (DOM.$relay_on_off.checked ? 1 : 0);
-        break;
-      }
-      case ('speech'): {
-        action.speech = DOM.$speech_sentence.value;
-        break;
-      }
-      case ('script'): {
-        action.script = DOM.$script_name.value;
-        break;
-      }
-      case ('sound'): {
-        action.sound = DOM.$sound_name.value;
-        break;
-      }
-      case ('pause'): {
-        nodeData.shape = 'circle';
-        action.time = parseInt(DOM.$pause.value);
-        break;
-      }
-      case ('servoSequence'): { // COMPATIBILITY REASON
-        action.sequence = parseInt(DOM.$servo_sequence.value);
-        break;
-      }
-      default: {
-        return false;
-      }
-    }
-    try {
-      Object.assign(nodeData, ActionNode.fromJSON(action));
-      return true;
-    } catch (error) {
+      addActionNode(action);
+    }).catch(error => {
       console.error(error);
       failAlert(error.message);
-    }
-    return false;
+    });
   }
 
   /**
    * Update the form to display the options corresponding to the type of button chosen
    */
   function updateForm() {
-    DOM.$motionOptions.classList.add('hide');
-    DOM.$servoOptions.classList.add('hide');
-    DOM.$relayOptions.classList.add('hide');
-    DOM.$speechOptions.classList.add('hide');
-    DOM.$scriptOptions.classList.add('hide');
-    DOM.$soundOptions.classList.add('hide');
-    DOM.$pauseOptions.classList.add('hide');
-    DOM.$servoSequenceOptions.classList.add('hide'); // COMPATIBILITY REASON
+    document.querySelectorAll('[id$=_options]')
+      .forEach(e => e.classList.add('hide'));
+
     if (document.querySelector('select[name=newNodeTypeChoice]').value !== '') {
       const selectedNodeType = document.querySelector('select[name=newNodeTypeChoice]');
-      document.getElementById(selectedNodeType.value + 'Options').classList.remove('hide');
+      const selectedNodeForm = document.getElementById(selectedNodeType.value + '_options');
+      if (selectedNodeForm != null) {
+        selectedNodeForm.classList.remove('hide');
+      }
     } else {
       console.warn('Aucune action n\'a été selectionnée !');
     }
