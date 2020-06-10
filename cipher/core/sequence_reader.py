@@ -1,11 +1,11 @@
 import logging
 import json
 from cipher.core.actions import *
-from cipher.core.sequence import Sequence, Node, PauseAction
+from cipher.core.sequence import Sequence, Node, Transition
 from cipher.model import db, Sequence as DbSequence
 
 
-# vérif que le parcours partant du noeud de départ soit bien sans orphelins
+# vérif que le parcours partant du noeud de départ soit bien sans orphelins, et qu'il n'y ait pas de boucles
 class SequenceReader:
     """
     Classe reading sequences.
@@ -20,21 +20,30 @@ class SequenceReader:
         if json_list is None:
             return []
 
-        return Sequence([self._get_action_from_json(n) for n in json_list])
+        return Sequence([self._get_transition_from_json(t) for t in json_list])
 
     def _get_action_from_json(self, data: dict):
         """
         Create a action node object from JSON.
         """
         if 'name' not in data:
+            logging.info(str(data))
             raise ValueError('Invalid JSON Action format')
         action_name = data['name']
         action_parameters = data['parameters']
-        if action_name == 'pause':
-            action = PauseAction
-        else:
-            action = Action.get_from_name(action_name)
-        return Node(action, action_parameters, [self._get_action_from_json(c) for c in data['children']])
+        action = Action.get_from_name(action_name)
+        
+        return Node(action, action_parameters, [self._get_transition_from_json(t) for t in data['transitions']])
+
+    def _get_transition_from_json(self, data: dict):
+        """
+        Create a transition object from JSON.
+        """
+        if 'target' not in data or 'time' not in data:
+            raise ValueError('Invalid JSON Action format')
+        transition_target = self._get_action_from_json(data['target'])
+        transition_time = data['time']
+        return Transition(transition_target, transition_time)
 
     def read_sequence(self, data: list, **kwargs):
         """

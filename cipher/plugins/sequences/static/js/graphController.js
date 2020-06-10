@@ -48,47 +48,37 @@ const graphController = (() => {
    * Update nodes and edges of the graph.
    * @param {*} jsonNodes The graph in JSON.
    */
-  async function updateGraph(json) {
+  function updateGraph(json) {
     nodes.clear();
     edges.clear();
 
     nodes.add([START_NODE]);
-
-    // add the nodes to the graph and create transitions for first ones
-    _updateGraph(json).forEach(c => addTransition('start', c.id));
+    _updateGraph(json, 'start');
     network.focus('start');
   }
 
-  function _updateGraph(json) {
-    const nodes = [];
-    json.forEach(a => {
-      const node = addActionNode(a);
-      nodes.push(node);
-      const children = _updateGraph(a.children);
-      children.forEach(c => addTransition(node.id, c.id));
-    });
-    // return added nodes that will became children in next iteration
-    return nodes;
+  function _updateGraph(json, startId) {
+    // add the nodes to the graph and create transitions for first ones
+    if (json != null) {
+      json.forEach(t => {
+        const node = addActionNode(t.target);
+        addTransition(startId, node.id, t.time);
+        _updateGraph(t.target.transitions, node.id);
+      });
+    }
   }
 
   /**
    * Get graph as JSON.
    */
-  function getGraph(nodesData = null) {
-    if (nodesData === null) {
-      nodesData = [];
-      // get start node childrens
-      nodesData = nodes.get().filter(n => edges.get().filter(e => e.from === 'start' && e.to === n.id).length > 0);
-    }
+  function getGraph(startId = 'start') {
+    return edges.get().filter(e => e.from === startId).map(e => {
+      const transitionData = e.data;
+      transitionData.target.action.transitions = getGraph(transitionData.target.id);
+      transitionData.target = transitionData.target.action;
 
-    const graph = nodesData.map(n => {
-      const node = n.action;
-      const children = nodes.get().filter(n1 => edges.get().filter(e => e.from === n.id && e.to === n1.id).length > 0);
-      node.children = getGraph(children);
-      return node;
+      return transitionData;
     });
-
-    return graph;
   }
 
   /* PRIVATE METHODS */
@@ -135,7 +125,6 @@ const graphController = (() => {
         },
         addEdge: (edgeData, callback) => {
           if (handleEdgeToAdd(edgeData)) {
-            callback(edgeData);
             enableAddTransitionMode();
           }
         },
@@ -192,12 +181,15 @@ const graphController = (() => {
   function cacheDom() {
     DOM.$networkContainer = document.getElementById('network');
     DOM.$newNodeForm = document.getElementById('newNodeForm');
+    DOM.$newTransitionForm = document.getElementById('newTransitionForm');
 
     DOM.$addNodeButton = document.getElementById('addNodeButton');
     DOM.$addTransitionButton = document.getElementById('addTransitionButton');
     DOM.$delSelectionButton = document.getElementById('delSelectionButton');
 
     DOM.$selectedAction = document.querySelector('select[name=newNodeTypeChoice]');
+
+    DOM.$transitionTime = document.getElementById('transition_time');
   }
 
   /**
@@ -220,6 +212,7 @@ const graphController = (() => {
     resetMode();
     mode = ModeEnum.addTransition;
     network.addEdgeMode();
+    DOM.$newTransitionForm.classList.remove('hide');
     DOM.$addTransitionButton.classList.add('disabled');
     DOM.$networkContainer.style.cursor = 'crosshair';
   }
@@ -231,6 +224,7 @@ const graphController = (() => {
     mode = ModeEnum.none;
     network.disableEditMode();
     DOM.$newNodeForm.classList.add('hide');
+    DOM.$newTransitionForm.classList.add('hide');
     DOM.$addNodeButton.classList.remove('disabled');
     DOM.$addTransitionButton.classList.remove('disabled');
     DOM.$networkContainer.style.cursor = 'default';
@@ -253,23 +247,30 @@ const graphController = (() => {
    * @param {string} toId the target node id.
    * @return {Object} the new transition between the nodes.
    */
-  function addTransition(fromId, toId) {
-    const edge = { from: fromId, to: toId };
+  function addTransition(fromId, toId, time) {
+    const targetNode = nodes.get().find(n => n.id === toId);
+    const edge = {
+      from: fromId,
+      to: toId,
+      arrows: 'to',
+      label: time + 'ms',
+      data: { time: time, target: targetNode }
+    };
     edges.add([edge]);
     return edge;
   }
 
   /**
    * Create an edge and check if it is correct.
-   * @param {Object} edgeData the data of the node to add
-   * @return {boolean} false if the options aren't correct
+   * @param {Object} edgeData the data of the node to add.
+   * @return {Object} the new transition between the nodes.
    */
   function handleEdgeToAdd(edgeData) {
-    edgeData.arrows = 'to';
+    const time = parseInt(DOM.$transitionTime.value);
     if (edgeData.from === edgeData.to || edgeData.to === 'start') {
-      return false;
+      return;
     }
-    return true;
+    return addTransition(edgeData.from, edgeData.to, time);
   }
 
   /**
@@ -296,6 +297,7 @@ const graphController = (() => {
         throw new TypeError(validation[1]);
       }
       addActionNode(action);
+      //console.log(getGraph());
     }).catch(error => {
       console.error(error);
       failAlert(error.message);

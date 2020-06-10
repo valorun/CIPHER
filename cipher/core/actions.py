@@ -82,7 +82,7 @@ class RelayAction(Action):
     relay_states = {}
 
     @staticmethod
-    def check_parameters(label: str):
+    def check_parameters(label: str, state: int = None):
         if not isinstance(label, str):
             return False, "The label must be a string."
         with db.app.app_context():

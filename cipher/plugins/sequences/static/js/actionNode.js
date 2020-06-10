@@ -17,7 +17,6 @@ class ActionNode {
   }
 
   static fromJSON(json) {
-    console.log(json)
     if (!('name' in json)) {
       throw new TypeError('Invalid JSON ActionNode format');
     }
@@ -35,8 +34,6 @@ class ActionNode {
         return new ServoAction(json.parameters.label, json.parameters.position, json.parameters.speed);
       case 'servoSequence':
         return new ServoSequenceAction(json.parameters.index);
-      case 'pause':
-        return new PauseAction(json.parameters.time);
       default:
         return new CustomAction(json.name, json.parameters);
         // throw new TypeError('Invalid JSON ActionNode format');
@@ -128,19 +125,6 @@ class ServoSequenceAction extends ActionNode { // COMPATIBILITY REASON
     this.action.parameters.index = index;
     this.image = '/sequences/static/img/servo.png';
     this.label = index + '';
-  }
-}
-
-/* exported PauseAction */
-class PauseAction extends ActionNode {
-  constructor(time) {
-    super('pause');
-    if (isNaN(time) || time < 0) {
-      throw new TypeError('Invalid sequence parameter');
-    }
-
-    this.action.parameters.time = time;
-    this.label = time + 'ms';
   }
 }
 
