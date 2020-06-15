@@ -12,17 +12,17 @@ const servosSettingsController = (() => {
   class ServoEntry {
     constructor($tr) {
       this.$tr = $tr;
-      this.label = $tr.id;
-      this.$label = document.getElementById(this.$tr.id + '_label');
-      this.$pin = document.getElementById(this.$tr.id + '_pin');
-      this.$min = document.getElementById(this.$tr.id + '_min');
-      this.$max = document.getElementById(this.$tr.id + '_max');
-      this.$default = document.getElementById(this.$tr.id + '_default');
-      this.$raspi = document.getElementById(this.$tr.id + '_raspi');
+      this.label = $tr.dataset.label;
+      this.$label = $tr.getElementsByClassName('servo-label')[0];
+      this.$pin = $tr.getElementsByClassName('servo-pin')[0];
+      this.$min = $tr.getElementsByClassName('servo-min')[0];
+      this.$max = $tr.getElementsByClassName('servo-max')[0];
+      this.$default = $tr.getElementsByClassName('servo-default')[0];
+      this.$raspi = $tr.getElementsByClassName('servo-raspi')[0];
 
-      this.$delete = document.getElementById(this.$tr.id + '_delete');
-      this.$save = document.getElementById(this.$tr.id + '_save');
-      this.$enable = document.getElementById(this.$tr.id + '_enable');
+      this.$delete = $tr.getElementsByClassName('servo-delete')[0];
+      this.$save = $tr.getElementsByClassName('servo-save')[0];
+      this.$enable = $tr.getElementsByClassName('servo-enable')[0];
 
       this.$save.addEventListener('click', () => this.update());
       this.$enable.addEventListener('click', () => this.enable(this.$enable.checked));
@@ -36,9 +36,9 @@ const servosSettingsController = (() => {
      */
     update() {
       fetchJson('/update_servo', 'POST', {
-        servo_label: this.label,
-        new_servo_label: this.$label.value,
-        servo_pin: this.$pin.value,
+        label: this.label,
+        new_label: this.$label.value,
+        pin: this.$pin.value,
         raspi_id: this.$raspi.value,
         min_pulse_width: this.$min.value,
         max_pulse_width: this.$max.value,
@@ -47,12 +47,7 @@ const servosSettingsController = (() => {
         successAlert(r);
         console.log(this.label + ' updated');
         this.label = this.$label.value;
-        this.$tr.id = this.label;
-        this.$label.id = this.label + '_label';
-        this.$pin.id = this.label + '_pin';
-        this.$min.id = this.label + '_min';
-        this.$max.id = this.label + '_max';
-        this.$default.id = this.label + '_default';
+        this.$tr.dataset.label = this.label;
       });
     }
 
@@ -62,12 +57,11 @@ const servosSettingsController = (() => {
     delete() {
       const confirm = window.confirm('Etes vous sûr de vouloir supprimer le servomoteur \'' + this.label + '\' ?');
       if (confirm) {
-        fetchJson('/delete_servo', 'POST', { servo_label: this.label })
+        fetchJson('/delete_servo', 'POST', { label: this.label })
           .then((r) => {
             successAlert(r);
-            console.log(this.label + ' deleted');
-            const el = document.getElementById(this.label);
-            el.parentNode.removeChild(el);
+            console.log('Servo \'' + this.label + '\' deleted');
+            this.$tr.parentNode.removeChild(this.$tr);
             if (this.onDestroyCallback !== null) {
               this.onDestroyCallback();
             }
@@ -80,7 +74,7 @@ const servosSettingsController = (() => {
     * @param {boolean} value new state for the servo
     */
     enable(value) {
-      fetchJson('/enable_servo', 'POST', { servo_label: this.label, value: value })
+      fetchJson('/enable_servo', 'POST', { label: this.label, value: value })
         .then((r) => {
           successAlert(r);
           console.log(this.label + ' updated');
@@ -106,8 +100,8 @@ const servosSettingsController = (() => {
     document.getElementById('addServo').addEventListener('click', () => {
       fetchJson('/save_servo', 'POST',
         {
-          servo_label: DOM.$newServoLabel.value,
-          servo_pin: DOM.$newServoPin.value,
+          label: DOM.$newServoLabel.value,
+          pin: DOM.$newServoPin.value,
           min_pulse_width: DOM.$newServoMinPulseWidth.value,
           max_pulse_width: DOM.$newServoMaxPulseWidth.value,
           def_pulse_width: DOM.$newServoDefPulseWidth.value,
@@ -116,9 +110,8 @@ const servosSettingsController = (() => {
         location.reload();
       });
     });
-
-    // remove servo entry from list when its element is deleted
     servosEntries = Array.from(document.getElementById('servos_table').rows).slice(1).map(element => new ServoEntry(element));
+    // remove servo entry from list when its element is deleted
     servosEntries.forEach(e => e.onDestroy(s => {
       servosEntries = servosEntries.filter(s1 => s1.label !== e.label);
     }));
