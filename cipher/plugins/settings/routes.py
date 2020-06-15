@@ -56,7 +56,7 @@ def enable_relay():
         return jsonify("Le relai est inconnu."), 400
     db_rel.enabled = value
     db.session.commit()
-    return jsonify("L'état du relai '" + rel_label + "' a été modifié."), 200
+    return jsonify("L'état du relai '" + rel_label + "' a été modifié avec succès."), 200
 
 
 @settings.route('/delete_relay', methods=['POST'])
@@ -107,6 +107,52 @@ def save_servo():
     db.session.add(db_servo)
     db.session.commit()
     return jsonify("Le servo moteur '" + servo_label + "' a été sauvegardé avec succès."), 200
+
+@settings.route('/update_servo', methods=['POST'])
+@login_required
+def update_servo():
+    servo_label = request.json.get('servo_label')
+
+    if not servo_label or ' ' in servo_label:
+        return jsonify("Le label de servo moteur ne doit pas être vide ou contenir d'espace."), 400
+
+    db_servo = Servo.query.filter_by(label=servo_label).first()
+    if db_servo is None:
+        return jsonify("Le servomoteur est inconnu."), 400
+
+    new_servo_label = request.json.get('new_servo_label') or servo_label
+    servo_pin = request.json.get('servo_pin') or db_servo.pin
+    raspi_id = request.json.get('raspi_id') or db_servo.raspi_id
+    servo_min_pulse_width = int(request.json.get('min_pulse_width')) or db_servo.min_pulse_width
+    servo_max_pulse_width = int(request.json.get('max_pulse_width')) or db_servo.max_pulse_width
+    servo_def_pulse_width = int(request.json.get('def_pulse_width')) or db_servo.def_pulse_width
+
+    if ' ' in new_servo_label:
+        return jsonify("Le nouveau label de servo moteur ne doit pas contenir d'espace."), 400
+    db_servo.label = new_servo_label
+
+    if ' ' in servo_pin:
+        return jsonify("Un pin ne doit pas être vide ou contenir d'espace."), 400
+    db_servo.pin = servo_pin
+
+    if ' ' in raspi_id:
+        return jsonify("Un id de raspberry ne doit pas être vide ou contenir d'espace."), 400
+    db_servo.raspi_id = raspi_id
+
+    if servo_min_pulse_width > servo_max_pulse_width:
+        return jsonify("La largeur d'impulsion minimum doit être inférieure à la largeur d'impulsion maximum"), 400
+
+    if servo_def_pulse_width < servo_min_pulse_width or servo_def_pulse_width > servo_max_pulse_width:
+        return jsonify("La largeur d'impulsion par défaut doit être comprise entre son minimum et son maximum."), 400
+    db_servo.min_pulse_width = servo_min_pulse_width
+    db_servo.max_pulse_width = servo_max_pulse_width
+    db_servo.def_pulse_width = servo_def_pulse_width
+
+    db.session.commit()
+    return jsonify("Le servo moteur '" + servo_label + "' a été mis à jour avec succès."), 200
+    
+
+
 
 
 @settings.route('/enable_servo', methods=['POST'])

@@ -297,7 +297,6 @@ const graphController = (() => {
         throw new TypeError(validation[1]);
       }
       addActionNode(action);
-      //console.log(getGraph());
     }).catch(error => {
       console.error(error);
       failAlert(error.message);

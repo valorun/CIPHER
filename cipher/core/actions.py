@@ -174,7 +174,7 @@ class ServoAction(Action):
             return False, "The relay label must be a string."
         if not isinstance(position, int):
             return False, "The position must be an integer."
-        if speed < 0 or speed > 100:
+        if not isinstance(speed, int) or speed < 0 or speed > 100:
             return False, "Speed must be a number between 0 and 100."
         with db.app.app_context():
             db_servo = Servo.query.filter_by(label=label, enabled=True).first()

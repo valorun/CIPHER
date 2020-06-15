@@ -59,7 +59,7 @@ const templateController = (() => {
     cacheDom();
     bindUIEvents();
     // autohide bar when on small screen
-    if (isVisible(document.getElementById('sidebar_button'))) {
+    if (isVisible(DOM.$sidebarButton)) {
       closeSidebar();
     }
   }
@@ -74,7 +74,7 @@ const templateController = (() => {
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    document.getElementById('sidebar_button').addEventListener('click', () => {
+    DOM.$sidebarButton.addEventListener('click', () => {
       if (isVisible(DOM.$sidebar)) {
         closeSidebar();
       } else {
@@ -98,6 +98,7 @@ const templateController = (() => {
 
   function cacheDom() {
     DOM.$sidebar = document.getElementById('sidebar');
+    DOM.$sidebarButton = document.getElementById('sidebar_button');
     DOM.$overlayBg = document.getElementById('overlay');
   }
 
