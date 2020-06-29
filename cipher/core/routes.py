@@ -1,4 +1,3 @@
-import logging
 from flask import Flask, request, Response, render_template, flash, send_from_directory, jsonify
 from os.path import join
 from . import core
@@ -23,7 +22,7 @@ def method_not_allowed(e):
 
 #@core.app_errorhandler(Exception)
 #def unhandled_exception(e):
-#	logging.error(e)
+#	core.log.error(e)
 #	return jsonify("Une erreur imprévue est survenue."), 500
 
 

@@ -1,4 +1,3 @@
-import logging
 import json
 import re
 from flask import Flask, session, request, jsonify
@@ -31,7 +30,7 @@ def save_intent():
         return jsonify("Un nom de script ne doit pas contenir d'espace."), 400
     if Intent.query.filter_by(intent=intent).first() is not None:
         return jsonify("Une intention portant le même nom existe déjà."), 400
-    logging.info("Saving intent '" + intent + "'")
+    speech.log.info("Saving intent '" + intent + "'")
     db_intent = Intent(intent=intent, sequence_id=seq_id, enabled=True)
     db.session.merge(db_intent)
     db.session.commit()
@@ -45,7 +44,7 @@ def enable_intent():
     value = request.json.get('value')
     if not intent or ' ' in intent:
         return jsonify("Une intention ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Updating intent '" + intent + "'")
+    speech.log.info("Updating intent '" + intent + "'")
     db_intent = Intent.query.filter_by(intent=intent).first()
     db_intent.enabled = value
     db.session.commit()
@@ -58,7 +57,7 @@ def delete_intent():
     intent = request.json.get('intent')
     if not intent or ' ' in intent:
         return jsonify("Une intention ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Deleting intent '" + intent + "'")
+    speech.log.info("Deleting intent '" + intent + "'")
     db_intent = Intent.query.filter_by(intent=intent).first()
     db.session.delete(db_intent)
     db.session.commit()

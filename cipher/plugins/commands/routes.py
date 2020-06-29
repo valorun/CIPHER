@@ -1,4 +1,3 @@
-import logging
 from flask import Flask, request, jsonify, session
 import json
 from . import commands
@@ -27,7 +26,7 @@ def save_buttons():
     """
     Save the grid of buttons on the server.
     """
-    logging.info("Saving buttons grid for user '" + session['username'] + "'.")
+    commands.log.info("Saving buttons grid for user '" + session['username'] + "'.")
     data = request.json.get('data')
     new_db_command_panel = UserCommandPanel(username=session['username'], grid=str(data))
     db.session.merge(new_db_command_panel)
@@ -43,7 +42,7 @@ def load_buttons():
     """
     db_command_panel = UserCommandPanel.query.filter_by(username=session['username']).first()
     if db_command_panel is not None:
-        logging.info("Loading buttons grid for user '" + session['username'] + "'.")
+        commands.log.info("Loading buttons grid for user '" + session['username'] + "'.")
         grid = json.loads(db_command_panel.grid)
         return jsonify(grid), 200
     return jsonify("Aucune grille associée à l'utilisateur"), 400

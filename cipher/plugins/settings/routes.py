@@ -1,4 +1,3 @@
-import logging
 import json
 from flask import Flask, flash, request, session, jsonify
 from . import settings
@@ -36,7 +35,7 @@ def save_relay():
         return jsonify("Un id de raspberry ne doit pas être vide ou contenir d'espace."), 400
     if Relay.query.filter_by(label=label).first() is not None:
         return jsonify("Un relai portant le même label existe déjà."), 400
-    logging.info("Saving relay " + label)
+    settings.log.info("Saving relay " + label)
     db_relay = Relay(label=label, pin=pin, enabled=True, parity=parity, raspi_id=raspi_id)
     db.session.add(db_relay)
     db.session.commit()
@@ -85,7 +84,7 @@ def enable_relay():
     value = request.json.get('value')
     if not label or ' ' in label:
         return jsonify("Un label de relai ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Updating relay " + label)
+    settings.log.info("Updating relay " + label)
     db_rel = Relay.query.filter_by(label=label).first()
     if db_rel is None:
         return jsonify("Le relai est inconnu."), 400
@@ -100,7 +99,7 @@ def delete_relay():
     label = request.json.get("label")
     if not label or ' ' in label:
         return jsonify("Un label de relai ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Deleting relay " + label)
+    settings.log.info("Deleting relay " + label)
     db_rel = Relay.query.filter_by(label=label).first()
     if db_rel is None:
         return jsonify("Le relai est inconnu."), 400
@@ -137,7 +136,7 @@ def save_servo():
         return jsonify("Un id de raspberry ne doit pas être vide ou contenir d'espace."), 400
     if Servo.query.filter_by(label=label).first() is not None:
         return jsonify("Un servomoteur portant le même label existe déjà."), 400
-    logging.info("Saving servo '" + label + "'")
+    settings.log.info("Saving servo '%s'", label)
     db_servo = Servo(label=label, pin=pin, enabled=True, min_pulse_width=min_pulse_width, max_pulse_width=max_pulse_width, def_pulse_width=def_pulse_width, raspi_id=raspi_id)
     db.session.add(db_servo)
     db.session.commit()
@@ -197,7 +196,7 @@ def enable_servo():
     value = request.json.get('value')
     if not label or ' ' in label:
         return jsonify("Un label de servomoteur ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Updating servo " + label)
+    settings.log.info("Updating servo %s", label)
     db_servo = Servo.query.filter_by(label=label).first()
     if db_servo is None:
         return jsonify("Le servomoteur est inconnu."), 400
@@ -212,7 +211,7 @@ def delete_servo():
     label = request.json.get('label')
     if not label or ' ' in label:
         return jsonify("Un label de servomoteur ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Deleting servo " + label)
+    settings.log.info("Deleting servo %s", label)
     db_servo = Servo.query.filter_by(label=label).first()
     if db_servo is None:
         return jsonify("Le servomoteur est inconnu."), 400
@@ -227,7 +226,7 @@ def update_camera_url():
     url = request.json.get('camera_url')
     if url and ' ' in url:  # if the string is empty, update is accepted
         return jsonify("L'url ne doit pas contenir d'espace."), 400
-    logging.info("Updating camera URL: " + url)
+    settings.log.info("Updating camera URL: %s", url)
     core_config.set_camera_url(url)
     return jsonify("L'URL de la caméra a été mis à jour."), 200
 
@@ -236,7 +235,7 @@ def update_camera_url():
 @login_required
 def update_audio_source():
     value = request.json.get('value')
-    logging.info("Updating audio source: " + str(value))
+    settings.log.info("Updating audio source: %s", str(value))
     core_config.set_audio_on_server(value)
     if value:
         response = "Le son sur le serveur a été activé."
@@ -255,7 +254,7 @@ def get_audio_mode():
 @login_required
 def update_motion_raspi_id():
     id = request.json.get('raspi_id')
-    logging.info("Updating motion raspi id: " + id)
+    settings.log.info("Updating motion raspi id: " + id)
     core_config.set_motion_raspi_id(id)
     return jsonify("L\'id du raspberry chargé des déplacements a été mis à jour."), 200
 
@@ -263,7 +262,7 @@ def update_motion_raspi_id():
 @login_required
 def update_enable_motion():
     value = request.json.get('value')
-    logging.info("Updating enable motion: " + str(value))
+    settings.log.info("Updating enable motion: " + str(value))
     core_config.set_enable_motion(value)
     if value:
         response = "Les déplacement ont été activés."
@@ -275,6 +274,6 @@ def update_enable_motion():
 @login_required
 def update_robot_name():
     name = request.json.get('robot_name')
-    logging.info("Updating robot name: " + name)
+    settings.log.info("Updating robot name: " + name)
     core_config.set_robot_name(name)
     return jsonify("Le nom du robot a été mis à jour."), 200

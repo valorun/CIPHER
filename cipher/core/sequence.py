@@ -1,4 +1,3 @@
-import logging
 from flask_socketio import SocketIO
 from cipher import socketio
 from .actions import Action

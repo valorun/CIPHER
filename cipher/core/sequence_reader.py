@@ -1,8 +1,8 @@
-import logging
 import json
 from cipher.core.actions import *
 from cipher.core.sequence import Sequence, Node, Transition
 from cipher.model import db, Sequence as DbSequence
+from . import core
 
 
 # vérif que le parcours partant du noeud de départ soit bien sans orphelins, et qu'il n'y ait pas de boucles
@@ -27,7 +27,7 @@ class SequenceReader:
         Create a action node object from JSON.
         """
         if 'name' not in data:
-            logging.info(str(data))
+            core.log.info(str(data))
             raise ValueError('Invalid JSON Action format')
         action_name = data['name']
         action_parameters = data['parameters']
@@ -51,7 +51,7 @@ class SequenceReader:
         """
         # wait for the current sequence to be completed to launch a new one
         if self.current_sequence is not None and self.current_sequence.is_in_execution():
-            logging.warning("Cannot execute sequence, another one is already running.")
+            core.log.warning("Cannot execute sequence, another one is already running.")
             return
 
         seq = self.get_sequence_from_json(data)
@@ -67,7 +67,7 @@ class SequenceReader:
         seq = DbSequence.query.filter_by(id=name, enabled=True).first()
         if seq is not None:
             seq_data = seq.value
-            logging.info("Executing sequence " + name)
+            core.log.info("Executing sequence " + name)
             self.read_sequence(json.loads(seq_data), **kwargs)
             return True
         else:

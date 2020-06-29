@@ -1,4 +1,3 @@
-import logging
 from flask import Flask, session, request, jsonify
 import json
 from . import sequences
@@ -35,7 +34,7 @@ def save_sequence():
     sequence = sequence_reader.get_sequence_from_json(seq_data)
     if sequence is None:
         return jsonify("La séquence n'est pas valide."), 400
-    logging.info("Saving sequence '" + seq_name + "'")
+    sequences.log.info("Saving sequence '" + seq_name + "'")
     db_sequence = Sequence(id=seq_name, value=json.dumps(seq_data), enabled=True)
     db.session.merge(db_sequence)
     db.session.commit()
@@ -52,7 +51,7 @@ def enable_sequence():
     value = request.json.get('value')
     if not seq_name or ' ' in seq_name:
         return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Updating '" + seq_name + "'")
+    sequences.log.info("Updating '" + seq_name + "'")
     db_seq = Sequence.query.filter_by(id=seq_name).first()
     if db_seq is None:
         return jsonify("La séquence est inconnue."), 400
@@ -70,7 +69,7 @@ def delete_sequence():
     seq_name = request.json.get('seq_name')
     if not seq_name or ' ' in seq_name:
         return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Deleting " + seq_name + "'")
+    sequences.log.info("Deleting " + seq_name + "'")
     db_seq = Sequence.query.filter_by(id=seq_name).first()
     if db_seq is None:
         return jsonify("La séquence est inconnue."), 400

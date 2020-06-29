@@ -1,4 +1,3 @@
-import logging
 import json
 import importlib.util
 from typing import List
@@ -10,6 +9,7 @@ from cipher import socketio, mqtt
 from cipher.model import db, Servo, Relay, resources
 from cipher.config import core_config
 from cipher.core.action_parameters import *
+from . import core
 
 class Action:
     display_name = ''
@@ -68,10 +68,10 @@ class SpeechAction(Action):
     def execute(text: str):
         valid, message = SpeechAction.check_parameters(text)
         if not valid:
-            logging.warning(message)
+            core.log.warning(message)
             return
 
-        logging.info("Pronouncing '" + text + "'")
+        core.log.info("Pronouncing '" + text + "'")
         socketio.emit('response', text, namespace='/client')
 
 class RelayAction(Action):
@@ -104,10 +104,10 @@ class RelayAction(Action):
         
         valid, message = RelayAction.check_parameters(label)
         if not valid:
-            logging.warning(message)
+            core.log.warning(message)
             return
 
-        logging.info("Activating relay '" + label + "'")
+        core.log.info("Activating relay '" + label + "'")
 
         with db.app.app_context():
             db_rel = Relay.query.filter_by(label=label, enabled=True).first()
@@ -124,7 +124,7 @@ class RelayAction(Action):
                     # activate the relay on the corresponding raspberry
                     mqtt.publish('raspi/' + raspi_id + '/relay/activate', json.dumps({'gpio': pin, 'state': state}))
                 else:
-                    logging.warning("Cannot activate relay '" + label + "', pair already activated")
+                    core.log.warning("Cannot activate relay '" + label + "', pair already activated")
 
             else:
                 mqtt.publish('raspi/' + raspi_id + '/relay/activate', json.dumps({'gpio': pin, 'state': state}))
@@ -156,10 +156,10 @@ class MotionAction(Action):
     def execute(direction: str, speed: int):
         valid, message = MotionAction.check_parameters(direction, speed)
         if not valid:
-            logging.warning(message)
+            core.log.warning(message)
             return
 
-        logging.info("Moving with values " + direction + ", " + str(speed))
+        core.log.info("Moving with values " + direction + ", " + str(speed))
         mqtt.publish('raspi/' + core_config.get_motion_raspi_id() + '/motion', json.dumps({'direction': direction, 'speed': speed}))
 
 class ServoAction(Action):
@@ -195,7 +195,7 @@ class ServoAction(Action):
     def execute(label: str, position: int, speed: int):
         valid, message = ServoAction.check_parameters(label, position, speed)
         if not valid:
-            logging.warning(message)
+            core.log.warning(message)
             return
 
         with db.app.app_context():
@@ -203,7 +203,7 @@ class ServoAction(Action):
 
             pin = db_servo.pin
             raspi_id = db_servo.raspi_id
-            logging.info("Moving servo '" + label + "' to " + str(position) + " at speed " + str(speed))
+            core.log.info("Moving servo '" + label + "' to " + str(position) + " at speed " + str(speed))
             mqtt.publish('raspi/' + raspi_id + '/servo/set_position', json.dumps({'gpio': pin, 'position': position, 'speed': speed}))
 
 class ServoSequenceAction(Action):
@@ -227,15 +227,15 @@ class ServoSequenceAction(Action):
     def execute(index: int):
         valid, message = ServoSequenceAction.check_parameters(index)
         if not valid:
-            logging.warning(message)
+            core.log.warning(message)
             return
         with db.app.app_context():
             db_servo = Servo.query.distinct(Servo.raspi_id).first()
             if db_servo is None:
-                logging.warning("No default servo raspi set.")
+                core.log.warning("No default servo raspi set.")
                 return
             raspi_id = db_servo.raspi_id
-            logging.info("Executing servo sequence '" + str(index) + "'")
+            core.log.info("Executing servo sequence '" + str(index) + "'")
             mqtt.publish('raspi/' + raspi_id + '/servo/sequence', json.dumps({'index': index}))
 
 class SoundAction(Action):
@@ -261,17 +261,17 @@ class SoundAction(Action):
     def execute(name: str):
         valid, message = SoundAction.check_parameters(name)
         if not valid:
-            logging.warning(message)
+            core.log.warning(message)
             return
 
         if not core_config.get_audio_on_server():
             if SoundAction.current_sound is None or SoundAction.current_sound.poll() is not None:  # if no sound is played or the current sound ended
-                logging.info("Playing sound '" + resources.get_sound_path(name) + "\' on server")
+                core.log.info("Playing sound '" + resources.get_sound_path(name) + "\' on server")
                 SoundAction.current_sound = Popen(['mplayer', resources.get_sound_path(name)])
             else:
                 SoundAction.current_sound.terminate()
         else:
-            logging.info("Playing sound '" + name + "' on client")
+            core.log.info("Playing sound '" + name + "' on client")
             socketio.emit('play_sound', name, namespace='/client')
 
 DEFAULT_ACTIONS = {'relay': RelayAction, 'sound': SoundAction, 'speech': SpeechAction, 'servo': ServoAction, 'servoSequence': ServoSequenceAction, 'motion': MotionAction}

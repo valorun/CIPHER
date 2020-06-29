@@ -1,4 +1,3 @@
-import logging
 from flask import Flask, session, redirect
 from . import dashboard
 from cipher.config import core_config

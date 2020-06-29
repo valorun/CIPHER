@@ -1,9 +1,9 @@
-import logging
 import json
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
 from cipher import socketio, mqtt
 from cipher.model import Relay
+from . import core
 
 raspies = []
 
@@ -24,7 +24,7 @@ def on_raspi_connect(client, userdata, msg):
     global raspies
     data = json.loads(msg.payload.decode('utf-8'))
     raspi_id = data['id']
-    logging.info("Raspberry " + raspi_id + " connected.")
+    core.log.info("Raspberry " + raspi_id + " connected.")
     new_raspi = {}
     new_raspi['id'] = raspi_id
     mqtt.subscribe('raspi/' + raspi_id + '/#')
@@ -52,7 +52,7 @@ def on_raspi_disconnect(client, userdata, msg):
     raspi_id = data['id']
     old_raspi = {}
     old_raspi['id'] = raspi_id
-    logging.info("Raspberry " + raspi_id + " disconnected.")
+    core.log.info("Raspberry " + raspi_id + " disconnected.")
     raspies = [r for r in raspies if r['id'] != raspi_id]
     mqtt.unsubscribe('raspi/' + raspi_id + '/#')
     socketio.emit('raspi_disconnect', old_raspi, namespace='/client', broadcast=True)
@@ -60,13 +60,13 @@ def on_raspi_disconnect(client, userdata, msg):
 
 @socketio.on('shutdown', namespace='/client')
 def shutdown():
-    logging.info("Shutdown rasperries")
+    core.log.info("Shutdown rasperries")
     mqtt.publish('raspi/shutdown', 'shutdown')
 
 
 @socketio.on('reboot', namespace='/client')
 def reboot():
-    logging.info("Reboot rasperries")
+    core.log.info("Reboot rasperries")
     mqtt.publish('raspi/reboot', 'reboot')
 
 

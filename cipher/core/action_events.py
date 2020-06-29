@@ -1,9 +1,9 @@
-import logging
 import json
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
 from .sequence_reader import sequence_reader
 from .actions import RelayAction, SoundAction, MotionAction, Action
+from . import core
 from cipher import socketio, mqtt
 from cipher.model import Relay
 
@@ -13,7 +13,7 @@ def play_sequence(seq_name: str):
     """
     Function called when the client want to execute a sequence.
     """
-    logging.debug("Client triggered sequence: '" + seq_name + "'")
+    core.log.debug("Client triggered sequence: '" + seq_name + "'")
     sequence_reader.launch_sequence(seq_name)
 
 
@@ -22,7 +22,7 @@ def play_sequence(seq_name: str):
 #    """
 #    Function called when the client want to activate a relay.
 #    """
-#    logging.debug("Client triggered relay: '" + label + "'")
+#    core.logging.debug("Client triggered relay: '" + label + "'")
 #    RelayAction.execute(label)
 
 
@@ -31,7 +31,7 @@ def play_sequence(seq_name: str):
 #    """
 #    Function called when the client want to play a sound.
 #    """
-#    logging.debug("Client triggered sound: '" + sound_name + "'")
+#    core.logging.debug("Client triggered sound: '" + sound_name + "'")
 #    SoundAction.execute(sound_name)
 
 
@@ -40,7 +40,7 @@ def play_sequence(seq_name: str):
 #    """
 #    Function called when the client want to move the robot with the 2 motors.
 #    """
-#    logging.debug("Client triggered motion: " + direction + ", " + str(speed))
+#    core.logging.debug("Client triggered motion: " + direction + ", " + str(speed))
 #    MotionAction.execute(direction, int(speed))
 
 @socketio.on('action', namespace='/client')
@@ -48,7 +48,7 @@ def action(name: str, parameters: dict):
     """
     Function called when the client want to execute an action.
     """
-    logging.debug("Client triggered action '" + name + "': " + str(parameters))
+    core.log.debug("Client triggered action '" + name + "': " + str(parameters))
     Action.get_from_name(name).execute(**parameters)
 
 
@@ -64,7 +64,7 @@ def update_relays_state(client, userdata, msg):
     Update the state of the relays on the client side at the request of a raspberry.
     """
     global RelayAction
-    logging.info("Updating relay status")
+    core.logging.info("Updating relay status")
     relays_list = []  # relays to update
     data = json.loads(msg.payload.decode('utf-8'))
     # for each specified relay ...

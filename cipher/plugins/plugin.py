@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, render_template
 from cipher.config import core_config
 
@@ -9,6 +10,7 @@ class Plugin():
         self.label = label
         self.icon = icon
         self.blueprint = Blueprint(name, import_name, static_folder='static', static_url_path='/' + name + '/static', template_folder='templates')
+        self.log = logging.getLogger(name)
 
     def register(self, app, plugins):
         self.plugins = plugins

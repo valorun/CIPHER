@@ -1,5 +1,5 @@
-import logging
 from .model import Intent
+from . import speech
 import json
 from cipher import mqtt
 from cipher.core.sequence_reader import sequence_reader
@@ -12,7 +12,7 @@ def handle_intents(client, userdata, message):
     except Exception:
         return
     intent_name = intent['intentName']
-    logging.info("Received intent '" + intent_name + "'")
+    speech.log.info("Received intent '%s'", intent_name)
     db_intent = Intent.query.filter_by(intent=intent_name).first()
 
     if(db_intent is not None):

@@ -1,4 +1,3 @@
-import logging
 from . import debug
 from cipher.model import Servo
 
