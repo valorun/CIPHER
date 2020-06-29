@@ -72,7 +72,8 @@ def create_app(debug=False):
 class SocketIOHandler(logging.Handler):
     def emit(self, record):
         msg = self.format(record)
-        socketio.emit('logging', msg, namespace='/client')
+        if socketio is not None and socketio.server is not None:
+            socketio.emit('logging', msg, namespace='/client')
 
 
 def setup_logger(debug=False):
