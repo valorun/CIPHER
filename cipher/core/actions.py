@@ -124,7 +124,7 @@ class RelayAction(Action):
                     # activate the relay on the corresponding raspberry
                     mqtt.publish('raspi/' + raspi_id + '/relay/activate', json.dumps({'gpio': pin, 'state': state}))
                 else:
-                    core.log.warning("Cannot activate relay '" + label + "', pair already activated")
+                    core.log.warning("Cannot activate relay '%s', pair already activated", label)
 
             else:
                 mqtt.publish('raspi/' + raspi_id + '/relay/activate', json.dumps({'gpio': pin, 'state': state}))

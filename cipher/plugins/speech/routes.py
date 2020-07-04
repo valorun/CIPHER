@@ -1,11 +1,11 @@
 import json
 import re
+import threading
 from flask import Flask, session, request, jsonify
 from . import speech
 from .model import Intent
 from cipher.model import Sequence, db, resources
 from cipher.security import login_required
-
 
 @speech.route('/speech')
 @login_required
@@ -30,7 +30,7 @@ def save_intent():
         return jsonify("Un nom de script ne doit pas contenir d'espace."), 400
     if Intent.query.filter_by(intent=intent).first() is not None:
         return jsonify("Une intention portant le même nom existe déjà."), 400
-    speech.log.info("Saving intent '" + intent + "'")
+    speech.log.info("Saving intent '%s'", intent)
     db_intent = Intent(intent=intent, sequence_id=seq_id, enabled=True)
     db.session.merge(db_intent)
     db.session.commit()

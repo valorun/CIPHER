@@ -1,5 +1,0 @@
-numpy
-scikit-learn
-librosa
-sounddevice
-keras

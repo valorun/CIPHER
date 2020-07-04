@@ -67,7 +67,7 @@ class SequenceReader:
         seq = DbSequence.query.filter_by(id=name, enabled=True).first()
         if seq is not None:
             seq_data = seq.value
-            core.log.info("Executing sequence " + name)
+            core.log.info("Executing sequence %s", name)
             self.read_sequence(json.loads(seq_data), **kwargs)
             return True
         else:
