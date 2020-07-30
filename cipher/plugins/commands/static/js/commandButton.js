@@ -77,7 +77,7 @@ class CommandButton {
     }
     switch (json.action.name) {
       case 'relay':
-        return new RelayButton(json.label, json.action.relay, json.color);
+        return new RelayButton(json.label, json.action.label, json.color);
       case 'sequence':
         return new SequenceButton(json.label, json.action.parameters.name, json.color);
       default:
