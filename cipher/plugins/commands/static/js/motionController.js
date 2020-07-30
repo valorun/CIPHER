@@ -35,7 +35,7 @@ const motionController = (() => {
       });
       e.addEventListener(stopActionEvent, () => {
         console.log('stop, 0');
-        socket.emit('action', 'motion', { direction: 'stop' });
+        socket.emit('action', 'motion', { direction: 'stop', speed: 0 });
       });
     });
 
