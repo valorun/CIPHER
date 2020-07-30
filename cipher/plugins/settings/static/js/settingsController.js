@@ -37,13 +37,6 @@ const settingsController = (() => {
       });
     });
 
-    // camera url modification
-    document.getElementById('cameraUrlForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      fetchJson('/update_camera_url', 'POST', { camera_url: DOM.$cameraUrl.value })
-        .then(r => successAlert(r));
-    });
-
     // audio on server mode
     document.getElementById('audioOnServer').addEventListener('change', (e) => {
       fetchJson('/update_audio_source', 'POST', { value: e.srcElement.checked })
@@ -73,7 +66,6 @@ const settingsController = (() => {
 
   function cacheDom() {
     DOM.$voices = document.getElementById('voices');
-    DOM.$cameraUrl = document.getElementById('cameraUrl');
     DOM.$robotName = document.getElementById('robotName');
     DOM.$motionRaspiId = document.getElementById('motionRaspiId');
   }

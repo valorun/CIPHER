@@ -1,5 +1,5 @@
 from cipher.core.actions import SpeechAction, CUSTOM_ACTIONS
-from cipher.model import config
+from cipher.model import core_config
 
 class GetNameAction(SpeechAction):
     display_name = 'Nom du robot'
@@ -14,6 +14,6 @@ class GetNameAction(SpeechAction):
 
     @staticmethod
     def execute():
-        SpeechAction.execute("Je m'appelle " + config.get_robot_name())
+        SpeechAction.execute("Je m'appelle " + core_config.get_robot_name())
 
 CUSTOM_ACTIONS['name'] = GetNameAction

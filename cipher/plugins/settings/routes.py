@@ -220,17 +220,6 @@ def delete_servo():
     return jsonify("Le servo moteur '" + label + "' a été supprimé avec succès."), 200
 
 
-@settings.route('/update_camera_url', methods=['POST'])
-@login_required
-def update_camera_url():
-    url = request.json.get('camera_url')
-    if url and ' ' in url:  # if the string is empty, update is accepted
-        return jsonify("L'url ne doit pas contenir d'espace."), 400
-    settings.log.info("Updating camera URL: %s", url)
-    core_config.set_camera_url(url)
-    return jsonify("L'URL de la caméra a été mis à jour."), 200
-
-
 @settings.route('/update_audio_source', methods=['POST'])
 @login_required
 def update_audio_source():

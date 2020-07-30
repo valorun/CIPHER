@@ -1,4 +1,5 @@
-{% if camera_url!=None %}
+<script src="{{ url_for('static', filename='js/cameraController.js') }}"></script>
+
 <div class="panel">
     <div class="card round-large tertiary">
         <button class="btn container primary block left-align accordion-header">
@@ -7,11 +8,15 @@
         <div  class="accordion-content">
             <div class="container padding-16">
                 <p>
-                    <iframe src="{{ camera_url }}" >
-                    </iframe>
+                    <img id="camera" ></img>
+                    <i class="button secondary fas fa-play" id="startCameraButton"></i>
                 </p>
             </div>
         </div>
     </div>
 </div>
-{% endif %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        cameraController.init();
+    })
+</script>

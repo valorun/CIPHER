@@ -60,19 +60,9 @@ class CoreConfig(ConfigFile):
         self.PLUGINS = self.getlist('SERVER', 'PLUGINS',
                 fallback='dashboard,commands,speech,editor,debug,sequences,settings')  # all plugins to load, corresponds to the different pages available on the navbar
 
-
-    # CAMERA URL
-    def set_camera_url(self, url: str):
-        if not url.strip():
-            url = ''
-        self.set('GENERAL', 'CAMERA_URL', url)
-
-    def get_camera_url(self) -> str:
-        value = self.get('GENERAL', 'CAMERA_URL', 
-            fallback=None)
-        if value == '':
-            value = None
-        return value
+        # CAMERA FRAME RATE (Hz)
+        self.CAMERA_FRAME_RATE = self.getint('GENERAL', 'CAMERA_FRAME_RATE',
+                fallback=30)
 
     # AUDIO SOURCE
     def set_audio_on_server(self, mode: bool):

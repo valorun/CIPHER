@@ -64,7 +64,7 @@ def update_relays_state(client, userdata, msg):
     Update the state of the relays on the client side at the request of a raspberry.
     """
     global RelayAction
-    core.logging.info("Updating relay status")
+    core.log.info("Updating relay status")
     relays_list = []  # relays to update
     data = json.loads(msg.payload.decode('utf-8'))
     # for each specified relay ...

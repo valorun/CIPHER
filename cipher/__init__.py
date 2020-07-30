@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import eventlet
-eventlet.monkey_patch(socket=False)
+eventlet.monkey_patch()
 
 from os import urandom
 import logging
@@ -14,7 +14,7 @@ from flask_socketio import SocketIO
 from .config import core_config
 from .model import db, User
 
-socketio = SocketIO(logger=True)  # socketio server used to communicate with web client
+socketio = SocketIO(logger=True, async_mode='eventlet')  # socketio server used to communicate with web client
 mqtt = Mqtt()  # mqtt client, need to be connected to a brocker (in local)
 
 
@@ -109,7 +109,7 @@ def setup_logger(debug=False):
             'formatter': 'default'
         },
         'loggers': {
-            'socketio.server': {'handlers': ['default', 'file'], 'propagate': False},
+            #'socketio.server': {'handlers': ['default', 'file'], 'propagate': False},
             'flask.flask_mqtt': {'handlers': ['default', 'file', 'socketio']},
             'sqlalchemy': {'handlers': ['default', 'file', 'socketio']},
         }

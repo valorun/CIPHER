@@ -1,7 +1,8 @@
 import json
 from . import speech
 from .model import Intent
-from cipher import mqtt
+from flask_socketio import SocketIO, emit
+from cipher import socketio, mqtt
 from cipher.core.sequence_reader import sequence_reader
 
 @mqtt.on_topic('speech/intent/#')
@@ -18,3 +19,13 @@ def handle_intents(client, userdata, message):
     if(db_intent is not None):
         if db_intent.sequence is not None:
             sequence_reader.launch_sequence(db_intent.sequence.id, **intent)
+
+@socketio.on('start_speech_recognition', namespace='/client')
+def start_speech_recognition():
+    core.log.info("Started speech recognition")
+    mqtt.publish('raspi/shutdown', 'shutdown')
+
+@socketio.on('stop_speech_recognition', namespace='/client')
+def stop_speech_recognition():
+    core.log.info("Stopped speech recognition")
+    mqtt.publish('raspi/shutdown', 'shutdown')
