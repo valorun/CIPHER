@@ -123,7 +123,6 @@ const gridFormController = (() => {
   * Save the grid on the server
   */
   function saveGrid() {
-    console.log(grid.toJSON());
     fetchJson('/save_buttons', 'POST', { data: JSON.stringify(grid.toJSON()) })
       .then(() => {
         console.log('Buttons saved');

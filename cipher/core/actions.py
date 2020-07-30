@@ -192,7 +192,7 @@ class ServoAction(Action):
                     IntegerParameter('speed', 'Vitesse', '', 0, 100)]
     
     @staticmethod
-    def execute(label: str, position: int, speed: int):
+    def execute(label: str, position: int, speed: int=0):
         valid, message = ServoAction.check_parameters(label, position, speed)
         if not valid:
             core.log.warning(message)

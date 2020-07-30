@@ -9,13 +9,14 @@ class CommandButton {
   * @param {string} label
   * @param {string} color
   */
-  constructor(label, type, color) {
+  constructor(label, name, color) {
     if (new.target === CommandButton) {
       throw new TypeError('Cannot construct CommandButton instances directly');
     }
     this.label = label;
     this.action = {};
-    this.action.type = type;
+    this.action.name = name;
+    this.action.parameters = {};
     this.color = color;
 
     this.$el = document.createElement('div');
@@ -101,7 +102,7 @@ class RelayButton extends CommandButton {
     if (!relay) {
       throw new TypeError('Invalid relay parameter');
     }
-    this.action.relay = relay;
+    this.action.parameters.label = relay;
 
     this.$button.style.border = '4px solid';
     this.deactivate();
@@ -109,7 +110,7 @@ class RelayButton extends CommandButton {
 
   executeAction() {
     super.executeAction();
-    socket.emit('action', 'relay', { label: this.action.relay });
+    socket.emit('action', 'relay', { label: this.action.parameters.relay });
   }
 
   activate() {
@@ -146,11 +147,11 @@ class SequenceButton extends CommandButton {
     if (!sequence) {
       throw new TypeError('Invalid sequence parameter');
     }
-    this.action.sequence = sequence;
+    this.action.parameters.name = sequence;
   }
 
   executeAction() {
     super.executeAction();
-    socket.emit('play_sequence', this.action.sequence);
+    socket.emit('play_sequence', this.action.parameters.name);
   }
 }
