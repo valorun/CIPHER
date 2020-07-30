@@ -29,13 +29,13 @@ const motionController = (() => {
     [...document.getElementsByClassName('motion-direction')].forEach(e => {
       const direction = e.getAttribute('value').split('_')[1];
       e.addEventListener(startActionEvent, () => {
-        const speed = DOM.$motion_speed.value;
+        const speed = parseInt(DOM.$motion_speed.value);
         console.log(direction + ', ' + speed);
-        socket.emit('motion', direction, speed);
+        socket.emit('action', 'motion', { direction: direction, speed: speed });
       });
       e.addEventListener(stopActionEvent, () => {
         console.log('stop, 0');
-        socket.emit('motion', 'stop', 0);
+        socket.emit('action', 'motion', { direction: 'stop' });
       });
     });
 
@@ -49,7 +49,7 @@ const motionController = (() => {
       }
       e.preventDefault();
       let direction = 'stop';
-      const speed = DOM.$motion_speed.value;
+      const speed = parseInt(DOM.$motion_speed.value);
 
       switch (e.keyCode) {
         case 37:
@@ -75,7 +75,7 @@ const motionController = (() => {
         return;
       }
       console.log('stop, 0');
-      socket.emit('action', 'motion', { direction: 'stop' });
+      socket.emit('action', 'motion', { direction: 'stop', speed: 0 });
       keyPressed = false;
     });
   }
