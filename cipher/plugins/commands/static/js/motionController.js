@@ -31,11 +31,11 @@ const motionController = (() => {
       e.addEventListener(startActionEvent, () => {
         const speed = DOM.$motion_speed.value;
         console.log(direction + ', ' + speed);
-        socket.emit('move', direction, speed);
+        socket.emit('motion', direction, speed);
       });
       e.addEventListener(stopActionEvent, () => {
         console.log('stop, 0');
-        socket.emit('move', 'stop', 0);
+        socket.emit('motion', 'stop', 0);
       });
     });
 
@@ -66,7 +66,7 @@ const motionController = (() => {
           break;
       }
       console.log(direction + ', ' + speed);
-      socket.emit('action', 'move', { direction: direction, speed: speed });
+      socket.emit('action', 'motion', { direction: direction, speed: speed });
       keyPressed = true;
     });
 
@@ -75,7 +75,7 @@ const motionController = (() => {
         return;
       }
       console.log('stop, 0');
-      socket.emit('action', 'move', { direction: 'stop' });
+      socket.emit('action', 'motion', { direction: 'stop' });
       keyPressed = false;
     });
   }
