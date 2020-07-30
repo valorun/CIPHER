@@ -11,11 +11,10 @@ from cipher.security import login_required
 def settings_page():
     relays = Relay.query.all()
     servos = Servo.query.all()
-    camera_url = core_config.get_camera_url() or ''
     audio_on_server = core_config.get_audio_on_server()
     motion_raspi_id = core_config.get_motion_raspi_id() or ''
     enable_motion = core_config.get_enable_motion()
-    return settings.render_page('settings.html', relays=relays, servos=servos, camera_url=camera_url, audio_on_server=audio_on_server, motion_raspi_id=motion_raspi_id, enable_motion=enable_motion)
+    return settings.render_page('settings.html', relays=relays, servos=servos, audio_on_server=audio_on_server, motion_raspi_id=motion_raspi_id, enable_motion=enable_motion)
 
 
 @settings.route('/save_relay', methods=['POST'])
