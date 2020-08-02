@@ -3,6 +3,11 @@
 	src: url(/static/webfonts/Electrolize-Regular.ttf);
 }
 
+@font-face {
+	font-family: Terminus;
+	src: url(/static/webfonts/Terminus.ttf);
+}
+
 body,h1,h2,h3,h4,h5,h6 {
 	font-family: "Electrolize", sans-serif
 }

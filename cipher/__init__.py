@@ -6,6 +6,7 @@ eventlet.monkey_patch()
 from os import urandom
 import logging
 import importlib
+from collections import deque
 from logging.handlers import RotatingFileHandler
 from logging.config import dictConfig
 from flask import Flask
@@ -69,10 +70,16 @@ def create_app(debug=False):
 
 
 class SocketIOHandler(logging.Handler):
+    log_queue = deque(maxlen=30)
+
+    def __init__(self):
+        logging.Handler.__init__(self)
+
     def emit(self, record):
         msg = self.format(record)
         if socketio is not None and socketio.server is not None:
             socketio.emit('logging', msg, namespace='/client')
+        SocketIOHandler.log_queue.append(self.format(record))
 
 
 def setup_logger(debug=False):
