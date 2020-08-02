@@ -110,7 +110,7 @@ class RelayButton extends CommandButton {
 
   executeAction() {
     super.executeAction();
-    socket.emit('action', 'relay', { label: this.action.parameters.relay });
+    socket.emit('action', 'relay', { label: this.action.parameters.label });
   }
 
   activate() {
