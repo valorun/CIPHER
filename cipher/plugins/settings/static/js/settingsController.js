@@ -29,7 +29,7 @@ const settingsController = (() => {
     // raspies autocompletes
     socket.on('receive_raspies', (raspies) => {
       raspies = raspies.map(r => r.id);
-      document.querySelectorAll('#newRelayRaspiIdData,#newServoRaspiIdData,#motionRaspiIdData').forEach((e) => {
+      document.querySelectorAll('#availableRaspies').forEach((e) => {
         empty(e);
         raspies.forEach((r) => {
           e.insertAdjacentHTML('beforeend', '<option value="' + r + '">');

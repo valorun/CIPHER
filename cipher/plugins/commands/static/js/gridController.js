@@ -70,7 +70,7 @@ const gridController = (() => {
     // get the relays and update the associated state
     const relaysButtons = gridItems.map(gi => gi.commandButton).filter(b => b instanceof RelayButton);
     relaysStates.map(r => {
-      r.relay = relaysButtons.find(b => b.action.relay === r.relay);
+      r.relay = relaysButtons.find(b => b.action.parameters.label === r.relay);
       return r;
     }).filter(r => r.relay !== undefined)
       .forEach(r => r.state === 1 ? r.relay.activate() : r.relay.deactivate());

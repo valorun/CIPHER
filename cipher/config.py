@@ -55,6 +55,10 @@ class CoreConfig(ConfigFile):
         # SOUNDS LOCATION
         self.SOUNDS_LOCATION = self.get('SERVER', 'SOUNDS_LOCATION',
                 fallback=join(dirname(__file__), 'sounds/'))
+        
+        # DEBUG
+        self.DEBUG = self.getboolean('SERVER', 'DEBUG', 
+                fallback=False)
 
         # PLUGINS
         self.PLUGINS = self.getlist('SERVER', 'PLUGINS',
@@ -102,11 +106,6 @@ class CoreConfig(ConfigFile):
     def get_enable_motion(self) -> bool:
         return self.getboolean('GENERAL', 'ENABLE_MOTION',
             fallback=True)
-
-    # DEBUG
-    def get_debug_mode(self) -> bool:
-        return self.getboolean('SERVER', 'DEBUG', 
-            fallback=False)
 
 
 core_config = CoreConfig(CONFIG_FILE)

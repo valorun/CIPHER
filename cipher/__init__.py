@@ -64,8 +64,7 @@ def create_app(debug=False):
 
     socketio.init_app(app)
     mqtt.init_app(app)
-    mqtt.subscribe('server/#')
-    
+
     return app
 
 

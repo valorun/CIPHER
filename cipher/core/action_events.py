@@ -55,7 +55,7 @@ def action(name: str, parameters: dict):
 @socketio.on('get_relays_state', namespace='/client')
 def get_relays_state():
     global RelayAction
-    emit('receive_relays_state', [{'relay': l, 'state': RelayAction.relay_states[l]} for l in RelayAction.relay_states], namespace='/client', broadcast=False)
+    emit('receive_relays_state', [{'relay': r, 'state': s} for r, s in RelayAction.relay_states.items()], namespace='/client', broadcast=False)
 
 
 @mqtt.on_topic('server/update_relays_state')
@@ -78,5 +78,6 @@ def update_relays_state(client, userdata, msg):
             relays_list.append({'relay': label, 'state': state})
         # update the local state dictionnary
         RelayAction.relay_states[label] = state
+    core.log.info("New relay status: " + str(relays_list))
     # finally send the list of the relays to update on the clients
     socketio.emit('receive_relays_state', relays_list, namespace="/client", broadcast=True)

@@ -17,8 +17,7 @@
                 </div>
                 <div class="third">
                     <label for="newServoRaspiId">Raspberry: </label>
-                    <input id="newServoRaspiId" type="text" value="" class="input border" list="newServoRaspiIdData">
-                    <datalist id="newServoRaspiIdData"></datalist>
+                    <input id="newServoRaspiId" type="text" value="" class="input border" list="availableRaspies">
                 </div>
             </div>
             <div class="container padding">
@@ -71,7 +70,9 @@
                             <td class="tertiary"><input type="number" class="input servo-min" value="{{ s.min_pulse_width }}" min="0"></td>
                             <td class="tertiary"><input type="number" class="input servo-max" value="{{ s.max_pulse_width }}" min="0"></td>
                             <td class="tertiary"><input type="number" class="input servo-default"id="{{ s.label }}_default" value="{{ s.def_pulse_width }}" min="0"></td>
-                            <td class="tertiary"><input type="text" class="input servo-raspi" value="{{ s.raspi_id }}"></td>
+                            <td class="tertiary">
+                                <input type="text" class="input servo-raspi" value="{{ s.raspi_id }}" list="availableRaspies">
+                            </td>
                             <td>
                                 {% if s.enabled==True %}
                                 <input class="check servo-enable" id="servo_{{ s.label }}_enable" type="checkbox" checked="checked">

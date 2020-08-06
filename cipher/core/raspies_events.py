@@ -13,6 +13,7 @@ def on_server_connect(client, userdata, flags, rc):
     """
     Function called when the server connects to the broker.
     """
+    mqtt.subscribe('server/#')
     mqtt.publish('server/connect')
 
 
