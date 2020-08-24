@@ -47,8 +47,9 @@ def create_app(debug=False):
             loaded_plugins.append(p)
             # then register its blueprint
             p.register(app, loaded_plugins)
+            logging.info("✓ - Plugin '" + p_name + "' loaded")
         except Exception as e:
-            logging.error("Failed to load plugin '" + p_name + "': {0}".format(e))
+            logging.error("❌ - Failed to load plugin '" + p_name + "': {0}".format(e))
             exit(1)
 
     db.app = app
@@ -61,6 +62,19 @@ def create_app(debug=False):
         new_db_user = User(username='admin', password='cGFzc3dvcmQ=', active=True)
         db.session.merge(new_db_user)
         db.session.commit()
+    
+    @mqtt.on_connect()
+    def on_server_connect(client, userdata, flags, rc):
+        """
+        Function called when the server connects to the broker.
+        """
+        mqtt.subscribe('server/#')
+        mqtt.subscribe('raspi/connect')
+        mqtt.publish('server/connect')
+        logging.info("Connected to broker.")
+        for p in loaded_plugins:
+            for f in p.startup_functions:
+                f()
 
     socketio.init_app(app)
     mqtt.init_app(app)

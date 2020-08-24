@@ -8,16 +8,7 @@ from . import core
 raspies = []
 
 
-@mqtt.on_connect()
-def on_server_connect(client, userdata, flags, rc):
-    """
-    Function called when the server connects to the broker.
-    """
-    mqtt.subscribe('server/#')
-    mqtt.publish('server/connect')
-
-
-@mqtt.on_topic('server/raspi_connect')
+@mqtt.on_topic('raspi/connect')
 def on_raspi_connect(client, userdata, msg):
     """
     Function called when a raspberry client connects.

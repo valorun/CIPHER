@@ -3,4 +3,3 @@ flask-socketio
 flask_sqlalchemy
 eventlet
 flask-mqtt
-opencv-python
