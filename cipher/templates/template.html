@@ -15,7 +15,7 @@
 	<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/templateController.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/raspiesController.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/clientsController.js') }}"></script>
 
 </head>
 
@@ -100,7 +100,7 @@
     	document.addEventListener('DOMContentLoaded', () => {
 			templateController.init();
 			connectionManager.init();
-			raspiesController.init();
+			clientsController.init();
 		});
 	</script>
 

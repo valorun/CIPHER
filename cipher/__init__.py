@@ -69,7 +69,7 @@ def create_app(debug=False):
         Function called when the server connects to the broker.
         """
         mqtt.subscribe('server/#')
-        mqtt.subscribe('raspi/connect')
+        mqtt.subscribe('client/connect')
         mqtt.publish('server/connect')
         logging.info("Connected to broker.")
         for p in loaded_plugins:

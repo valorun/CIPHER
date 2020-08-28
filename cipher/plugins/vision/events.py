@@ -10,7 +10,6 @@ def on_camera_stream(client, userdata, msg):
     Function called when a frame is captured by the camera.
     """
     vision.log.debug("Received camera frame.")
-    print(msg)
     socketio.emit('camera_stream_data', msg.payload.decode('utf-8'), namespace="/client", broadcast=True)
 
 @mqtt.on_topic('server/objects_detected')
