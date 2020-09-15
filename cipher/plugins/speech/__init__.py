@@ -1,5 +1,5 @@
 from cipher.plugins import Plugin
 
-speech = Plugin('speech', __name__, 'Actions vocales', 'fa-comments')
+speech = Plugin('speech', __name__, 'Synthèse vocale', 'fa-comment')
 
-from . import routes, model, events
+from . import routes, events, config

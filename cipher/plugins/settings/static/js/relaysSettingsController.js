@@ -33,7 +33,6 @@ const relaysSettingsController = (() => {
      * Sends the new servo data to the server and updates it
      */
     update() {
-      console.log(this.$parity.value)
       fetchJson('/update_relay', 'POST', {
         label: this.label,
         new_label: this.$label.value,

@@ -37,7 +37,7 @@ class CoreConfig(ConfigFile):
             fallback='localhost')
 
         # MQTT BROKER PORT
-        self.MQTT_BROKER_PORT = self.get('MQTT_BROKER', 'PORT',
+        self.MQTT_BROKER_PORT = self.getint('MQTT_BROKER', 'PORT',
                 fallback=1883)
 
         # SERVER DATABASE

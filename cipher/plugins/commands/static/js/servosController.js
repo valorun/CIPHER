@@ -1,7 +1,7 @@
 /* globals socket */
 
-/* exported debugController */
-const debugController = (() => {
+/* exported servosController */
+const servosController = (() => {
   'use strict';
 
   const DOM = {};
@@ -25,7 +25,7 @@ const debugController = (() => {
       this.value = newValue;
       this.$valueDisplay.innerHTML = newValue;
       this.$range.value = newValue;
-      socket.emit('action', 'servo', { label: this.label, position: newValue, speed: parseInt(this.$speed.value) });
+      socket.emit('action', 'servo', { label: this.label, position: parseInt(newValue), speed: parseInt(this.$speed.value) });
     }
   }
 

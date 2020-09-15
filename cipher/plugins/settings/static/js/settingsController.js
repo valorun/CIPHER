@@ -1,4 +1,3 @@
-/* globals Cookies */
 /* globals socket */
 /* globals successAlert */
 /* globals fetchJson */
@@ -12,20 +11,13 @@ const settingsController = (() => {
 
   /* PUBLIC METHODS */
   function init() {
-    window.speechSynthesis.onvoiceschanged = this.fillVoices;
     cacheDom();
     bindUIEvents();
-    fillVoices();
     socket.emit('get_raspies');
   }
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    // voice selection
-    DOM.$voices.addEventListener('change', () => {
-      Cookies.set('voice', DOM.$voices.value);
-    });
-
     // raspies autocompletes
     socket.on('receive_raspies', (raspies) => {
       raspies = raspies.map(r => r.id);
@@ -65,25 +57,8 @@ const settingsController = (() => {
   }
 
   function cacheDom() {
-    DOM.$voices = document.getElementById('voices');
     DOM.$robotName = document.getElementById('robotName');
     DOM.$motionRaspiId = document.getElementById('motionRaspiId');
-  }
-
-  function fillVoices() {
-    const voices = window.speechSynthesis.getVoices();
-    empty(DOM.$voices);
-
-    voices.forEach((e) => {
-      if (typeof Cookies.get('voice') !== 'undefined' &&
-      Cookies.get('voice') === e.name) { // if a voice has already been chosen, select it
-        DOM.$voices.insertAdjacentHTML('beforeend', '<option selected=\'selected\' value=' + e.name + '>' +
-        e.name + '</option>');
-      } else {
-        DOM.$voices.insertAdjacentHTML('beforeend', '<option value=' + e.name + '>' +
-        e.name + '</option>');
-      }
-    });
   }
 
   return {

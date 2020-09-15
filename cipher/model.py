@@ -65,4 +65,11 @@ class Resources():
     def get_sound_path(self, sound_name: str):
         return join(self.sounds_path, sound_name)
 
+    def write_sound(self, sound_name:str, sound: bytes):
+        open(join(self.sounds_path, sound_name), 'wb').write(sound)
+
+    def delete_sound(self, sound_name):
+        if self.sound_exists(sound_name):
+            remove(join(self.sounds_path, sound_name))
+
 resources = Resources(core_config.SOUNDS_LOCATION)

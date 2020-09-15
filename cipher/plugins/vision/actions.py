@@ -15,6 +15,6 @@ class DetectObjectsAction(SpeechAction):
 
     @staticmethod
     def execute():
-        mqtt.publish('camera/detect_objects')
+        mqtt.publish('client/vision/detect_objects')
 
 CUSTOM_ACTIONS['camera_detect'] = DetectObjectsAction
