@@ -48,10 +48,6 @@ class CoreConfig(ConfigFile):
         self.LOG_FILE = self.get('SERVER', 'LOG_FILE',
                 fallback=join(dirname(__file__), 'app.log'))
 
-        # SCRIPTS LOCATION
-        self.SCRIPTS_LOCATION = self.get('SERVER', 'SCRIPTS_LOCATION',
-                fallback=join(dirname(__file__), 'scripts/'))
-
         # SOUNDS LOCATION
         self.SOUNDS_LOCATION = self.get('SERVER', 'SOUNDS_LOCATION',
                 fallback=join(dirname(__file__), 'sounds/'))
