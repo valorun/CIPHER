@@ -73,10 +73,9 @@ const graphController = (() => {
    */
   function getGraph(startId = 'start') {
     return edges.get().filter(e => e.from === startId).map(e => {
-      const transitionData = e.data;
-      transitionData.target.action.transitions = getGraph(transitionData.target.id);
+      const transitionData = Object.assign({}, e.data);
+      transitionData.target.action.transitions = getGraph(e.to);
       transitionData.target = transitionData.target.action;
-
       return transitionData;
     });
   }
