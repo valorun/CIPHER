@@ -6,7 +6,7 @@ from cipher.config import core_config
 from os.path import join, dirname
 import logging
 
-DEBUG = core_config.get_debug_mode()
+DEBUG = core_config.DEBUG
 if __name__ == '__main__':
     setup_logger(debug=DEBUG)
     app = create_app(debug=DEBUG)

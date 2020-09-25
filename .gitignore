@@ -1,8 +1,6 @@
-*.yml
 *.db
 __pycache__
 *.pyc
-*.pem
 *.mp3
 *.wav
 *.json

@@ -1,7 +1,6 @@
 /* globals failAlert */
 /* globals vis */
 /* globals ActionNode */
-/* globals templateController */
 /* globals fetchJson */
 
 /* exported graphController */
@@ -37,10 +36,10 @@ const graphController = (() => {
    */
   function graphIsValid() {
     return nodes.get().filter((n) => {
-      return n.id != 'start';
+      return n.id !== 'start';
     }).every((n1) => {
       return edges.get().some((e) => {
-        return e.to == n1.id;
+        return e.to === n1.id;
       });
     });
   }
@@ -54,42 +53,32 @@ const graphController = (() => {
     edges.clear();
 
     nodes.add([START_NODE]);
-
-    // add the nodes to the graph and create transitions for first ones
-    _updateGraph(json).forEach(c => addTransition('start', c.id));
+    _updateGraph(json, 'start');
     network.focus('start');
   }
 
-  function _updateGraph(json) {
-    const nodes = [];
-    json.forEach(a => {
-      const node = addActionNode(a);
-      nodes.push(node);
-      const children = _updateGraph(a.children);
-      children.forEach(c => addTransition(node.id, c.id));
-    });
-    // return added nodes that will became children in next iteration
-    return nodes;
+  function _updateGraph(json, startId) {
+    // add the nodes to the graph and create transitions for first ones
+    if (json != null) {
+      json.forEach(t => {
+        const node = addActionNode(t.target);
+        addTransition(startId, node.id, t.time);
+        _updateGraph(t.target.transitions, node.id);
+      });
+    }
   }
 
   /**
    * Get graph as JSON.
    */
-  function getGraph(nodesData = null) {
-    if (nodesData === null) {
-      nodesData = [];
-      // get start node childrens
-      nodesData = nodes.get().filter(n => edges.get().filter(e => e.from === 'start' && e.to === n.id).length > 0);
-    }
+  function getGraph(startId = 'start') {
+    return edges.get().filter(e => e.from === startId).map(e => {
+      const transitionData = e.data;
+      transitionData.target.action.transitions = getGraph(transitionData.target.id);
+      transitionData.target = transitionData.target.action;
 
-    const graph = nodesData.map(n => {
-      const node = n.action;
-      const children = nodes.get().filter(n1 => edges.get().filter(e => e.from === n.id && e.to === n1.id).length > 0);
-      node.children = getGraph(children);
-      return node;
+      return transitionData;
     });
-
-    return graph;
   }
 
   /* PRIVATE METHODS */
@@ -114,10 +103,8 @@ const graphController = (() => {
       manipulation: {
         enabled: false,
         addNode: (nodeData, callback) => {
-          if (handleNodeToAdd(nodeData)) {
-            callback(nodeData);
-            resetMode();
-          }
+          handleNodeToAdd(nodeData);
+          resetMode();
         },
         editNode: (nodeData, callback) => {
           if (nodeData.id !== 'start') {
@@ -138,7 +125,7 @@ const graphController = (() => {
         },
         addEdge: (edgeData, callback) => {
           if (handleEdgeToAdd(edgeData)) {
-            callback(edgeData);
+            enableAddTransitionMode();
           }
         },
         editEdge: (edgeData, callback) => {
@@ -149,7 +136,7 @@ const graphController = (() => {
       },
       layout: {
         hierarchical: {
-          enabled: true,
+          enabled: false,
           direction: 'DU',
           sortMethod: 'directed'
         },
@@ -158,32 +145,15 @@ const graphController = (() => {
     };
     network = new vis.Network(DOM.$networkContainer, data, options);
     network.focus('start');
+
+    // show or hide the delete button according to the selection.
     network.on('selectNode', () => DOM.$delSelectionButton.classList.remove('hide'));
     network.on('selectEdge', () => DOM.$delSelectionButton.classList.remove('hide'));
     network.on('deselectNode', () => DOM.$delSelectionButton.classList.add('hide'));
-    network.on('deselectNode', () => DOM.$delSelectionButton.classList.add('hide'));
-
-    document.getElementById('saveButton').addEventListener('click', () => {
-      if (graphIsValid()) {
-        saveGraph();
-      } else {
-        failAlert('La séquence n\'est pas valide, certains noeuds n\'ont pas de parent.');
-      }
-    });
+    network.on('deselectEdge', () => DOM.$delSelectionButton.classList.add('hide'));
 
     document.querySelector('select[name=newNodeTypeChoice]').addEventListener('change', () => {
       updateForm();
-    });
-
-    document.querySelectorAll('a[name=editSeq]').forEach((e) => {
-      e.addEventListener('click', () => {
-        const seqName = e.id.substring(e.id.indexOf('_') + 1);
-        console.log(seqName);
-
-        editSequence(seqName);
-        templateController.getAccordion('creation').open();
-        window.location.hash = '#creation';
-      });
     });
 
     DOM.$addNodeButton.addEventListener('click', () => {
@@ -202,12 +172,16 @@ const graphController = (() => {
       }
     });
 
-    DOM.$delSelectionButton.addEventListener('click', () => network.deleteSelected());
+    DOM.$delSelectionButton.addEventListener('click', () => {
+      network.deleteSelected();
+      resetMode();
+    });
   }
 
   function cacheDom() {
     DOM.$networkContainer = document.getElementById('network');
     DOM.$newNodeForm = document.getElementById('newNodeForm');
+    DOM.$newTransitionForm = document.getElementById('newTransitionForm');
 
     DOM.$addNodeButton = document.getElementById('addNodeButton');
     DOM.$addTransitionButton = document.getElementById('addTransitionButton');
@@ -215,35 +189,7 @@ const graphController = (() => {
 
     DOM.$selectedAction = document.querySelector('select[name=newNodeTypeChoice]');
 
-    DOM.$motion_direction = document.getElementById('motion_direction');
-    DOM.$motion_speed = document.getElementById('motion_speed');
-
-    DOM.$servo = document.getElementById('servo');
-    DOM.$servo_position = document.getElementById('servo_position');
-    DOM.$servo_speed = document.getElementById('servo_speed');
-
-    DOM.$relay = document.getElementById('relay');
-    DOM.$relay_on_off = document.getElementById('relay_on_off');
-
-    DOM.$speech_sentence = document.getElementById('speech_sentence');
-
-    DOM.$script_name = document.getElementById('script_name');
-
-    DOM.$sound_name = document.getElementById('sound_name');
-
-    DOM.$pause = document.getElementById('pause');
-
-    DOM.$servo_sequence = document.getElementById('servo_sequence');
-
-    DOM.$motionOptions = document.getElementById('motionOptions');
-    DOM.$servoOptions = document.getElementById('servoOptions');
-    DOM.$relayOptions = document.getElementById('relayOptions');
-    DOM.$speechOptions = document.getElementById('speechOptions');
-    DOM.$scriptOptions = document.getElementById('scriptOptions');
-    DOM.$soundOptions = document.getElementById('soundOptions');
-    DOM.$pauseOptions = document.getElementById('pauseOptions');
-    DOM.$servoSequenceOptions = document.getElementById('servoSequenceOptions');
-    DOM.$name = document.getElementById('name');
+    DOM.$transitionTime = document.getElementById('transition_time');
   }
 
   /**
@@ -266,6 +212,7 @@ const graphController = (() => {
     resetMode();
     mode = ModeEnum.addTransition;
     network.addEdgeMode();
+    DOM.$newTransitionForm.classList.remove('hide');
     DOM.$addTransitionButton.classList.add('disabled');
     DOM.$networkContainer.style.cursor = 'crosshair';
   }
@@ -277,6 +224,7 @@ const graphController = (() => {
     mode = ModeEnum.none;
     network.disableEditMode();
     DOM.$newNodeForm.classList.add('hide');
+    DOM.$newTransitionForm.classList.add('hide');
     DOM.$addNodeButton.classList.remove('disabled');
     DOM.$addTransitionButton.classList.remove('disabled');
     DOM.$networkContainer.style.cursor = 'default';
@@ -299,130 +247,78 @@ const graphController = (() => {
    * @param {string} toId the target node id.
    * @return {Object} the new transition between the nodes.
    */
-  function addTransition(fromId, toId) {
-    const edge = { from: fromId, to: toId };
+  function addTransition(fromId, toId, time) {
+    const targetNode = nodes.get().find(n => n.id === toId);
+    const edge = {
+      from: fromId,
+      to: toId,
+      arrows: 'to',
+      label: time + 'ms',
+      data: { time: time, target: targetNode }
+    };
     edges.add([edge]);
     return edge;
   }
 
   /**
    * Create an edge and check if it is correct.
-   * @param {Object} edgeData the data of the node to add
-   * @return {boolean} false if the options aren't correct
+   * @param {Object} edgeData the data of the node to add.
+   * @return {Object} the new transition between the nodes.
    */
   function handleEdgeToAdd(edgeData) {
-    edgeData.arrows = 'to';
+    const time = parseInt(DOM.$transitionTime.value);
     if (edgeData.from === edgeData.to || edgeData.to === 'start') {
-      return false;
+      return;
     }
-    return true;
+    return addTransition(edgeData.from, edgeData.to, time);
   }
 
   /**
    * Create a specific node corresponding to the options chosen
-   * @param {Object} nodeData the data of the node to add
-   * @return {boolean} false if the options aren't correct
    */
-  function handleNodeToAdd(nodeData) {
+  function handleNodeToAdd() {
     const action = {};
-    action.type = DOM.$selectedAction.value;
-    switch (DOM.$selectedAction.value) {
-      case ('motion'): {
-        action.direction = DOM.$motion_direction.value;
-        action.speed = parseInt(DOM.$motion_speed.value);
-        break;
+    action.name = DOM.$selectedAction.value;
+    action.parameters = {};
+
+    const $parameters = document.querySelectorAll('[id^=' + action.name + '_]:not([id$=_options])');
+    $parameters.forEach(e => {
+      const key = e.id.split(action.name + '_')[1];
+      if (e.type === 'number') {
+        action.parameters[key] = parseInt(e.value);
+      } else if (e.type === 'checkbox') {
+        action.parameters[key] = (e.checked ? 1 : 0);
+      } else {
+        action.parameters[key] = e.value;
       }
-      case ('servo'): {
-        const $selectedServo = DOM.$servo.options[DOM.$servo.selectedIndex];
-        action.servo = $selectedServo.value;
-        action.position = parseInt(DOM.$servo_position.value);
-        action.minPulseWidth = parseInt($selectedServo.dataset.min);
-        action.maxPulseWidth = parseInt($selectedServo.dataset.max);
-        action.speed = parseInt(DOM.$servo_speed.value);
-        break;
+    });
+    fetchJson('/check_action_parameters', 'POST', { action_name: action.name, parameters: action.parameters }).then(validation => {
+      if (!validation[0]) {
+        throw new TypeError(validation[1]);
       }
-      case ('relay'): {
-        action.relay = DOM.$relay.value;
-        action.state = (DOM.$relay_on_off.checked ? 1 : 0);
-        break;
-      }
-      case ('speech'): {
-        action.speech = DOM.$speech_sentence.value;
-        break;
-      }
-      case ('script'): {
-        action.script = DOM.$script_name.value;
-        break;
-      }
-      case ('sound'): {
-        action.sound = DOM.$sound_name.value;
-        break;
-      }
-      case ('pause'): {
-        nodeData.shape = 'circle';
-        action.time = parseInt(DOM.$pause.value);
-        break;
-      }
-      case ('servoSequence'): { // COMPATIBILITY REASON
-        action.sequence = parseInt(DOM.$servo_sequence.value);
-        break;
-      }
-      default: {
-        return false;
-      }
-    }
-    try {
-      Object.assign(nodeData, ActionNode.fromJSON(action));
-      return true;
-    } catch (error) {
+      addActionNode(action);
+    }).catch(error => {
       console.error(error);
       failAlert(error.message);
-    }
-    return false;
+    });
   }
 
   /**
    * Update the form to display the options corresponding to the type of button chosen
    */
   function updateForm() {
-    DOM.$motionOptions.classList.add('hide');
-    DOM.$servoOptions.classList.add('hide');
-    DOM.$relayOptions.classList.add('hide');
-    DOM.$speechOptions.classList.add('hide');
-    DOM.$scriptOptions.classList.add('hide');
-    DOM.$soundOptions.classList.add('hide');
-    DOM.$pauseOptions.classList.add('hide');
-    DOM.$servoSequenceOptions.classList.add('hide'); // COMPATIBILITY REASON
+    document.querySelectorAll('[id$=_options]')
+      .forEach(e => e.classList.add('hide'));
+
     if (document.querySelector('select[name=newNodeTypeChoice]').value !== '') {
       const selectedNodeType = document.querySelector('select[name=newNodeTypeChoice]');
-      document.getElementById(selectedNodeType.value + 'Options').classList.remove('hide');
+      const selectedNodeForm = document.getElementById(selectedNodeType.value + '_options');
+      if (selectedNodeForm != null) {
+        selectedNodeForm.classList.remove('hide');
+      }
     } else {
       console.warn('Aucune action n\'a été selectionnée !');
     }
-  }
-
-  /**
-   * Save the graph on the server
-   */
-  function saveGraph() {
-    const sequence = getGraph();
-    console.log(sequence);
-
-    fetchJson('/save_sequence', 'POST', { seq_name: DOM.$name.value, seq_data: sequence })
-      .then(() => {
-        location.reload();
-      });
-  }
-
-  /**
-   * Edit the specified sequence
-   * @param {string} seqName the name of the sequence to edit
-   */
-  function editSequence(seqName) {
-    DOM.$name.value = seqName;
-    const sequenceData = document.getElementById('data_' + seqName).innerHTML;
-    const json = JSON.parse(sequenceData);
-    updateGraph(json);
   }
 
   return {

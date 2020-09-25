@@ -24,7 +24,7 @@ function alert(title, message, color) {
       '</div>' +
     '</div>');
   setTimeout(() => {
-    while($el.firstChild) $el.removeChild($el.firstChild);
+    while ($el.firstChild) { $el.removeChild($el.firstChild); }
   }, 3000);
 }
 
@@ -35,7 +35,7 @@ function isVisible($el) {
 
 /* exported empty */
 function empty($el) {
-  while($el.firstChild) $el.removeChild($el.firstChild);
+  while ($el.firstChild) { $el.removeChild($el.firstChild); }
 }
 
 /* exported fetchJson */
@@ -54,14 +54,21 @@ function fetchJson(path, method, body) {
     })
     .then(parsedResponse => {
       if (!response.ok) {
-        throw new Error(response.statusText + ' : ' + parsedResponse);
+        throw new APIError(parsedResponse, response.statusText, response.status);
       }
       return parsedResponse;
     })
     .catch(error => {
-      console.log(error.message);
-
+      console.error(error);
       failAlert(error.message);
       throw error;
     });
+}
+
+class APIError extends Error {
+  constructor(message, name, code) {
+    super(message);
+    this.name = name;
+    this.code = code;
+  }
 }

@@ -49,38 +49,27 @@ class Servo(db.Model):
 
 class Resources():
     """
-    Class used to store and manage ressources such as sounds or scripts
+    Class used to store and manage ressources such as sounds
     """
-    def __init__(self, scripts_path, sounds_path):
-        self.scripts_path = scripts_path
+    def __init__(self, sounds_path: str):
         self.sounds_path = sounds_path
-
-    def get_scripts(self):
-        if not exists(self.scripts_path):
-            makedirs(self.scripts_path)
-        return [f for f in listdir(self.scripts_path) if isfile(join(self.scripts_path, f))]
-
-    def delete_script(self, script_name):
-        path = join(self.scripts_path, script_name)
-        if isfile(path):
-            remove(path)
-
-    def save_script(self, script_name, data):
-        path = join(self.scripts_path, script_name)
-        with open(path, encoding='utf-8', mode='w+') as file:
-            file.write(data)
-
-    def read_script(self, script_name):
-        path = join(self.scripts_path, script_name)
-        if not exists(path):
-            return None
-        with open(path, encoding='utf-8', mode='r') as file:
-            return file.read()
 
     def get_sounds(self):
         if not exists(self.sounds_path):
             makedirs(self.sounds_path)
         return [f for f in listdir(self.sounds_path) if isfile(join(self.sounds_path, f))]
 
+    def sound_exists(self, sound_name: str):
+        return exists(self.get_sound_path(sound_name))
 
-resources = Resources(core_config.SCRIPTS_LOCATION, core_config.SOUNDS_LOCATION)
+    def get_sound_path(self, sound_name: str):
+        return join(self.sounds_path, sound_name)
+
+    def write_sound(self, sound_name:str, sound: bytes):
+        open(join(self.sounds_path, sound_name), 'wb').write(sound)
+
+    def delete_sound(self, sound_name):
+        if self.sound_exists(sound_name):
+            remove(join(self.sounds_path, sound_name))
+
+resources = Resources(core_config.SOUNDS_LOCATION)

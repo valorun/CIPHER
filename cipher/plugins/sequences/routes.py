@@ -1,21 +1,19 @@
-import logging
 from flask import Flask, session, request, jsonify
 import json
 from . import sequences
 from cipher.model import Sequence, Servo, Relay, db, resources
 from cipher.security import login_required
 from cipher.core.sequence_reader import sequence_reader
-
+from cipher.core.actions import CUSTOM_ACTIONS, DEFAULT_ACTIONS
 
 @sequences.route('/sequences')
 @login_required
 def sequences_page():
-    relays = Relay.query.all()
     sequences_list = Sequence.query.all()
-    servos = Servo.query.all()
-    sounds = resources.get_sounds()
-    scripts = resources.get_scripts()
-    return sequences.render_page('sequences.html', sequences=sequences_list, servos=servos, relays=relays, sounds=sounds, scripts=scripts)
+    actions = {}
+    actions.update(DEFAULT_ACTIONS)
+    actions.update(CUSTOM_ACTIONS)
+    return sequences.render_page('sequences.html', sequences=sequences_list, actions=actions)
 
 
 @sequences.route('/save_sequence', methods=['POST'])
@@ -26,16 +24,17 @@ def save_sequence():
     """
     seq_name = request.json.get('seq_name')
     seq_data = request.json.get('seq_data')
+    seq_overwrite = request.json.get('seq_overwrite')
     if not seq_name or ' ' in seq_name:
         return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
     if seq_data is None:
         return jsonify("La séquence est vide."), 400
-    if Sequence.query.filter_by(id=seq_name).first() is not None:
-        return jsonify("Une sequence portant le même nom existe déjà."), 400
+    if Sequence.query.filter_by(id=seq_name).first() is not None and not seq_overwrite:
+        return jsonify("Une sequence portant le même nom existe déjà."), 409
     sequence = sequence_reader.get_sequence_from_json(seq_data)
     if sequence is None:
         return jsonify("La séquence n'est pas valide."), 400
-    logging.info("Saving sequence '" + seq_name + "'")
+    sequences.log.info("Saving sequence '" + seq_name + "'")
     db_sequence = Sequence(id=seq_name, value=json.dumps(seq_data), enabled=True)
     db.session.merge(db_sequence)
     db.session.commit()
@@ -52,9 +51,9 @@ def enable_sequence():
     value = request.json.get('value')
     if not seq_name or ' ' in seq_name:
         return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Updating '" + seq_name + "'")
+    sequences.log.info("Updating '" + seq_name + "'")
     db_seq = Sequence.query.filter_by(id=seq_name).first()
-    if dbSeq is None:
+    if db_seq is None:
         return jsonify("La séquence est inconnue."), 400
     db_seq.enabled = value
     db.session.commit()
@@ -70,7 +69,7 @@ def delete_sequence():
     seq_name = request.json.get('seq_name')
     if not seq_name or ' ' in seq_name:
         return jsonify("Un nom de séquence ne doit pas être vide ou contenir d'espace."), 400
-    logging.info("Deleting " + seq_name + "'")
+    sequences.log.info("Deleting " + seq_name + "'")
     db_seq = Sequence.query.filter_by(id=seq_name).first()
     if db_seq is None:
         return jsonify("La séquence est inconnue."), 400

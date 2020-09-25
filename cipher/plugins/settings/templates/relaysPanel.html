@@ -21,8 +21,7 @@
                 </div>
                 <div class="quarter">
                     <label for="newRelayRaspiId">Raspberry: </label>
-                    <input id="newRelayRaspiId" type="text" value="" class="input border" list="newRelayRaspiIdData">
-                    <datalist id="newRelayRaspiIdData"></datalist>
+                    <input id="newRelayRaspiId" type="text" value="" class="input border" list="availableRaspies">
                 </div>
             </div>
 
@@ -42,7 +41,7 @@
         <div class="accordion-content">
             <div class="container">
                 <p>
-                    <table class="table bordered responsive">
+                    <table class="table bordered responsive" id="relays_table">
                         <tr>
                             <th>Label</th>
                             <th>Pin</th>
@@ -50,23 +49,27 @@
                             <th>Raspberry</th>
                         </tr>
                         {% for r in relays %}
-                        <tr id="{{ r.label }}">
-                            <td class="tertiary"><span>{{ r.label }}</span></td>
-                            <td class="tertiary"><span>{{ r.pin }}</span></td>
-                            <td class="tertiary"><span>{{ r.parity }}</span></td>
-                            <td class="tertiary"><span>{{ r.raspi_id }}</span></td>
-                            <td>
-                                {% if r.enabled==True %}
-                                <input id="enable_{{ r.label }}" type="checkbox" name="enableRel" checked="checked"
-                                    class="check">
-                                {% else %}
-                                <input id="enable_{{ r.label }}" type="checkbox" name="enableRel" class="check">
-                                {% endif %}
-                                <label for="enable_{{ r.label }}">activé</label>
+                        <tr data-label="{{ r.label }}">
+                            <td class="tertiary"><input type="text" class="input relay-label" value="{{ r.label }}"></td>
+                            <td class="tertiary"><input type="number" class="input relay-pin" value="{{ r.pin }}"></td>
+                            <td class="tertiary"><input type="text" class="input relay-parity" value="{{ r.parity }}"></td>
+                            <td class="tertiary">
+                                <input type="text" class="input relay-raspi" value="{{ r.raspi_id }}" list="availableRaspies">
                             </td>
                             <td>
-                                <a id="delete_{{ r.label }}" type="button" name="deleteRel" class="button secondary"><i
+                                {% if r.enabled==True %}
+                                <input class="check relay-enable" id="relay_{{ r.label }}_enable" type="checkbox" checked="checked">
+                                {% else %}
+                                <input class="check relay-enable" id="relay_{{ r.label }}_enable" type="checkbox">
+                                {% endif %}
+                                <label for="relay_{{ r.label }}_enable">activé</label>
+                            </td>
+                            <td>
+                                <a type="button" class="button secondary relay-delete"><i
                                         class="fas fa-trash"></i></a>
+                            </td>
+                            <td>
+                                <a type="button" class="button secondary relay-save"><i class="fas fa-save"></i></a>
                             </td>
                         </tr>
                         {% endfor %}

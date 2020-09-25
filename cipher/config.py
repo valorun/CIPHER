@@ -33,42 +33,36 @@ class CoreConfig(ConfigFile):
         ConfigFile.__init__(self, filepath)
 
         # MQTT BROKER URL
-        self.MQTT_BROKER_URL = self.get('MQTT_BROKER', 'URL', 
+        self.MQTT_BROKER_URL = self.get('MQTT_BROKER', 'URL',
             fallback='localhost')
 
         # MQTT BROKER PORT
-        self.MQTT_BROKER_PORT = self.get('MQTT_BROKER', 'PORT', 
+        self.MQTT_BROKER_PORT = self.getint('MQTT_BROKER', 'PORT',
                 fallback=1883)
 
         # SERVER DATABASE
-        self.DATABASE_FILE = self.get('SERVER', 'DATABASE_FILE', 
+        self.DATABASE_FILE = self.get('SERVER', 'DATABASE_FILE',
                 fallback='sqlite:///' + join(dirname(__file__), 'server_data.db'))
 
         # LOG FILE
-        self.LOG_FILE = self.get('SERVER', 'LOG_FILE', 
+        self.LOG_FILE = self.get('SERVER', 'LOG_FILE',
                 fallback=join(dirname(__file__), 'app.log'))
 
-        # SCRIPTS LOCATION
-        self.SCRIPTS_LOCATION = self.get('SERVER', 'SCRIPTS_LOCATION', 
-                fallback=join(dirname(__file__), 'scripts/'))
-
         # SOUNDS LOCATION
-        self.SOUNDS_LOCATION = self.get('SERVER', 'SOUNDS_LOCATION', 
+        self.SOUNDS_LOCATION = self.get('SERVER', 'SOUNDS_LOCATION',
                 fallback=join(dirname(__file__), 'sounds/'))
+        
+        # DEBUG
+        self.DEBUG = self.getboolean('SERVER', 'DEBUG', 
+                fallback=False)
 
         # PLUGINS
-        self.PLUGINS = self.getlist('SERVER', 'PLUGINS', 
+        self.PLUGINS = self.getlist('SERVER', 'PLUGINS',
                 fallback='dashboard,commands,speech,editor,debug,sequences,settings')  # all plugins to load, corresponds to the different pages available on the navbar
 
-    # CAMERA URL
-    def set_camera_url(self, url: str):
-        if not url.strip():
-            url = None
-        self.set('GENERAL', 'CAMERA_URL', url)
-
-    def get_camera_url(self) -> str:
-        return self.get('GENERAL', 'CAMERA_URL', 
-            fallback=None)
+        # CAMERA FRAME RATE (Hz)
+        self.CAMERA_FRAME_RATE = self.getint('GENERAL', 'CAMERA_FRAME_RATE',
+                fallback=30)
 
     # AUDIO SOURCE
     def set_audio_on_server(self, mode: bool):
@@ -81,12 +75,15 @@ class CoreConfig(ConfigFile):
     # MOTION RASPI ID
     def set_motion_raspi_id(self, raspi_id: str):
         if not raspi_id.strip():
-            raspi_id = None
+            raspi_id = ''
         self.set('GENERAL', 'MOTION_RASPI_ID', raspi_id)
 
     def get_motion_raspi_id(self) -> str:
-        return self.get('GENERAL', 'MOTION_RASPI_ID', 
+        value = self.get('GENERAL', 'MOTION_RASPI_ID', 
             fallback=None)
+        if value == '':
+            value = None
+        return value
 
     # ROBOT NAME
     def set_robot_name(self, name: str):
@@ -98,10 +95,13 @@ class CoreConfig(ConfigFile):
         return self.get('GENERAL', 'ROBOT_NAME', 
             fallback='My robot')
 
-    # DEBUG
-    def get_debug_mode(self) -> bool:
-        return self.getboolean('SERVER', 'DEBUG', 
-            fallback=False)
+    # ENABLE MOTION
+    def set_enable_motion(self, enable: bool):
+        self.set('GENERAL', 'ENABLE_MOTION', enable)
+
+    def get_enable_motion(self) -> bool:
+        return self.getboolean('GENERAL', 'ENABLE_MOTION',
+            fallback=True)
 
 
 core_config = CoreConfig(CONFIG_FILE)

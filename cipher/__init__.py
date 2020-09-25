@@ -1,11 +1,12 @@
 # coding: utf-8
 
 import eventlet
-eventlet.monkey_patch(socket=False)
+eventlet.monkey_patch()
 
 from os import urandom
 import logging
 import importlib
+from collections import deque
 from logging.handlers import RotatingFileHandler
 from logging.config import dictConfig
 from flask import Flask
@@ -14,7 +15,7 @@ from flask_socketio import SocketIO
 from .config import core_config
 from .model import db, User
 
-socketio = SocketIO(logger=True)  # socketio server used to communicate with web client
+socketio = SocketIO(logger=True, async_mode='eventlet')  # socketio server used to communicate with web client
 mqtt = Mqtt()  # mqtt client, need to be connected to a brocker (in local)
 
 
@@ -46,8 +47,9 @@ def create_app(debug=False):
             loaded_plugins.append(p)
             # then register its blueprint
             p.register(app, loaded_plugins)
+            logging.info("✓ - Plugin '" + p_name + "' loaded")
         except Exception as e:
-            logging.error("Failed to load plugin '" + p_name + "': {0}".format(e))
+            logging.error("❌ - Failed to load plugin '" + p_name + "': {0}".format(e))
             exit(1)
 
     db.app = app
@@ -60,19 +62,37 @@ def create_app(debug=False):
         new_db_user = User(username='admin', password='cGFzc3dvcmQ=', active=True)
         db.session.merge(new_db_user)
         db.session.commit()
+    
+    @mqtt.on_connect()
+    def on_server_connect(client, userdata, flags, rc):
+        """
+        Function called when the server connects to the broker.
+        """
+        mqtt.subscribe('server/#')
+        mqtt.subscribe('client/connect')
+        mqtt.publish('server/connect')
+        logging.info("Connected to broker.")
+        for p in loaded_plugins:
+            for f in p.startup_functions:
+                f()
 
     socketio.init_app(app)
     mqtt.init_app(app)
-    mqtt.subscribe('server/#')
-    mqtt.subscribe('hermes/intent/#')
-    
+
     return app
 
 
 class SocketIOHandler(logging.Handler):
+    log_queue = deque(maxlen=30)
+
+    def __init__(self):
+        logging.Handler.__init__(self)
+
     def emit(self, record):
         msg = self.format(record)
-        socketio.emit('logging', msg, namespace='/client')
+        if socketio is not None and socketio.server is not None:
+            socketio.emit('logging', msg, namespace='/client')
+        SocketIOHandler.log_queue.append(self.format(record))
 
 
 def setup_logger(debug=False):
@@ -84,7 +104,7 @@ def setup_logger(debug=False):
     dictConfig({
         'version': 1,
         'formatters': {'default': {
-            'format': '%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(name)s: %(message)s',
+            'format': '%(asctime)s %(levelname)-8s [%(name)s] %(message)s',
         }},
         'handlers': {
             'default': {
@@ -109,7 +129,7 @@ def setup_logger(debug=False):
             'formatter': 'default'
         },
         'loggers': {
-            'socketio.server': {'handlers': ['default', 'file'], 'propagate': False},
+            #'socketio.server': {'handlers': ['default', 'file'], 'propagate': False},
             'flask.flask_mqtt': {'handlers': ['default', 'file', 'socketio']},
             'sqlalchemy': {'handlers': ['default', 'file', 'socketio']},
         }

@@ -17,8 +17,7 @@
                 </div>
                 <div class="third">
                     <label for="newServoRaspiId">Raspberry: </label>
-                    <input id="newServoRaspiId" type="text" value="" class="input border" list="newServoRaspiIdData">
-                    <datalist id="newServoRaspiIdData"></datalist>
+                    <input id="newServoRaspiId" type="text" value="" class="input border" list="availableRaspies">
                 </div>
             </div>
             <div class="container padding">
@@ -55,7 +54,7 @@
         <div class="accordion-content">
             <div class="container">
                 <p>
-                    <table class="table bordered responsive">
+                    <table class="table bordered responsive" id="servos_table">
                         <tr>
                             <th>Label</th>
                             <th>Pin</th>
@@ -65,24 +64,28 @@
                             <th>Raspberry</th>
                         </tr>
                         {% for s in servos %}
-                        <tr id="{{ s.label }}">
-                            <td class="tertiary"><span>{{ s.label }}</span></td>
-                            <td class="tertiary"><span>{{ s.pin }}</span></td>
-                            <td class="tertiary"><span>{{ s.min_pulse_width }}</span></td>
-                            <td class="tertiary"><span>{{ s.max_pulse_width }}</span></td>
-                            <td class="tertiary"><span>{{ s.def_pulse_width }}</span></td>
-                            <td class="tertiary"><span>{{ s.raspi_id }}</span></td>
-                            <td>
-                                {% if s.enabled==True %}
-                                <input id="enable_{{ s.label }}" type="checkbox" name="enableServo" checked="checked"
-                                    class="check">
-                                {% else %}
-                                <input id="enable_{{ s.label }}" type="checkbox" name="enableServo" class="check">
-                                {% endif %}
-                                <label for="enable_{{ s.label }}">activé</label>
+                        <tr data-label="{{ s.label }}">
+                            <td class="tertiary"><input type="text" class="input servo-label" value="{{ s.label }}"></td>
+                            <td class="tertiary"><input type="number" class="input servo-pin" value="{{ s.pin }}"></td>
+                            <td class="tertiary"><input type="number" class="input servo-min" value="{{ s.min_pulse_width }}" min="0"></td>
+                            <td class="tertiary"><input type="number" class="input servo-max" value="{{ s.max_pulse_width }}" min="0"></td>
+                            <td class="tertiary"><input type="number" class="input servo-default"id="{{ s.label }}_default" value="{{ s.def_pulse_width }}" min="0"></td>
+                            <td class="tertiary">
+                                <input type="text" class="input servo-raspi" value="{{ s.raspi_id }}" list="availableRaspies">
                             </td>
                             <td>
-                                <a id="delete_{{ s.label }}" type="button" name="deleteServo" class="button secondary"><i class="fas fa-trash"></i></a>
+                                {% if s.enabled==True %}
+                                <input class="check servo-enable" id="servo_{{ s.label }}_enable" type="checkbox" checked="checked">
+                                {% else %}
+                                <input class="check servo-enable" id="servo_{{ s.label }}_enable" type="checkbox">
+                                {% endif %}
+                                <label for="servo_{{ s.label }}_enable">activé</label>
+                            </td>
+                            <td>
+                                <a type="button" class="button secondary servo-delete"><i class="fas fa-trash"></i></a>
+                            </td>
+                            <td>
+                                <a type="button" class="button secondary servo-save"><i class="fas fa-save"></i></a>
                             </td>
                         </tr>
                         {% endfor %}

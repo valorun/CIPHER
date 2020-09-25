@@ -1,117 +1,56 @@
 {% extends 'template.html' %}
 {% block content %}
-<script src="{{ url_for('speech.static', filename='js/intentsController.js') }}"></script>
-<script src="{{ url_for('speech.static', filename='js/speechDetectionController.js') }}"></script>
+<script src="{{ url_for('speech.static', filename='js/voiceController.js') }}"></script>
 
 <div class="panel">
 	<div class="card round-large tertiary">
 		<button class="btn container primary block left-align accordion-header">
-			<h4><i class="accordion-icon"></i> Reconnaissance</h4>
+			<h4><i class="accordion-icon"></i> Voix</h4>
 		</button>
 		<div  class="accordion-content">
-			<div class="container">
-				<p>
-					<input class="button secondary" id="startRecognition" type="button" value="Lancer la reconnaissance">
-					<!--<ul id="detectionResult" class="ul">
-					</ul>-->
-				</p>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="panel">
-	<div class="card round-large tertiary">
-		<button class="btn container primary block left-align accordion-header">
-			<h4><i class="accordion-icon"></i> Liaison des intentions</h4>
-		</button>
-		<div  class="accordion-content">
-			<div class="container">
-				<p>
-					Vous pouvez ici relier une intention avec une séquence ou un script. Les scripts et les séquences reçoivent en paramètre l'intention et tout autre information détectée.
-				</p>
-			</div>
-
-			<div class="row-padding">
-				<div class="third">
-					<label for="currentIntent">Intention: </label>
-					<input id="currentIntent" type="text" value="" class="input border">
-				</div>
-				<div class="third">
-					<label for="currentScriptName">Script (optionnel): </label>
-					<select id="currentScriptName" class="select border" name="scriptName">
-						<option value="" disabled selected>Choisir un script</option>
-						<option value="" >Aucune</option>
-						{% for s in scripts %}
-						{% if s %}
-						<option value="{{ s }}" >{{ s }}</option>
-						{% endif %}
-						{% endfor %}
-					</select>
-				</div>
-				<div class="third">
-					<label for="currentSequence">Séquence (optionnel): </label>
-					<select id="currentSequence" class="select border" name="sequence">
-						<option value="" disabled selected>Choisir une séquence</option>
-						<option value="" >Aucune</option>
-						{% for s in sequences %}
-						{% if s.enabled %}
-						<option value="{{ s.id }}" >{{ s.id }}</option>
-						{% endif %}
-						{% endfor %}
-					</select>
-				</div>
-			</div>
-
 			<div class="container padding-16">
-				<input class="button secondary" id="addResponseButton" type="button" value="Ajouter la réponse">
-			</div>
-			<div class="container padding-16 leftbar">
-				<h4>Intentions</h4>
-				<table class="table bordered responsive">
+				<select class="select border" name="voiceName" id="voiceName">
+					<!--<option value="" disabled selected>Choisir une valeur</option>-->
+					{% for v in voices %}
+					<option value="{{ v }}" 
+					{% if v == voice_config.get_voice() %}
+					selected
+					{% endif %}
+					>{{ v }}</option>
+					{% endfor %}
+				</select>
+				<table class="table bordered responsive" id="effects_table">
 					<tr>
-						<th>Intention</th>
-						<th>Script</th>
-						<th>Séquence</th>
+						<th>Effet</th>
+						<th>Activé</th>
+						<th>valeur</th>
 					</tr>
-					{% for i in intents %}
-					<tr id="{{ i.intent }}">
-						<td class="tertiary"><span >{{ i.intent }}</span></td>
-						<td class="tertiary"><span>{{ i.script_name }}</span></td>
-						<td class="tertiary"><span>{{ i.sequence_id }}</span></td>
-						<td>
-							{% if i.enabled==True %}
-							<input id="enable_{{ i.intent }}" type="checkbox" name="enableIntent" checked="checked" class="check">
-							{% else %}
-							<input id="enable_{{ i.intent }}" type="checkbox" name="enableIntent" class="check">
+					{% for effect_name, effect in voice_config.effects.items() %}
+					<tr data-name="{{ effect_name }}">
+						<td>{{ effect_name }}</td>
+						<td class="tertiary">
+							<input class="check effect-enabled" type="checkbox" 
+							{% if effect.is_enabled() %}
+							checked="checked"
 							{% endif %}
-							<label for="enable_{{ i.intent }}">activé</label>
+							>
 						</td>
 						<td>
-							<a id="delete_{{ i.intent }}" type="button" name="deleteIntent" class="button secondary"><i class="fas fa-trash"></i></a>
+							<input type="range" value="{{ effect.get() }}" min="{{ effect.MIN }}" max="{{ effect.MAX }}" step="0.01" class="input border effect-value">
 						</td>
 					</tr>
 					{% endfor %}
 				</table>
+				<input class="button secondary" id="saveVoiceButton" type="button" value="Enregistrer">
+				<a type="button" class="button secondary" id="testVoiceButton"><i class="fas fa-volume-up"></i></a>
 			</div>
-		</div>
-	</div>
-</div>
-
-<div id="speechDetectionModal" class="modal" style="z-index:4;">
-	<div class="modal-content card-4 tertiary"  style="height: 95%; overflow-y: hidden">
-		<span id="stopRecognition" class="button display-topright xlarge">&times;</span>
-		<div class="container" style="overflow-y: auto; height: 100%">
-			<ul id="detectionResult" class="ul">
-
-			</ul>
 		</div>
 	</div>
 </div>
 
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', () => {
-		intentsController.init();
-		speechDetectionController.init();
+	document.addEventListener('DOMContentLoaded', () => {
+		voiceController.init();
 	});
 </script>
 {% endblock %}

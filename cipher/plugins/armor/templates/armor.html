@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome.css') }}">
 	<script src="{{ url_for('static', filename='vendor/js.cookie.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='vendor/socket.io.js') }}"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
 	<link rel="stylesheet" href="{{ url_for('armor.static', filename='css/style.css') }}">
 	<link rel="stylesheet" href="{{ url_for('armor.static', filename='css/pulse.css') }}">
 	<link rel="stylesheet" href="{{ url_for('armor.static', filename='css/battery.css') }}">
@@ -49,7 +50,7 @@
 		<div class=""><image width="100px" src="{{ url_for('armor.static', filename='img/shield.svg') }}" /></div>
 
 		<div class="log-container">
-			<pre><output id="log"></output></pre>
+			<pre><output id="log">{{ log_records }}</output></pre>
 		</div>
 	</div>
 

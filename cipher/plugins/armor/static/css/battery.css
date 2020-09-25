@@ -1,6 +1,6 @@
 .battery {
-    padding: 10px 10px;
-    width: 325px;
+    padding: 0px 10px;
+    width: 286px;
     border: solid #00dd00;
     position: relative;
     display: inline-block;
@@ -11,7 +11,7 @@
     width: 0px;
     border: solid thin rgba(0, 255, 0, .3);
     padding-left: 20px;
-    margin: -5px;
+    margin: -6px;
     height: 34px;
     background: transparent;
 

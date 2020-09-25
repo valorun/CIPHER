@@ -1,6 +1,6 @@
 <script src="{{ url_for('commands.static', filename='js/motionController.js') }}"></script>
 
-{% if motion_raspi_id!=None %}
+{% if motion_raspi_id is not none and enable_motion %}
 <div class="panel">
     <div class="card round-large tertiary" id="motion">
         <button class="btn container primary block left-align accordion-header">

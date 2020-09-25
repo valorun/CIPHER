@@ -61,12 +61,15 @@
 			<option value="relay">Relai</option>
 			<option value="sequence">Séquence</option>
 			<option value="sound">Son</option>
+			{% for a_name, a in custom_actions.items() %}
+			<option value="{{ a_name }}">{{ a.display_name }}</option>
+			{% endfor %}
 		</select>
 
 		<div id="newButtonOptions" class="row container">
 			<div>
-				<div id="relayOptions" class="hide">
-					<select class="select border half" name="relays" id="relays">
+				<div id="relay_options" class="hide">
+					<select class="select border half" name="relay_label" id="relay_label">
 						<option value="" disabled selected>Choisir un relai</option>
 						{% for r in relays %}
 						{% if r.enabled %}
@@ -75,8 +78,8 @@
 						{% endfor %}
 					</select>
 				</div>
-				<div id="sequenceOptions" class="hide">
-					<select class="select border half" name="sequences" id="sequences">
+				<div id="sequence_options" class="hide">
+					<select class="select border half" name="sequence_name" id="sequence_name">
 						<option value="" disabled selected>Choisir une séquence</option>
 						{% for s in sequences %}
 						{% if s.enabled %}
@@ -85,14 +88,47 @@
 						{% endfor %}
 					</select>
 				</div>
-				<div id="soundOptions" class="hide">
-					<select class="select border half" name="sounds" id="sounds">
+				<div id="sound_options" class="hide">
+					<select class="select border half" name="sound_name" id="sound_name">
 						<option value="" disabled selected>Choisir un son</option>
 						{% for s in sounds %}
 						<option value="{{ s }}">{{ s }}</option>
 						{% endfor %}
 					</select>
 				</div>
+				{% for a_name, a in custom_actions.items() %}
+				<div id="{{ a_name }}_options" class="hide">
+					{% for p in a.get_parameters() %}
+					<div>
+						<label for="{{ a_name }}_{{ p.name }}">{{ p.display_name }}:</label>
+						{% if p.get_type() == 'str' %}
+							{% if p.possible_values is not none %}
+							<select class="select border" name="{{ a_name }}_{{ p.name }}" id="{{ a_name }}_{{ p.name }}">
+								<option value="" disabled selected>Choisir une valeur</option>
+								{% for p_key, p_value in p.possible_values.items() %}
+								<option value="{{ p_key }}">{{ p_value }}</option>
+								{% endfor %}
+							</select>
+							{% else %}
+							<input type="text" id="{{ a_name }}_{{ p.name }}" value="" class="input border" placeholder="{{ p.hint }}">
+							{% endif %}
+
+						{% elif p.get_type() == 'int' %}
+							<input type="number" id="{{ a_name }}_{{ p.name }}" value="{{ p.minValue }}" class="input border" 
+							{% if p.minValue is not none %}
+							min="{{ p.minValue }}"
+							{% endif %}
+							{% if p.maxValue is not none %} 
+							max="{{ p.maxValue }}"
+							{% endif %}
+							>
+						{% elif p.get_type() == 'bool' %}
+							<input class="check" type="checkbox" checked="checked" id="{{ a_name }}_{{ p.name }}">
+						{% endif %}
+					</div>
+					{% endfor %}
+				</div>
+				{% endfor %}
 			</div>
 
 			<div class="row">
@@ -141,6 +177,9 @@
 	</div>
 </div>
 
+<div class="cell mobile">
+	{% include 'servosPanel.html' %}
+</div>
 
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', () => {

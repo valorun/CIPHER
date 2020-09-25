@@ -1,10 +1,10 @@
-import logging
-from flask import Flask, Response, render_template, flash, send_from_directory, jsonify
+from flask import Flask, request, Response, render_template, flash, send_from_directory, jsonify
 from os.path import join
 from . import core
 from cipher.config import core_config
 from cipher.security import login_required
-
+from cipher.core.actions import Action
+from cipher.model import Sequence
 
 @core.app_errorhandler(400)
 def invalid_page(e):
@@ -22,7 +22,7 @@ def method_not_allowed(e):
 
 #@core.app_errorhandler(Exception)
 #def unhandled_exception(e):
-#	logging.error(e)
+#	core.log.error(e)
 #	return jsonify("Une erreur imprévue est survenue."), 500
 
 
@@ -39,6 +39,20 @@ def play_sound(sound_name):
                 yield data
                 data = fwav.read(1024)
     return Response(generate(), mimetype='audio/x-wav')
+
+@core.route('/check_action_parameters', methods=['POST'])
+def check_action_parameters():
+    name = request.json.get('action_name')
+    parameters = request.json.get('parameters')
+    return jsonify(Action.get_from_name(name).check_parameters(**parameters)), 200
+
+@core.route('/check_sequence', methods=['POST'])
+def check_sequence():
+    name = request.json.get('name')
+    if Sequence.query.filter_by(id=name).first() is None:
+        return jsonify((False, 'Unknown sequence \'' + str(name) + '\'.')), 200
+    else:
+        return jsonify((True, None)), 200
 
 
 @core.route('/favicon.ico')

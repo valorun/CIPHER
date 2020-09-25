@@ -1,3 +1,4 @@
+import logging
 from flask import Blueprint, render_template
 from cipher.config import core_config
 
@@ -9,7 +10,8 @@ class Plugin():
         self.label = label
         self.icon = icon
         self.blueprint = Blueprint(name, import_name, static_folder='static', static_url_path='/' + name + '/static', template_folder='templates')
-        self.tables = []
+        self.log = logging.getLogger(name)
+        self.startup_functions = []
 
     def register(self, app, plugins):
         self.plugins = plugins
@@ -22,6 +24,12 @@ class Plugin():
         def decorator(f):
             endpoint = options.pop('endpoint', None)
             self.blueprint.add_url_rule(rule, endpoint, f, **options)
+            return f
+        return decorator
+
+    def startup(self):
+        def decorator(f):
+            self.startup_functions.append(f)
             return f
         return decorator
 
