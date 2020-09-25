@@ -1,29 +1,32 @@
 @startuml deployment
 
-node "raspberry server" as raspi_server{
+node "raspberry server" as raspi_server {
     cloud "MQTT broker" as MQTT
     component CIPHER{
         cloud "Socket IO server" as SocketIO
-        database "server storage" as server{
-            artifact relays
-            artifact servomotors
-            artifact sequences
+        database "server storage" as server {
+            file sequences
+            file relays
+            file servomotors
         }
     }
-    node "client raspberry 3" as raspi_client_3{
+    node "client raspberry 3" as raspi_client_3 {
         component "CIPHER client" as CIPHER_client_3
         CIPHER_client_3 -- MQTT
     }
-    node "CIPHER-speech" as speech
-    speech -- MQTT : "MQTT"
+    node "CIPHER-hearing" as hearing
+    hearing -- MQTT : "MQTT"
+    node "CIPHER-vision" as vision
+    vision -- MQTT : "MQTT"
     CIPHER -- MQTT : "MQTT"
-
 }
-node "client raspberry 1" as raspi_client_1{
+
+node "client raspberry 1" as raspi_client_1 {
     component "CIPHER client" as CIPHER_client_1
     CIPHER_client_1 -- MQTT : "MQTT"
 }
-node "client raspberry 2" as raspi_client_2{
+
+node "client raspberry 2" as raspi_client_2 {
     component "CIPHER client" as CIPHER_client_2
     CIPHER_client_2 -- MQTT : "MQTT"
 }
@@ -32,5 +35,4 @@ node "user client" as user {
     component webclient
     SocketIO -- webclient : "socket io"
 }
-
 @enduml

@@ -11,7 +11,7 @@ Interface de contrôle robotique C.I.P.H.E.R. Il s'agit d'une interface web réa
     - Activation de servomoteurs
     - Lancement de son (sur le navigateur ou sur le serveur)
 - Création de séquences sous forme de graph
-- Intégration de l'assistant vocal de SNIPS (<https://snips.ai/>)
+- Intégration de la synthèse vocale MaryTTS (<http://mary.dfki.de/>)
 - Panneau de côntrole personnalisable
 - Edition de scripts en direct
 
@@ -47,10 +47,6 @@ Une fois correctement installé et lancé, le serveur peut ensuite être accéd�
 
 ### JavaScript
 
-- jQuery (<https://jquery.com/>)
-- js-cookie (<https://github.com/js-cookie/js-cookie>)
-- gridstack.js (<https://github.com/gridstack/gridstack.js>)
-- lodash (<https://lodash.com/>)
+- muuri (<https://github.com/haltu/muuri>)
 - socket.io (<https://github.com/socketio/socket.io>)
 - vis.js (<https://github.com/almende/vis/tree/develop>)
-- ace (<https://ace.c9.io/>)
