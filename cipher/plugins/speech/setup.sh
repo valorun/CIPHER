@@ -3,6 +3,7 @@
 ### requirements ###
 install_program "wget"
 install_program "unzip"
+install_program "default-jre"
 
 PLUGIN_PATH=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 echo "Plugin path: $PLUGIN_PATH"
