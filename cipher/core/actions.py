@@ -1,5 +1,6 @@
 import json
 import importlib.util
+from pygame import mixer
 from typing import List
 from subprocess import Popen
 from os.path import join, exists
@@ -10,6 +11,8 @@ from cipher.model import db, Servo, Relay, resources
 from cipher.config import core_config
 from cipher.core.action_parameters import *
 from . import core
+
+mixer.init()
 
 class Action:
     display_name = ''
@@ -243,7 +246,6 @@ class SoundAction(Action):
     Execute the requested sound from the 'sounds' directory
     """
     display_name = 'Son'
-    current_sound = None
 
     @staticmethod
     def check_parameters(name: str):
@@ -265,12 +267,13 @@ class SoundAction(Action):
             return
 
         if core_config.get_audio_on_server():
-            if SoundAction.current_sound is None or SoundAction.current_sound.poll() is not None:  # if no sound is played or the current sound ended
+            if not mixer.music.get_busy(): # if no sound is played or the current sound ended
                 core.log.info("Playing sound '" + resources.get_sound_path(name) + "\' on server")
-                SoundAction.current_sound = Popen(['mplayer', resources.get_sound_path(name)])
+                mixer.music.load(resources.get_sound_path(name))
+                mixer.music.play()
             else:
                 core.log.debug("A sound is already played, terminate it ...")
-                SoundAction.current_sound.terminate()
+                mixer.music.stop()
         else:
             core.log.info("Playing sound '" + name + "' on client")
             socketio.emit('play_sound', name, namespace='/client')
