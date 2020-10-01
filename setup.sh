@@ -48,7 +48,6 @@ fi
 ### requirements ###
 install_program "python3"
 install_program "python3-pip"
-install_program "mplayer"
 install_program "mosquitto"
 install_program "mosquitto-clients"
 

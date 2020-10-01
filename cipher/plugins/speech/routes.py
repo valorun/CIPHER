@@ -8,7 +8,10 @@ from cipher.security import login_required
 @speech.route('/speech')
 @login_required
 def speech_page():
-    voices = fetch_voices()
+    try:
+        voices = fetch_voices()
+    except requests.exceptions.ConnectionError as err:
+        return speech.render_page('speech_not_connected.html')
     return speech.render_page('speech.html', voice_config=voice_config, voices=voices)
 
 @speech.route('/save_voice', methods=['POST'])
