@@ -50,6 +50,7 @@ install_program "python3"
 install_program "python3-pip"
 install_program "mosquitto"
 install_program "mosquitto-clients"
+install_program "mplayer"
 
 APP_PATH=$(cd $(dirname "$0") && pwd)
 echo "Application path: $APP_PATH"
