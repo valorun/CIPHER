@@ -23,7 +23,8 @@ def login():
             flash("L'utilisateur ou le mot de passe est incorrect.")
     else:
         flash("L'utilisateur ou le mot de passe est incorrect.")
-    return redirect('/')
+    next_url = request.form['next'] or '/'
+    return redirect(next_url)
 
 
 @security.route('/register', methods=['POST'])
