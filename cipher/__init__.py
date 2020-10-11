@@ -59,7 +59,7 @@ def create_app(debug=False):
     # create admin if not exists
     exists = User.query.filter_by(username='admin').first()
     if not exists:
-        new_db_user = User(username='admin', password='cGFzc3dvcmQ=', active=True)
+        new_db_user = User(username='admin', password='$2y$10$hAb.CRq1buok3UhTl1BLJe1L2gQ.06mnDCzhlq5uOGxMlcW8g.B1q', active=True)
         db.session.merge(new_db_user)
         db.session.commit()
     
