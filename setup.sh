@@ -25,7 +25,7 @@ add_to_startup(){
             echo "Program already added on startup."
         else
             while true; do
-                dialog --title "C.I.P.H.E.R" --clear --yesno "Do you wish to add this program on startup ?" 5 50
+                dialog --title "C.I.P.H.E.R" --clear --yesno "$1\nDo you wish to add this program on startup ?" 5 50
                 case $? in
                     0) sed -i -e "\$i \\nohup sudo $1 &\\n" /etc/rc.local; break;;
                     1) exit;;
