@@ -47,7 +47,7 @@ const settingsController = (() => {
   function bindSocketIOEvents() {
     // clients autocompletes
     clientsController.addOnConnectListener((c) => {
-      DOM.$availableRaspies.insertAdjacentHTML('beforeend', '<option id="' + c.id + '_client" value="' + c + '">');
+      DOM.$availableRaspies.insertAdjacentHTML('beforeend', '<option id="' + c.id + '_client" value="' + c.id + '">');
     });
     clientsController.addOnDisconnectListener((c) => {
       const $el = document.getElementById(c.id + '_client');
