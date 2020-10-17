@@ -98,7 +98,7 @@ const templateController = (() => {
 
   function cacheDom() {
     DOM.$sidebar = document.getElementById('sidebar');
-    DOM.$sidebarButton = document.getElementById('sidebar_button');
+    DOM.$sidebarButton = document.getElementById('sidebarButton');
     DOM.$overlayBg = document.getElementById('overlay');
   }
 

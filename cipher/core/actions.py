@@ -267,7 +267,7 @@ class SoundAction(Action):
         if core_config.get_audio_on_server():
             if SoundAction.current_sound is None or SoundAction.current_sound.poll() is not None: # if no sound is played or the current sound ended
                 core.log.info("Playing sound '" + resources.get_sound_path(name) + "\' on server")
-                SoundAction.current_sound = Popen(['mplayer', resources.get_sound_path(name), '-af', 'resample=44000'])
+                SoundAction.current_sound = Popen(['mplayer', resources.get_sound_path(name), '-af', 'resample=44100'])
             else:
                 core.log.debug("A sound is already played, terminate it ...")
                 SoundAction.current_sound.terminate()
