@@ -40,16 +40,16 @@ const motionController = (() => {
     });
 
     // carriage key controller
-    window.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', (e) => {
       if (!templateController.getAccordion('motion').isOpen) {
         return;
       }
+      e.preventDefault();
       if (keyPressed) {
         return;
       }
       let direction = 'stop';
       const speed = parseInt(DOM.$motion_speed.value);
-
       switch (e.keyCode) {
         case 37:
           direction = 'left';
@@ -59,7 +59,6 @@ const motionController = (() => {
           break;
         case 39:
           direction = 'right';
-          e.preventDefault();
           break;
         case 40:
           direction = 'backwards';
