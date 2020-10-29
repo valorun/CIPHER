@@ -1,0 +1,19 @@
+#sidebar {
+    z-index: 3;
+    width: 300px;
+    bottom: 0px;
+    top: 58px;
+    height: inherit;
+}
+#sidebar img {
+    width: 40%
+}
+
+#topbar {
+    z-index: 4; 
+    position: sticky;
+}
+
+#overlay {
+    cursor: pointer;
+}
