@@ -58,10 +58,6 @@ const templateController = (() => {
   function init() {
     cacheDom();
     bindUIEvents();
-    // autohide bar when on small screen
-    if (isVisible(DOM.$sidebarButton)) {
-      closeSidebar();
-    }
   }
 
   /**
@@ -82,16 +78,16 @@ const templateController = (() => {
       }
     });
 
-    document.getElementById('close_sidebar_button').addEventListener('click', () => {
+    document.getElementById('closeSidebarButton').addEventListener('click', () => {
       closeSidebar();
     });
 
-    document.getElementById('overlay').addEventListener('click', () => {
+    DOM.$overlayBg.addEventListener('click', () => {
       closeSidebar();
     });
 
     // setup collapse on accordions
-    Array.from(document.getElementsByClassName('accordion-header')).forEach($header =>
+    [...document.getElementsByClassName('accordion-header')].forEach($header =>
       accordions.push(new Accordion($header))
     );
   }

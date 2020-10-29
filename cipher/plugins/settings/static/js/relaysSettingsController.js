@@ -113,7 +113,7 @@ const relaysSettingsController = (() => {
     DOM.$newRelayParity = document.getElementById('newRelayParity');
     DOM.$newRelayRaspiId = document.getElementById('newRelayRaspiId');
 
-    relaysEntries = Array.from(document.getElementById('relays_table').rows).slice(1).map(element => new RelayEntry(element));
+    relaysEntries = [...document.getElementById('relays_table').rows].slice(1).map(element => new RelayEntry(element));
     // remove relay entry from list when its element is deleted
     relaysEntries.forEach(e => e.onDestroy(s => {
       relaysEntries = relaysEntries.filter(s1 => s1.label !== e.label);
