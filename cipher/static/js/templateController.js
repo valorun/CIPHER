@@ -1,5 +1,3 @@
-/* globals isVisible */
-
 /* exported templateController */
 const templateController = (() => {
   'use strict';
@@ -71,7 +69,7 @@ const templateController = (() => {
   /* PRIVATE METHODS */
   function bindUIEvents() {
     DOM.$sidebarButton.addEventListener('click', () => {
-      if (isVisible(DOM.$sidebar)) {
+      if (DOM.$sidebar.style.display !== 'none') {
         closeSidebar();
       } else {
         openSidebar();

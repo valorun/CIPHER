@@ -28,11 +28,6 @@ function alert(title, message, color) {
   }, 3000);
 }
 
-/* exported isVisible */
-function isVisible($el) {
-  return ($el.offsetParent !== null);
-}
-
 /* exported empty */
 function empty($el) {
   while ($el.firstChild) { $el.removeChild($el.firstChild); }
