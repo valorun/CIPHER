@@ -7,13 +7,12 @@ Interface de contrôle robotique C.I.P.H.E.R. Il s'agit d'une interface web réa
 
 - Gestions d'actions primaires
     - Activation de relais
-    - Parole
     - Activation de servomoteurs
     - Lancement de son (sur le navigateur ou sur le serveur)
 - Création de séquences sous forme de graph
 - Intégration de la synthèse vocale MaryTTS (<http://mary.dfki.de/>)
 - Panneau de côntrole personnalisable
-- Edition de scripts en direct
+- Possibilité d'ajouter ses propres actions ou plugins
 
 ## Installation
 
