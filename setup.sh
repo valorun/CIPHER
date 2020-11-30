@@ -1,22 +1,11 @@
 #!/usr/bin/env bash
 
-install_program(){
-    if dpkg -s "$1" &>/dev/null; then
-        echo "$1 found"
-    else
-        echo "\"$1\" not found"
-        while true; do
-            dialog --title "C.I.P.H.E.R" --clear --yesno "Do you wish to install \"$1\" ?" 5 50
-            case $? in
-                0) echo "Installing package \"$1\" ..."; sudo apt-get install "$1"; break;;
-                1) clear; exit;;
-                *) echo "Please answer yes or no.";;
-            esac
-        done
-    fi
-}
-
 add_to_startup(){
+    if [ "$DOCKER" = true ]
+    then
+        return 0
+    fi
+
     echo "Adding $1 to startup ..."
     if [ -e /etc/rc.local ]
     then
@@ -25,10 +14,10 @@ add_to_startup(){
             echo "Program already added on startup."
         else
             while true; do
-                dialog --title "C.I.P.H.E.R" --clear --yesno "$1\nDo you wish to add this program on startup ?" 5 50
-                case $? in
-                    0) sed -i -e "\$i \\nohup sudo $1 &\\n" /etc/rc.local; break;;
-                    1) exit;;
+                read -p "Do you want to add this program on startup ? " yn
+                case $yn in
+                    [Yy]* ) sed -i -e "\$i \\nohup sudo $1 &\\n" /etc/rc.local; break;;
+                    [Nn]* ) exit;;
                     * ) echo "Please answer yes or no.";;
                 esac
             done
@@ -38,19 +27,23 @@ add_to_startup(){
     fi
 }
 
-if type "dialog" &>/dev/null; then
-    echo "Dialog found"
-else
-    echo "Dialog not found"
-    sudo apt-get install dialog
+DOCKER=false
+if [ $# -ne 0 ]
+then
+	case "$1" in
+	"docker") DOCKER=true;;
+	esac
 fi
 
 ### requirements ###
-install_program "python3"
-install_program "python3-pip"
-install_program "mosquitto"
-install_program "mosquitto-clients"
-install_program "mplayer"
+if [ "$DOCKER" = false ]
+then
+    apt-get -y install "python3"
+    apt-get -y install "python3-pip"
+fi
+
+apt-get -y install "mosquitto"
+apt-get -y install "mplayer"
 
 APP_PATH=$(cd $(dirname "$0") && pwd)
 echo "Application path: $APP_PATH"
@@ -73,6 +66,10 @@ for D in cipher/plugins/*; do
             echo "Setting up plugin in ${D} ..."
             source "${D}/setup.sh"
             cd $APP_PATH
+        fi
+        if [ -f ${D}/requirements.txt ]; then
+            echo "Installing python dependencies for plugin in ${D} ..."
+            pip3 install -U -r ${D}/requirements.txt
         fi
     fi
 done

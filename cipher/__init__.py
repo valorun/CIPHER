@@ -6,6 +6,7 @@ eventlet.monkey_patch()
 from os import urandom
 import logging
 import importlib
+from time import sleep
 from collections import deque
 from logging.handlers import RotatingFileHandler
 from logging.config import dictConfig
@@ -77,7 +78,15 @@ def create_app(debug=False):
                 f()
 
     socketio.init_app(app)
-    mqtt.init_app(app)
+
+    connected = False
+    while not connected:
+        try:
+            mqtt.init_app(app)
+            connected = True
+        except ConnectionRefusedError as e:
+            logging.error("Connection to broker refused, retrying ...")
+            sleep(1)
 
     return app
 

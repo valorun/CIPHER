@@ -53,7 +53,7 @@ class CoreConfig(ConfigFile):
                 fallback=join(dirname(__file__), 'sounds/'))
         
         # DEBUG
-        self.DEBUG = self.getboolean('SERVER', 'DEBUG', 
+        self.DEBUG = self.getboolean('SERVER', 'DEBUG',
                 fallback=False)
 
         # PLUGINS
@@ -69,7 +69,7 @@ class CoreConfig(ConfigFile):
         self.set('GENERAL', 'AUDIO_ON_SERVER', mode)
 
     def get_audio_on_server(self) -> bool:
-        return self.getboolean('GENERAL', 'AUDIO_ON_SERVER', 
+        return self.getboolean('GENERAL', 'AUDIO_ON_SERVER',
             fallback=False)
 
     # MOTION RASPI ID
