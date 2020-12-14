@@ -45,7 +45,7 @@ class VoiceConfig(ConfigFile):
             'Whisper' : VoiceEffect('WHISPER', 'amount', 0.0, 100.0, 100.0, self),
             'Stadium' : VoiceEffect('STADIUM', 'amount', 0.0, 200.0, 100.0, self)
         }
-        self.SERVER_ADDRESS = 'marytts'
+        self.SERVER_ADDRESS = 'localhost'
         self.SERVER_PORT = 59125
 
     def get_voice(self):

@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 
 add_to_startup(){
-    if [ "$DOCKER" = true ]
-    then
-        return 0
-    fi
-
     echo "Adding $1 to startup ..."
     if [ -e /etc/rc.local ]
     then
@@ -27,21 +22,9 @@ add_to_startup(){
     fi
 }
 
-DOCKER=false
-if [ $# -ne 0 ]
-then
-	case "$1" in
-	"docker") DOCKER=true;;
-	esac
-fi
-
 ### requirements ###
-if [ "$DOCKER" = false ]
-then
-    apt-get -y install "python3"
-    apt-get -y install "python3-pip"
-fi
-
+apt-get -y install "python3"
+apt-get -y install "python3-pip"
 apt-get -y install "mosquitto"
 apt-get -y install "mplayer"
 
