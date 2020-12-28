@@ -23,6 +23,13 @@ add_to_startup(){
 }
 
 ### requirements ###
+if type "python3" &>/dev/null; then
+    echo "Python found"
+else
+    echo "Python3 not found"
+    install_program "python3"
+fi
+
 apt-get -y install "python3"
 apt-get -y install "python3-pip"
 apt-get -y install "mosquitto"
