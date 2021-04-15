@@ -14,7 +14,7 @@ unzip ./marytts.zip
 rm marytts.zip
 mv marytts-5.2 marytts
 cd marytts
-wget https://github.com/marytts/voice-upmc-pierre-hsmm/releases/download/v5.2/voice-upmc-pierre-hsmm-5.2.zip -0 voice-upmc-pierre-hsmm.zip
+wget https://github.com/marytts/voice-upmc-pierre-hsmm/releases/download/v5.2/voice-upmc-pierre-hsmm-5.2.zip -O voice-upmc-pierre-hsmm.zip
 extract voice-upmc-pierre-hsmm.zip
 mv voice-upmc-pierre-hsmm.zip ./download
 

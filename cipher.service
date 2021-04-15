@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/home/pi/project/
-ExecStart=/usr/bin/python /home/pi/project/script.py
+ExecStart=/usr/bin/python3 /home/pi/project/script.py
 Restart=always
 
 [Install]
