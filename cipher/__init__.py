@@ -125,7 +125,8 @@ def setup_logger(debug=False):
                 'formatter': 'default',
                 'class': 'logging.handlers.RotatingFileHandler',
                 'filename': core_config.LOG_FILE,
-                'maxBytes': 1024
+                'maxBytes': 1024,
+                'encoding': 'utf-8'
             },
             'socketio': {
                 'formatter': 'default',
