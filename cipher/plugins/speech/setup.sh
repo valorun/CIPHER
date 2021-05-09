@@ -7,6 +7,7 @@ apt-get -y install "default-jre"
 
 PLUGIN_PATH=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 echo "Plugin path: $PLUGIN_PATH"
+echo "Installing marytts ..."
 
 cd $PLUGIN_PATH
 wget https://github.com/marytts/marytts/releases/download/v5.2/marytts-5.2.zip -O marytts.zip
@@ -18,10 +19,23 @@ wget https://github.com/marytts/voice-upmc-pierre-hsmm/releases/download/v5.2/vo
 extract voice-upmc-pierre-hsmm.zip
 mv voice-upmc-pierre-hsmm.zip ./download
 
-PLUGIN_PATH=$(cd $(dirname "$0") && pwd)
+cat > $PLUGIN_PATH/marytts.service <<EOF
+[Unit]
+Description=MaryTTS Multilingual Text-to-Speech Synthesis platform
+After=network.target
 
-echo "Installing marytts ..."
+[Service]
+WorkingDirectory=$PLUGIN_PATH
+ExecStart=$PLUGIN_PATH/bin/marytts-server
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+#PLUGIN_PATH=$(cd $(dirname "$0") && pwd)
+
 #$PLUGIN_PATH/bin/marytts-component-installer
 
 ### add to startup ###
-add_to_startup "$PLUGIN_PATH/bin/marytts-server"
+add_to_startup "$PLUGIN_PATH/marytts.service"

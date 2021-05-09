@@ -11,7 +11,7 @@ node "raspberry server" as raspi_server {
         }
     }
     node "CIPHER client" as CIPHER_client_3
-    CIPHER_client_3 -- MQTT
+    CIPHER_client_3 -- MQTT : "MQTT"
     node "CIPHER-hearing" as hearing
     hearing -- MQTT : "MQTT"
     node "CIPHER-vision" as vision

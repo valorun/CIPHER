@@ -1,24 +1,25 @@
 #!/usr/bin/env bash
 
 add_to_startup(){
-    echo "Adding $1 to startup ..."
-    if [ -e /etc/rc.local ]
+    filename="$(basename $1)"
+    echo "Adding $filename to startup ..."
+
+    if [ -e "/etc/systemd/system/$filename" ]
     then
-        if grep -q "nohup sudo $1 &" /etc/rc.local
-        then
-            echo "Program already added on startup."
-        else
-            while true; do
-                read -p "Do you want to add this program on startup ? " yn
-                case $yn in
-                    [Yy]* ) sed -i -e "\$i \\nohup sudo $1 &\\n" /etc/rc.local; break;;
-                    [Nn]* ) exit;;
-                    * ) echo "Please answer yes or no.";;
-                esac
-            done
-        fi
+        echo "Program already added on startup."
     else
-        echo "No rc.local file found, can't add program on startup."
+        while true; do
+            read -p "Do you want to add this program on startup ? " yn
+            case $yn in
+                [Yy]* ) cp $1 /etc/systemd/system/
+                        systemctl daemon-reload
+                        systemctl enable $filename
+                        systemctl start $filename
+                        break;;
+                [Nn]* ) exit;;
+                * ) echo "Please answer yes or no.";;
+            esac
+        done
     fi
 }
 
@@ -30,6 +31,9 @@ apt-get -y install "mplayer"
 
 APP_PATH=$(cd $(dirname "$0") && pwd)
 echo "Application path: $APP_PATH"
+cd $APP_PATH/venv/bin/activate
+python3 -m venv venv
+source $APP_PATH
 
 if [ -e $APP_PATH/requirements.txt ]
 then
@@ -41,7 +45,21 @@ fi
 
 
 ### add to startup ###
-add_to_startup "$APP_PATH/app.py"
+cat > $APP_PATH/cipher.service <<EOF
+[Unit]
+Description=CIPHER robotic server
+After=network.target
+
+[Service]
+WorkingDirectory=$APP_PATH
+ExecStart=$APP_PATH/venv/bin/python3 $APP_PATH/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+add_to_startup "$APP_PATH/cipher.service"
 
 for D in cipher/plugins/*; do
     if [ -d "${D}" ]; then
