@@ -26,16 +26,14 @@ After=network.target
 
 [Service]
 WorkingDirectory=$PLUGIN_PATH
-ExecStart=$PLUGIN_PATH/bin/marytts-server
+ExecStart=$PLUGIN_PATH/marytts/bin/marytts-server
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-#PLUGIN_PATH=$(cd $(dirname "$0") && pwd)
-
-#$PLUGIN_PATH/bin/marytts-component-installer
+#$PLUGIN_PATH/marytts/bin/marytts-component-installer
 
 ### add to startup ###
 add_to_startup "$PLUGIN_PATH/marytts.service"
