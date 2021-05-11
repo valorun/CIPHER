@@ -16,7 +16,7 @@ const armorController = (() => {
     socket.on('logging', (log) => {
       const logNode = document.createTextNode(log + '\n');
       DOM.$log.appendChild(logNode);
-      console.log(log);
+      DOM.$log.parentElement.scrollTop = DOM.$log.parentElement.scrollHeight;
     });
   }
 

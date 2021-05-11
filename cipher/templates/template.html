@@ -8,6 +8,8 @@
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/loader.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome.css') }}">
 	<script src="{{ url_for('static', filename='vendor/socket.io.js') }}"></script>
 
@@ -21,12 +23,12 @@
 <body class="background">
 
 	<!-- Top container -->
-	<div class="bar top black large card-4" style="z-index:4; position:sticky">
+	<div class="bar top black large card-4" id="topbar">
 		<div class="bar-item left hide-large">
-			<button class="btn hover-text-light-grey" id="sidebar_button"><i class="fa fa-bars"></i>  Menu</button>
+			<button class="btn hover-text-light-grey" id="sidebarButton"><i class="fa fa-bars"></i>  Menu</button>
 		</div>
 		<div class="bar-item left hide-small hide-medium">
-			<a href="/" class="btn hover-text-light-grey"><strong>C.I.P.H.E.R<sup>v1</sup></strong></a>
+			<a href="/" class="btn hover-text-light-grey"><strong>C.I.P.H.E.R<sup>v{{ version }}</sup></strong></a>
 		</div>
 		<div class="bar-item right">
 			<a href="/logout" class="button"><i class="fas fa-lock-open"></i>  Déconnexion</a>
@@ -34,14 +36,14 @@
 	</div>
 
 	<!-- Sidebar/menu -->
-	<nav class="sidebar collapse primary animate-left" style="z-index:3;width:300px;bottom: 0px;top: 58px;display: block;height: inherit;" id="sidebar"><br>
+	<nav class="sidebar collapse primary animate-left" id="sidebar"><br>
 		<div class="container center">
 			<h3 class="tag tertiary">{{ robot_name }}</h3>
 			{% if session.logged_in %}
 			<h3>Bienvenue {{ session['username'] }} !</h3>
 			{% endif %}
 			<!-- <i class="xxxlarge fas fa-robot"></i> -->
-			<img src="/static/favicon.ico" class="margin-right" style="width: 40%">
+			<img src="/static/favicon.ico" class="margin-right">
 		</div>
 		<hr>
 		<div class="container">
@@ -51,16 +53,16 @@
 			{% for p in plugins %}
 			<a href="/{{ p.name }}" class="bar-item button padding"><i class="fas {{ p.icon }}"></i>  {{ p.label }}</a>
 			{% endfor %}
-			<a href="#" class="bar-item button padding-16 hide-large dark-grey hover-black" title="fermer le menu" id="close_sidebar_button"><i class="fa fa-chevron-left"></i></a>
+			<a href="#" class="bar-item button padding-16 hide-large dark-grey hover-black" title="fermer le menu" id="closeSidebarButton"><i class="fa fa-chevron-left"></i></a>
 		</div>
 	</nav>
 
 
 	<!-- Overlay effect when opening sidebar on small screens -->
-	<div class="overlay hide-large animate-opacity" style="cursor:pointer" title="close side menu" id="overlay"></div>
+	<div class="overlay hide-large animate-opacity" id="overlay"></div>
 
 	
-	<div id="socketErrorModal" class="modal" style="z-index:4;">
+	<div id="socketErrorModal" class="modal">
 		<div class="modal-content animate-top card-4">
 			<header class="container dark-red">
 				<h2><i class="fas fa-exclamation-triangle"></i> Connexion perdue</h2>
@@ -77,7 +79,7 @@
 	</div>
 
 	<!-- !PAGE CONTENT! -->
-	<div class="main" style="margin-left:300px;">
+	<div class="main">
 		<header class="container padding-16">
 			<h2><b><i class="fa {{ icon }}"></i> {{ label }}</b></h2>
 		</header>

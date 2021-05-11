@@ -37,7 +37,7 @@ const servosController = (() => {
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    servos = Array.from(document.getElementById('servos_table').rows).slice(1).map(element => new Servo(element));
+    servos = [...document.getElementById('servos_table').rows].slice(1).map(element => new Servo(element));
   }
 
   function cacheDom() {

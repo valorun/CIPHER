@@ -1,7 +1,7 @@
-/* globals socket */
 /* globals successAlert */
 /* globals fetchJson */
 /* globals empty */
+/* globals clientsController */
 
 /* exported settingsController */
 const settingsController = (() => {
@@ -13,22 +13,11 @@ const settingsController = (() => {
   function init() {
     cacheDom();
     bindUIEvents();
-    socket.emit('get_raspies');
+    bindSocketIOEvents();
   }
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    // raspies autocompletes
-    socket.on('receive_raspies', (raspies) => {
-      raspies = raspies.map(r => r.id);
-      document.querySelectorAll('#availableRaspies').forEach((e) => {
-        empty(e);
-        raspies.forEach((r) => {
-          e.insertAdjacentHTML('beforeend', '<option value="' + r + '">');
-        });
-      });
-    });
-
     // audio on server mode
     document.getElementById('audioOnServer').addEventListener('change', (e) => {
       fetchJson('/update_audio_source', 'POST', { value: e.srcElement.checked })
@@ -55,10 +44,23 @@ const settingsController = (() => {
         .then(r => successAlert(r));
     });
   }
+  function bindSocketIOEvents() {
+    // clients autocompletes
+    clientsController.addOnConnectListener((c) => {
+      DOM.$availableRaspies.insertAdjacentHTML('beforeend', '<option id="' + c.id + '_client" value="' + c.id + '">');
+    });
+    clientsController.addOnDisconnectListener((c) => {
+      const $el = document.getElementById(c.id + '_client');
+      if ($el != null) {
+        $el.parentNode.removeChild($el);
+      }
+    });
+  }
 
   function cacheDom() {
     DOM.$robotName = document.getElementById('robotName');
     DOM.$motionRaspiId = document.getElementById('motionRaspiId');
+    DOM.$availableRaspies = document.getElementById('availableRaspies');
   }
 
   return {

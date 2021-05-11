@@ -53,11 +53,10 @@ class Resources():
     """
     def __init__(self, sounds_path: str):
         self.sounds_path = sounds_path
-
     def get_sounds(self):
         if not exists(self.sounds_path):
             makedirs(self.sounds_path)
-        return [f for f in listdir(self.sounds_path) if isfile(join(self.sounds_path, f))]
+        return [f for f in listdir(self.sounds_path) if isfile(join(self.sounds_path, f)) and f[0] != '.']
 
     def sound_exists(self, sound_name: str):
         return exists(self.get_sound_path(sound_name))

@@ -1,5 +1,3 @@
-/* globals isVisible */
-
 /* exported templateController */
 const templateController = (() => {
   'use strict';
@@ -58,10 +56,6 @@ const templateController = (() => {
   function init() {
     cacheDom();
     bindUIEvents();
-    // autohide bar when on small screen
-    if (isVisible(DOM.$sidebarButton)) {
-      closeSidebar();
-    }
   }
 
   /**
@@ -75,30 +69,30 @@ const templateController = (() => {
   /* PRIVATE METHODS */
   function bindUIEvents() {
     DOM.$sidebarButton.addEventListener('click', () => {
-      if (isVisible(DOM.$sidebar)) {
+      if (DOM.$sidebar.style.display !== 'none') {
         closeSidebar();
       } else {
         openSidebar();
       }
     });
 
-    document.getElementById('close_sidebar_button').addEventListener('click', () => {
+    document.getElementById('closeSidebarButton').addEventListener('click', () => {
       closeSidebar();
     });
 
-    document.getElementById('overlay').addEventListener('click', () => {
+    DOM.$overlayBg.addEventListener('click', () => {
       closeSidebar();
     });
 
     // setup collapse on accordions
-    Array.from(document.getElementsByClassName('accordion-header')).forEach($header =>
+    [...document.getElementsByClassName('accordion-header')].forEach($header =>
       accordions.push(new Accordion($header))
     );
   }
 
   function cacheDom() {
     DOM.$sidebar = document.getElementById('sidebar');
-    DOM.$sidebarButton = document.getElementById('sidebar_button');
+    DOM.$sidebarButton = document.getElementById('sidebarButton');
     DOM.$overlayBg = document.getElementById('overlay');
   }
 

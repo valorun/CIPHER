@@ -53,12 +53,12 @@ class CoreConfig(ConfigFile):
                 fallback=join(dirname(__file__), 'sounds/'))
         
         # DEBUG
-        self.DEBUG = self.getboolean('SERVER', 'DEBUG', 
+        self.DEBUG = self.getboolean('SERVER', 'DEBUG',
                 fallback=False)
 
         # PLUGINS
         self.PLUGINS = self.getlist('SERVER', 'PLUGINS',
-                fallback='dashboard,commands,speech,editor,debug,sequences,settings')  # all plugins to load, corresponds to the different pages available on the navbar
+                fallback='dashboard,commands,speech,sequences,settings')  # all plugins to load, corresponds to the different pages available on the navbar
 
         # CAMERA FRAME RATE (Hz)
         self.CAMERA_FRAME_RATE = self.getint('GENERAL', 'CAMERA_FRAME_RATE',
@@ -69,7 +69,7 @@ class CoreConfig(ConfigFile):
         self.set('GENERAL', 'AUDIO_ON_SERVER', mode)
 
     def get_audio_on_server(self) -> bool:
-        return self.getboolean('GENERAL', 'AUDIO_ON_SERVER', 
+        return self.getboolean('GENERAL', 'AUDIO_ON_SERVER',
             fallback=False)
 
     # MOTION RASPI ID

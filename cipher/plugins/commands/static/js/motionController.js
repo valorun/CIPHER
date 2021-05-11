@@ -44,13 +44,12 @@ const motionController = (() => {
       if (!templateController.getAccordion('motion').isOpen) {
         return;
       }
+      e.preventDefault();
       if (keyPressed) {
         return;
       }
-      e.preventDefault();
       let direction = 'stop';
       const speed = parseInt(DOM.$motion_speed.value);
-
       switch (e.keyCode) {
         case 37:
           direction = 'left';

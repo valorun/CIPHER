@@ -110,7 +110,7 @@ const gridFormController = (() => {
     grid.clear();
     fetchJson('/load_buttons', 'POST')
       .then(data => {
-        data.forEach((button) => {
+        data.sort((a, b) => a.index - b.index).forEach((button) => {
           grid.addButton(button, button.index);
         });
         socket.emit('get_relays_state');

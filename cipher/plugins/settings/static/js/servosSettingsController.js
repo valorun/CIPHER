@@ -110,7 +110,7 @@ const servosSettingsController = (() => {
         location.reload();
       });
     });
-    servosEntries = Array.from(document.getElementById('servos_table').rows).slice(1).map(element => new ServoEntry(element));
+    servosEntries = [...document.getElementById('servos_table').rows].slice(1).map(element => new ServoEntry(element));
     // remove servo entry from list when its element is deleted
     servosEntries.forEach(e => e.onDestroy(s => {
       servosEntries = servosEntries.filter(s1 => s1.label !== e.label);

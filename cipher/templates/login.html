@@ -28,6 +28,7 @@
 		<div class="container card-4 tertiary">
 			<h2>Connexion au panneau de gestion</h2>
 			<form action="/login" method="POST" class="container">
+				<input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
 				<p>
 					<input type="username" name="username" placeholder="Username" class="input border" required>
 				</p>

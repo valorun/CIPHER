@@ -224,4 +224,11 @@ h6 {
 .log-container {
     height: 50vh;
     overflow: auto;
+    /* hide scrollbar */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.log-container::-webkit-scrollbar {
+    display: none;
 }

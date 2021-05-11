@@ -2,10 +2,10 @@
 
 [o-> Webclient
 activate Webclient
-Webclient -> SocketIO : play_sequence(seq_name, flags)
+Webclient -> SocketIO : play_sequence(seq_name)
 activate SocketIO
 
-SocketIO -> SequenceReader : launchSequence(seq_name, flags)
+SocketIO -> SequenceReader : launch_sequence(seq_name)
 activate SequenceReader
 
 SequenceReader -> Model : get sequence by name

@@ -8,3 +8,5 @@ __pycache__
 *.ini
 *.swp
 node_modules/
+env/
+.env

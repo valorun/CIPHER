@@ -69,7 +69,7 @@ const voiceController = (() => {
     DOM.$voiceName = document.getElementById('voiceName');
     DOM.$saveVoiceButton = document.getElementById('saveVoiceButton');
     DOM.$testVoiceButton = document.getElementById('testVoiceButton');
-    effectsEntries = Array.from(document.getElementById('effects_table').rows).slice(1).map(element => new VoiceEffectEntry(element));
+    effectsEntries = [...document.getElementById('effects_table').rows].slice(1).map(element => new VoiceEffectEntry(element));
   }
 
   return {

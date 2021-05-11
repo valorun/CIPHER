@@ -23,7 +23,7 @@ class CommandButton {
 
     this.$button = document.createElement('button');
     this.$button.id = '_' + Math.random().toString(36).substr(2, 9);
-    this.$button.classList.add('button', 'display-container');
+    this.$button.classList.add('display-container', 'command-button');
     if (color != null) {
       this.$button.dataset.color = color;
       this.$button.classList.add(color);

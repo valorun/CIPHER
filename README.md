@@ -7,34 +7,34 @@ Interface de contrôle robotique C.I.P.H.E.R. Il s'agit d'une interface web réa
 
 - Gestions d'actions primaires
     - Activation de relais
-    - Parole
     - Activation de servomoteurs
     - Lancement de son (sur le navigateur ou sur le serveur)
 - Création de séquences sous forme de graph
 - Intégration de la synthèse vocale MaryTTS (<http://mary.dfki.de/>)
 - Panneau de côntrole personnalisable
-- Edition de scripts en direct
+- Possibilité d'ajouter ses propres actions ou plugins
 
 ## Installation
 
 Téléchargez et décompressez l'archive de C.I.P.H.E.R sur le serveur à l'emplacement désiré.
-Pour une installation automatique, executez le script ```setup.sh``` disponible à la racine du dossier.
+Pour une installation automatique, exécutez le script ```setup.sh``` disponible à la racine du dossier.
 Le client (disponible à l'adresse suivante: <https://github.com/valorun/CIPHER-raspberry-client>) doit être ensuite installé sur tout les raspberries devant être connectés.
 
 ### Pré-requis
 
 - Python3 sur le raspberry serveur, et sur les raspberries connectés
-- Un broker MQTT sur le raspberry serveur
 
-### Installaton manuelle
+### Installation manuelle
 
 Dans le cadre de notre exemple, l'application est décompressée dans le dossier ```/home/pi```.
-Pour mettre en route le serveur au démarage du raspberry, plusieurs méthodes existent.
+La communication entre le serveur et les client se faisant via le protocole MQTT, il est nécessaire d'installer un broker.
+Nous utilisons ici mosquitto: ```sudo apt install```
+Pour mettre en route le serveur au démarrage du raspberry, plusieurs méthodes existent.
 Dans notre cas, la ligne ```nohup /home/pi/CIPHER/app.py``` est ajoutée avant le 'exit 0' du fichier ```etc/rc.local```.
 
 ## Utilisation
 
-Une fois correctement installé et lancé, le serveur peut ensuite être accédé depuis l'adresse du raspberry dans un navigateur avec le port 5000. Dans notre cas, il s'agit de l'adresse suivante :```https://192.168.1.78:5000```.
+Une fois correctement installé et lancé, le serveur peut ensuite être accédé depuis l'adresse du raspberry dans un navigateur avec le port 5000. Sur un réseau local l'URL sera sous le format suivant :```https://192.168.0.X:5000```.
 
 ## Bibliothèques utilisées
 

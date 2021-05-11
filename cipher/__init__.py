@@ -1,11 +1,12 @@
 # coding: utf-8
 
-import eventlet
-eventlet.monkey_patch()
+import eventlet as _eventlet
+_eventlet.monkey_patch()
 
 from os import urandom
 import logging
 import importlib
+from time import sleep
 from collections import deque
 from logging.handlers import RotatingFileHandler
 from logging.config import dictConfig
@@ -14,6 +15,7 @@ from flask_mqtt import Mqtt
 from flask_socketio import SocketIO
 from .config import core_config
 from .model import db, User
+from .constants import __version__
 
 socketio = SocketIO(logger=True, async_mode='eventlet')  # socketio server used to communicate with web client
 mqtt = Mqtt()  # mqtt client, need to be connected to a brocker (in local)
@@ -59,7 +61,7 @@ def create_app(debug=False):
     # create admin if not exists
     exists = User.query.filter_by(username='admin').first()
     if not exists:
-        new_db_user = User(username='admin', password='cGFzc3dvcmQ=', active=True)
+        new_db_user = User(username='admin', password='$2y$10$hAb.CRq1buok3UhTl1BLJe1L2gQ.06mnDCzhlq5uOGxMlcW8g.B1q', active=True)
         db.session.merge(new_db_user)
         db.session.commit()
     
@@ -77,7 +79,15 @@ def create_app(debug=False):
                 f()
 
     socketio.init_app(app)
-    mqtt.init_app(app)
+
+    connected = False
+    while not connected:
+        try:
+            mqtt.init_app(app)
+            connected = True
+        except ConnectionRefusedError as e:
+            logging.error("Connection to broker refused, retrying ...")
+            sleep(1)
 
     return app
 
@@ -116,7 +126,8 @@ def setup_logger(debug=False):
                 'formatter': 'default',
                 'class': 'logging.handlers.RotatingFileHandler',
                 'filename': core_config.LOG_FILE,
-                'maxBytes': 1024
+                'maxBytes': 1024,
+                'encoding': 'utf-8'
             },
             'socketio': {
                 'formatter': 'default',
