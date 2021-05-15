@@ -21,6 +21,9 @@ def on_speak(client, userdata, msg):
     Function called when the robot needs to speak.
     """
     global last_temp_sound
+    if voice_config.get_voice() is None:
+        speech.log.debug("Trying to speak but, no voice is set")
+        return
     data = json.loads(msg.payload.decode('utf-8'))
     text = data['text']
     url = 'http://' + voice_config.SERVER_ADDRESS + ':' + str(voice_config.SERVER_PORT) + '/process?INPUT_TYPE=TEXT&OUTPUT_TYPE=AUDIO&AUDIO=WAVE_FILE&LOCALE=fr&INPUT_TEXT=' + text

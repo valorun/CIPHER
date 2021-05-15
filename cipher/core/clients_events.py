@@ -62,4 +62,5 @@ def reboot():
 
 @socketio.on('get_clients', namespace='/client')
 def get_clients():
+    core.log.info("Clicli")
     emit('receive_clients', clients, namespace='/client', broadcast=False)
