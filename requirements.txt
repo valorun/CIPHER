@@ -1,6 +1,6 @@
 eventlet==0.30.0
-Flask==2.0.0
+Flask==1.1.4
 Flask-Bcrypt==0.7.1
-Flask-MQTT==1.1.1
-Flask-SocketIO==5.0.3
-Flask-SQLAlchemy==2.5.1
+Flask-MQTT==1.0.7
+Flask-SocketIO==4.3.2
+Flask-SQLAlchemy==2.4.4

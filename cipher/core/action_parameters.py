@@ -16,7 +16,7 @@ class ActionParameter:
         return ActionParameter.type
 
 class StringParameter(ActionParameter):
-    type = "str"
+    type = 'str'
     def __init__(self, name, display_name, hint = None, possible_values: dict = None):
         ActionParameter.__init__(self, name, display_name, hint)
         self.possible_values = possible_values;
