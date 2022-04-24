@@ -12,7 +12,7 @@ def handle_intents(client, userdata, message):
     hearing.log.info("Received intent '" + intent + "'")
     db_intent = Intent.query.filter_by(intent=intent).first()
 
-    if(db_intent is not None):
+    if db_intent is not None:
         if db_intent.sequence is not None:
             sequence_reader.launch_sequence(db_intent.sequence.id, **intent)
 

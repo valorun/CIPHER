@@ -1,6 +1,6 @@
 import json
 import importlib.util
-from typing import List
+from typing import List, Tuple
 from subprocess import Popen
 from os.path import join, exists
 from flask_socketio import SocketIO, emit
@@ -22,7 +22,7 @@ class Action:
         pass
 
     @staticmethod
-    def check_parameters() -> (bool, str):
+    def check_parameters() -> Tuple[bool, str]:
         """
         Check the given parameters to ensure they are suitable for the method execute.
         Return False and a message if the parameters are incorrect, True otherwise.

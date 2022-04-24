@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 from cipher.core.action_parameters import ActionParameter
 from cipher.core.actions import Action
 
@@ -43,7 +45,7 @@ class IntentAction(Action):
         pass
 
     @staticmethod
-    def check_parameters() -> (bool, str):
+    def check_parameters() -> Tuple[bool, str]:
         """
         Check the given parameters to ensure they are suitable for the method execute.
         Return False and a message if the parameters are incorrect, True otherwise.

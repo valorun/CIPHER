@@ -28,7 +28,7 @@
 		<div  class="accordion-content">
 			<div class="container">
 				<p>
-					Vous pouvez ici relier une intention avec une séquence ou un script. Les scripts et les séquences reçoivent en paramètre l'intention et tout autre information détectée.
+					Vous pouvez ici relier une intention avec une séquence. Les séquences reçoivent en paramètre l'intention et tout autre information détectée.
 				</p>
 				<div class="row-padding">
 					<div class="half">
@@ -57,13 +57,11 @@
 					<table class="table bordered responsive">
 						<tr>
 							<th>Intention</th>
-							<th>Script</th>
 							<th>Séquence</th>
 						</tr>
 						{% for i in intents %}
 						<tr id="{{ i.intent }}">
 							<td class="tertiary"><span >{{ i.intent }}</span></td>
-							<td class="tertiary"><span>{{ i.script_name }}</span></td>
 							<td class="tertiary"><span>{{ i.sequence_id }}</span></td>
 							<td>
 								{% if i.enabled==True %}

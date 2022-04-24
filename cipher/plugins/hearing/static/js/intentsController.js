@@ -22,9 +22,8 @@ const intentsController = (() => {
         failAlert('L\'intention fournie est vide.');
         return;
       }
-      const scriptName = DOM.$currentScriptName.value;
       const sequenceId = DOM.$currentSequence.value;
-      saveIntent(intent, scriptName, sequenceId);
+      saveIntent(intent, sequenceId);
     });
 
     // checkbox to enable or disable the relay
@@ -46,13 +45,12 @@ const intentsController = (() => {
 
   function cacheDom() {
     DOM.$currentIntent = document.getElementById('currentIntent');
-    DOM.$currentScriptName = document.getElementById('currentScriptName');
     DOM.$currentSequence = document.getElementById('currentSequence');
   }
 
   /**
   * Save an intent
-  * @param {*} intent intant name
+  * @param {*} intent intent name
   * @param {*} script_name optional script name
   * @param {*} sequence_id optional sequence id
   */
@@ -66,7 +64,7 @@ const intentsController = (() => {
 
   /**
   * Enable OR disable an intent
-  * @param {string} intent intant name
+  * @param {string} intent intent name
   * @param {boolean} value new state for the intent
   */
   function enableIntent(intent, value) {
