@@ -22,12 +22,14 @@ def save_intent():
     Save an intent in the database.
     """
     intent = request.json.get('intent')
-    script_name = request.json.get('script_name')
+    action_name = request.json.get('action_name')
     seq_id = request.json.get('sequence_id')
     if not intent or ' ' in intent:
         return jsonify("Un nom d'intention ne doit pas être vide ou contenir d'espace."), 400
-    if ' ' in script_name:
-        return jsonify("Un nom de script ne doit pas contenir d'espace."), 400
+    if (not action_name and not seq_id) or (action_name and seq_id):
+        return jsonify("Vous devez choisir une séquence OU une action."), 400
+    if action_name and ' ' in action_name:
+        return jsonify("Un nom de d'action ne doit pas contenir d'espace."), 400
     if Intent.query.filter_by(intent=intent).first() is not None:
         return jsonify("Une intention portant le même nom existe déjà."), 400
     hearing.log.info("Saving intent '%s'", intent)

@@ -28,7 +28,7 @@ const intentsController = (() => {
 
     // checkbox to enable or disable the relay
     document.querySelectorAll('input[name=enableIntent]').forEach((e) => {
-      const intent = e.id.substr(e.id.indexOf('_') + 1);
+      const intent = e.id.substring(e.id.indexOf('_') + 1);
       e.addEventListener('change', () => {
         enableIntent(intent, e.checked);
       });
@@ -36,7 +36,7 @@ const intentsController = (() => {
 
     // button to delete the relay
     document.querySelectorAll('a[name=deleteIntent]').forEach((e) => {
-      const intent = e.id.substr(e.id.indexOf('_') + 1);
+      const intent = e.id.substring(e.id.indexOf('_') + 1);
       e.addEventListener('click', () => {
         deleteIntent(intent);
       });
@@ -46,17 +46,18 @@ const intentsController = (() => {
   function cacheDom() {
     DOM.$currentIntent = document.getElementById('currentIntent');
     DOM.$currentSequence = document.getElementById('currentSequence');
+    DOM.$currentAction = document.getElementById('currentAction');
   }
 
   /**
   * Save an intent
   * @param {*} intent intent name
-  * @param {*} script_name optional script name
+  * @param {*} action_name optional action name
   * @param {*} sequence_id optional sequence id
   */
-  function saveIntent(intent, scriptName, sequenceId) {
+  function saveIntent(intent, actionName, sequenceId) {
     fetchJson('/save_intent', 'POST',
-      { intent: intent, script_name: scriptName, sequence_id: sequenceId })
+      { intent: intent, action_name: actionName, sequence_id: sequenceId })
       .then(() => {
         location.reload();
       });

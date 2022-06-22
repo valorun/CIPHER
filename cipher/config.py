@@ -53,12 +53,12 @@ class CoreConfig(ConfigFile):
                 fallback=join(dirname(__file__), 'sounds/'))
         
         # DEBUG
-        self.DEBUG = self.getboolean('SERVER', 'DEBUG',
+        self.DEBUG = self.getboolean('GENERAL', 'DEBUG',
                 fallback=False)
 
         # PLUGINS
         self.PLUGINS = self.getlist('SERVER', 'PLUGINS',
-                fallback='dashboard,commands,speech,sequences,settings')  # all plugins to load, corresponds to the different pages available on the navbar
+                fallback='dashboard,commands,speech,hearing,sequences,settings')  # all plugins to load, corresponds to the different pages available on the navbar
 
         # CAMERA FRAME RATE (Hz)
         self.CAMERA_FRAME_RATE = self.getint('GENERAL', 'CAMERA_FRAME_RATE',
