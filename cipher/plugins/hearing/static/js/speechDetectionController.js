@@ -48,9 +48,9 @@ const speechDetectionController = (() => {
   }
 
   function cacheDom() {
-    DOM.$startStopRecognition = document.getElementById('startStopRecognition');
-    DOM.$speechDetectionModal = document.getElementById('speechDetectionModal');
-    DOM.$detectionResult = document.getElementById('detectionResult');
+    DOM.$startStopRecognition = document.getElementById('start-stop-recognition');
+    DOM.$speechDetectionModal = document.getElementById('speech-detection-modal');
+    DOM.$detectionResult = document.getElementById('detection-result');
   }
 
   return {

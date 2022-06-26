@@ -27,9 +27,9 @@ const motionController = (() => {
 
     // carriage panel controller
     [...document.getElementsByClassName('motion-direction')].forEach(e => {
-      const direction = e.getAttribute('value').split('_')[1];
+      const direction = e.getAttribute('value').split('-')[1];
       e.addEventListener(startActionEvent, () => {
-        const speed = parseInt(DOM.$motion_speed.value);
+        const speed = parseInt(DOM.$motionSpeed.value);
         console.log(direction + ', ' + speed);
         socket.emit('action', 'motion', { direction: direction, speed: speed });
       });
@@ -49,18 +49,18 @@ const motionController = (() => {
         return;
       }
       let direction = 'stop';
-      const speed = parseInt(DOM.$motion_speed.value);
-      switch (e.keyCode) {
-        case 37:
+      const speed = parseInt(DOM.$motionSpeed.value);
+      switch (e.key) {
+        case 'ArrowLeft':
           direction = 'left';
           break;
-        case 38:
+        case 'ArrowUp':
           direction = 'forwards';
           break;
-        case 39:
+        case 'ArrowRight':
           direction = 'right';
           break;
-        case 40:
+        case 'ArrowDown':
           direction = 'backwards';
           break;
       }
@@ -80,7 +80,7 @@ const motionController = (() => {
   }
 
   function cacheDom() {
-    DOM.$motion_speed = document.getElementById('motion_speed');
+    DOM.$motionSpeed = document.getElementById('motion-speed');
   }
 
   return {

@@ -1,30 +1,24 @@
 {% extends 'template.html' %}
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('commands.static', filename='css/commands.css') }}">
 <link rel="stylesheet" href="{{ url_for('commands.static', filename='css/grid.css') }}">
-<link rel="stylesheet" href="{{ url_for('commands.static', filename='css/colorPicker.css') }}">
 <script src="{{ url_for('commands.static', filename='vendor/muuri/muuri.min.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/gridItem.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/commandButton.js') }}"></script>
-<script src="{{ url_for('commands.static', filename='js/colorpickerController.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/gridController.js') }}"></script>
 <script src="{{ url_for('commands.static', filename='js/gridFormController.js') }}"></script>
 
-<div class="show-inline-block">
+<div class="panel" id="misc-panel">
 	{% include 'sequencePanel.html' %}
-</div>
-<div class="show-inline-block">
 	{% include 'cameraPanel.html' %}
-</div>
-<div class="show-inline-block">
 	{% include 'motionPanel.html' %}
 </div>
 
+<div class="panel">
+	<i class="button fas fa-edit" id="edit-panel-button"></i>
+	<div id="new-button-panel" class="hide">
 
-<div class="container">
-	<i class="button secondary fas fa-edit" id="editPanelButton"></i>
-	<div id="newButtonPanel" class="tertiary border hide">
-
-		<select class="select border margin-bottom" name="newButtonTypeChoice">
+		<select name="new-button-type-choice">
 			<option value="" disabled selected>Choisir une action</option>
 			<option value="relay">Relai</option>
 			<option value="sequence">Séquence</option>
@@ -34,119 +28,84 @@
 			{% endfor %}
 		</select>
 
-		<div id="newButtonOptions" class="row container">
-			<div>
-				<div id="relay_options" class="hide">
-					<select class="select border half" name="relay_label" id="relay_label">
-						<option value="" disabled selected>Choisir un relai</option>
-						{% for r in relays %}
-						{% if r.enabled %}
-						<option value="{{ r.label }}">{{ r.label }}</option>
-						{% endif %}
-						{% endfor %}
-					</select>
-				</div>
-				<div id="sequence_options" class="hide">
-					<select class="select border half" name="sequence_name" id="sequence_name">
-						<option value="" disabled selected>Choisir une séquence</option>
-						{% for s in sequences %}
-						{% if s.enabled %}
-						<option value="{{ s.id }}">{{ s.id }}</option>
-						{% endif %}
-						{% endfor %}
-					</select>
-				</div>
-				<div id="sound_options" class="hide">
-					<select class="select border half" name="sound_name" id="sound_name">
-						<option value="" disabled selected>Choisir un son</option>
-						{% for s in sounds %}
-						<option value="{{ s }}">{{ s }}</option>
-						{% endfor %}
-					</select>
-				</div>
-				{% for a_name, a in custom_actions.items() %}
-				<div id="{{ a_name }}_options" class="hide">
-					{% for p in a.get_parameters() %}
-					<div>
-						<label for="{{ a_name }}_{{ p.name }}">{{ p.display_name }}:</label>
-						{% if p.get_type() == 'str' %}
-							{% if p.possible_values is not none %}
-							<select class="select border" name="{{ a_name }}_{{ p.name }}" id="{{ a_name }}_{{ p.name }}">
-								<option value="" disabled selected>Choisir une valeur</option>
-								{% for p_key, p_value in p.possible_values.items() %}
-								<option value="{{ p_key }}">{{ p_value }}</option>
-								{% endfor %}
-							</select>
-							{% else %}
-							<input type="text" id="{{ a_name }}_{{ p.name }}" value="" class="input border" placeholder="{{ p.hint }}">
-							{% endif %}
-
-						{% elif p.get_type() == 'int' %}
-							<input type="number" id="{{ a_name }}_{{ p.name }}" value="{{ p.minValue }}" class="input border" 
-							{% if p.minValue is not none %}
-							min="{{ p.minValue }}"
-							{% endif %}
-							{% if p.maxValue is not none %} 
-							max="{{ p.maxValue }}"
-							{% endif %}
-							>
-						{% elif p.get_type() == 'bool' %}
-							<input class="check" type="checkbox" checked="checked" id="{{ a_name }}_{{ p.name }}">
-						{% endif %}
-					</div>
+		<div id="new-button-form">
+			<div id="relay-options" class="hide">
+				<select name="relay-label" id="relay-label">
+					<option value="" disabled selected>Choisir un relai</option>
+					{% for r in relays %}
+					{% if r.enabled %}
+					<option value="{{ r.label }}">{{ r.label }}</option>
+					{% endif %}
 					{% endfor %}
+				</select>
+			</div>
+			<div id="sequence-options" class="hide">
+				<select name="sequence-name" id="sequence-name">
+					<option value="" disabled selected>Choisir une séquence</option>
+					{% for s in sequences %}
+					{% if s.enabled %}
+					<option value="{{ s.id }}">{{ s.id }}</option>
+					{% endif %}
+					{% endfor %}
+				</select>
+			</div>
+			<div id="sound-options" class="hide">
+				<select name="sound-name" id="sound-name">
+					<option value="" disabled selected>Choisir un son</option>
+					{% for s in sounds %}
+					<option value="{{ s }}">{{ s }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			{% for a_name, a in custom_actions.items() %}
+			<div id="{{ a_name }}-options" class="hide">
+				{% for p in a.get_parameters() %}
+				<div>
+					<label for="{{ a_name }}-{{ p.name }}">{{ p.display_name }}:</label>
+					{% if p.get_type() == 'str' %}
+						{% if p.possible_values is not none %}
+						<select name="{{ a_name }}-{{ p.name }}" id="{{ a_name }}-{{ p.name }}">
+							<option value="" disabled selected>Choisir une valeur</option>
+							{% for p_key, p_value in p.possible_values.items() %}
+							<option value="{{ p_key }}">{{ p_value }}</option>
+							{% endfor %}
+						</select>
+						{% else %}
+						<input type="text" id="{{ a_name }}-{{ p.name }}" value="" placeholder="{{ p.hint }}">
+						{% endif %}
+
+					{% elif p.get_type() == 'int' %}
+						<input type="number" id="{{ a_name }}-{{ p.name }}" value="{{ p.minValue }}" 
+						{% if p.minValue is not none %}
+						min="{{ p.minValue }}"
+						{% endif %}
+						{% if p.maxValue is not none %} 
+						max="{{ p.maxValue }}"
+						{% endif %}
+						>
+					{% elif p.get_type() == 'bool' %}
+						<input type="checkbox" checked="checked" id="{{ a_name }}-{{ p.name }}">
+					{% endif %}
 				</div>
 				{% endfor %}
 			</div>
-
-			<div class="row">
-				<!--<input id="color" type="color" value="Ajouter" class="button light-grey border quarter" style="height: 40px">-->
-				<a id="color" type="button" value="Couleur" class="border button grey third" data-color="grey">
-					<i class="fas fa-palette"></i>
-				</a>
-
-				<input id="buttonLabel" type="text" value="" class="input border third" placeholder="Nom du bouton">
-				<input id="addButton" type="button" value="Ajouter" class="border button secondary third">
+			{% endfor %}
+			<div class="flex">
+				<input type="color" id="color">
+				<input id="button-label" type="text" value="" placeholder="Nom du bouton">
+				<input id="add-button" type="button" value="Ajouter">
 			</div>
 		</div>
 	</div>
 
-	<div id="panel" class="border container white" style="width:100%">
+	<div id="panel">
 		<div class="grid" id="grid">
 	
 		</div>
 	</div>
 </div>
 
-
-<div id="colorPicker" class="modal" style="z-index:4;">
-	<div class="modal-content animate-top card-4">
-		<header class="container primary">
-			<span class="button display-topright xlarge" id="closeColorPicker">&times;</span>
-			<h2>Selectionnez la couleur du bouton</h2>
-		</header>
-		<div class="container center">
-			<div class="row margin-top">
-				<input type="button" value="Bleu" class="btn quarter color-item blue" data-color="blue">
-				<input type="button" value="Rouge" class="btn quarter color-item red" data-color="red">
-				<input type="button" value="Jaune" class="btn quarter color-item yellow" data-color="yellow">
-				<input type="button" value="Vert" class="btn quarter color-item green" data-color="green">
-			</div>
-			<div class="row margin-bottom">
-				<input type="button" value="Gris" class="btn quarter color-item grey" data-color="grey">
-				<input type="button" value="Noir" class="btn quarter color-item black" data-color="black">
-				<input type="button" value="Bordeau" class="btn quarter color-item dark-red" data-color="dark-red">
-				<input type="button" value="Bleu-marine" class="btn quarter color-item dark-blue"
-					data-color="dark-blue">
-			</div>
-		</div>
-
-	</div>
-</div>
-
-<div class="cell mobile">
-	{% include 'servosPanel.html' %}
-</div>
+{% include 'servosPanel.html' %}
 
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', () => {

@@ -1,45 +1,42 @@
 <script src="{{ url_for('commands.static', filename='js/servosController.js') }}"></script>
+<style>
+	#servos-table td:nth-child(3)  {
+		width: 50px;
+	}
+</style>
 
-<div class="panel">
-	<div class="card round-large tertiary">
-		<button class="btn container primary block left-align accordion-header">
-			<h4><i class="accordion-icon"></i> Servomoteurs</h4>
-		</button>
-		<div  class="accordion-content">
-			<div class="container">
-				<p>
-					<table class="table bordered responsive" id="servos_table">
-                        <tr>
-                            <th>Label</th>
-                            <th>Position</th>
-                            <th></th>
-                            <th>Speed</th>
-                        </tr>
-						{% for s in servos %}	
-						<tr id="{{ s.label }}">
-							<td>
-								<label for="{{ s.label }}_range">{{ s.label }}: </label>
-							</td>
-							<td>
-								<input type="range" id="{{ s.label }}_range" name="{{ s.label }}_range" min="{{ s.min_pulse_width }}" max="{{ s.max_pulse_width }}" value="{{ s.def_pulse_width }}">
-							</td>
-							<td>
-								<span id="{{ s.label }}_value">{{ s.def_pulse_width }}</span>
-							</td>
-							<td>
-								<input type="number" id="{{ s.label }}_speed" value="0" class="input border" min="0" max="100">
-							</td>
-							<td>
-								<a id="{{ s.label }}_reset" type="button" class="button dark-red" data-default="{{ s.def_pulse_width }}">
-									reset
-								</a>
-							</td>
-						</tr>
-						{% endfor %}
-					</table>
-				</p>
-			</div>
-		</div>
+<div class="accordion">
+	<header class="accordion-header">
+		<i class="accordion-icon"></i> Servomoteurs
+	</header>
+	<div class="accordion-content">
+		<table id="servos-table">
+			<tr>
+				<th>Label</th>
+				<th>Position</th>
+				<th></th>
+				<th>Speed</th>
+			</tr>
+			{% for s in servos %}	
+			<tr id="{{ s.label }}">
+				<td>
+					<label for="{{ s.label }}-range">{{ s.label }}: </label>
+				</td>
+				<td>
+					<input type="range" id="{{ s.label }}-range" name="{{ s.label }}-range" min="{{ s.min_pulse_width }}" max="{{ s.max_pulse_width }}" value="{{ s.def_pulse_width }}">
+				</td>
+				<td>
+					<span id="{{ s.label }}-value">{{ s.def_pulse_width }}</span>
+				</td>
+				<td>
+					<input type="number" id="{{ s.label }}-speed" value="0" min="0" max="100">
+				</td>
+				<td>
+					<input id="{{ s.label }}-reset" type="button" data-default="{{ s.def_pulse_width }}" value="reset">
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
 	</div>
 </div>
 <script type="text/javascript">

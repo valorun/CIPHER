@@ -7,39 +7,28 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 </head>
 
-<body class="background">
-
+<body>
 	{% if session['logged_in'] %}
-	<div class="panel green top center">
-		<h3>Vous êtes déja connecté !</h3>
-	</div>
+	<span class="success_message">
+		Vous êtes déja connecté !
+	</span>
 	{% else %}
-	<div class="panel dark-red top center">
-		{% for message in get_flashed_messages() %}
-		<h3 class="flash">{{ message }}</h3>
-		{% endfor %}
-	</div>
+	<span class="error_message">{% for message in get_flashed_messages() %}
+	{{ message }}
+	{% endfor %}</span>
 	{% endif %}
 
-	<div class="display-middle center mobile">
-		<div class="container card-4 tertiary">
+	<div class="loggin_panel">
+		<form action="/login" method="POST">
 			<h2>Connexion au panneau de gestion</h2>
-			<form action="/login" method="POST" class="container">
-				<input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
-				<p>
-					<input type="username" name="username" placeholder="Username" class="input border" required>
-				</p>
-				<p>
-					<input type="password" name="password" placeholder="Password" class="input border" required>
-				</p>
-				<p>
-					<input type="submit" value="Connexion" class="button secondary">
-				</p>
-			</form>
-		</div>
+			<input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
+			<input type="username" name="username" placeholder="Username" required>
+			<input type="password" name="password" placeholder="Password" required>
+			<input type="submit" value="Connexion">
+		</form>
 	</div>
 </body>
 

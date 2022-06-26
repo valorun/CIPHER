@@ -1,0 +1,11 @@
+[Unit]
+Description=MaryTTS Multilingual Text-to-Speech Synthesis platform
+After=network.target
+
+[Service]
+WorkingDirectory=/home/pi/CIPHER/cipher/plugins/speech
+ExecStart=/home/pi/CIPHER/cipher/plugins/speech/marytts/bin/marytts-server
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+#command-buttons .button {
+    font-size: xx-large;
+}
+
+#clients:empty {
+    display: none;
+}
+
+.client-card {
+    border-radius: 5px;
+    background-color: var(--success-color);
+    margin: 4px;
+    padding: 10px;
+    display: inline-block;
+    font-weight: bold;
+    text-align: center;
+}
+
+.client-card > header {
+    font-size: x-large;
+}

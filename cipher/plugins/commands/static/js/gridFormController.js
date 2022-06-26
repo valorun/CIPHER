@@ -1,14 +1,12 @@
 /* globals failAlert */
 /* globals socket */
 /* globals fetchJson */
-/* globals colorpickerController */
 /* globals gridController */
 /* globals AlreadyUsedError */
 
 /* exported gridFormController */
 const gridFormController = (() => {
   'use strict';
-  const colorpicker = colorpickerController;
   const grid = gridController;
 
   let editionMode = false;
@@ -16,7 +14,6 @@ const gridFormController = (() => {
 
   /* PUBLIC METHODS */
   function init() {
-    colorpicker.init();
     grid.init();
     cacheDom();
     bindUIEvents();
@@ -27,7 +24,7 @@ const gridFormController = (() => {
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    document.getElementById('addButton').addEventListener('click', addButton);
+    document.getElementById('add-button').addEventListener('click', addButton);
 
     DOM.$buttonType.addEventListener('change', () => {
       updateForm();
@@ -44,14 +41,15 @@ const gridFormController = (() => {
   }
 
   function cacheDom() {
-    DOM.$buttonLabel = document.getElementById('buttonLabel');
-    DOM.$buttonType = document.querySelector('select[name=newButtonTypeChoice]');
+    DOM.$buttonLabel = document.getElementById('button-label');
+    DOM.$buttonType = document.querySelector('select[name=new-button-type-choice]');
     DOM.$relays = document.getElementById('relays');
     DOM.$sequences = document.getElementById('sequences');
     DOM.$sounds = document.getElementById('sounds');
+    DOM.$colorpicker = document.getElementById('color');
 
-    DOM.$editPanelButton = document.getElementById('editPanelButton');
-    DOM.$newButtonPanel = document.getElementById('newButtonPanel');
+    DOM.$editPanelButton = document.getElementById('edit-panel-button');
+    DOM.$newButtonPanel = document.getElementById('new-button-panel');
   }
 
   /**
@@ -64,11 +62,11 @@ const gridFormController = (() => {
     buttonData.action.name = DOM.$buttonType.value;
     buttonData.action.parameters = {};
     buttonData.label = DOM.$buttonLabel.value;
-    buttonData.color = colorpicker.getSelectedColor();
+    buttonData.color = DOM.$colorpicker.value;
 
-    const $parameters = document.querySelectorAll('[id^=' + DOM.$buttonType.value + '_]:not([id$=_options])');
+    const $parameters = document.querySelectorAll('[id^=' + DOM.$buttonType.value + '-]:not([id$=-options])');
     $parameters.forEach(e => {
-      const key = e.id.split(buttonData.action.name + '_')[1];
+      const key = e.id.split(buttonData.action.name + '-')[1];
       if (e.type === 'number') {
         buttonData.action.parameters[key] = parseInt(e.value);
       } else if (e.type === 'checkbox') {
@@ -166,11 +164,12 @@ const gridFormController = (() => {
   * Update the form to match selected options
   */
   function updateForm() {
-    document.querySelectorAll('[id$=_options]')
+    document.querySelectorAll('[id$=-options]')
       .forEach(e => e.classList.add('hide'));
 
     if (DOM.$buttonType.value !== '') {
-      document.getElementById(DOM.$buttonType.value + '_options').classList.remove('hide');
+      console.log(DOM.$buttonType.value)
+      document.getElementById(DOM.$buttonType.value + '-options').classList.remove('hide');
     } else {
       failAlert('Aucun type de bouton n\'a été selectionné !');
     }

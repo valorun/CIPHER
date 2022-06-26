@@ -18,21 +18,21 @@ const sequencesController = (() => {
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    document.querySelectorAll('input[name=enableSeq]').forEach((e) => {
-      const seqName = e.id.substring(e.id.indexOf('_') + 1);
+    document.querySelectorAll('input[name=enable-seq]').forEach((e) => {
+      const seqName = e.id.substring(e.id.indexOf('-') + 1);
       e.addEventListener('click', () => {
         enableSequence(seqName, e.checked);
       });
     });
-    document.querySelectorAll('a[name=deleteSeq]').forEach((e) => {
-      const seqName = e.id.substring(e.id.indexOf('_') + 1);
+    document.querySelectorAll('button[name=delete-seq]').forEach((e) => {
+      const seqName = e.id.substring(e.id.indexOf('-') + 1);
       e.addEventListener('click', () => {
         deleteSequence(seqName);
       });
     });
-    document.querySelectorAll('a[name=editSeq]').forEach((e) => {
+    document.querySelectorAll('button[name=edit-seq]').forEach((e) => {
       e.addEventListener('click', () => {
-        const seqName = e.id.substring(e.id.indexOf('_') + 1);
+        const seqName = e.id.substring(e.id.indexOf('-') + 1);
 
         editSequence(seqName);
         templateController.getAccordion('creation').open();
@@ -40,7 +40,7 @@ const sequencesController = (() => {
       });
     });
 
-    document.getElementById('saveButton').addEventListener('click', () => {
+    document.getElementById('save-button').addEventListener('click', () => {
       if (graphController.graphIsValid()) {
         saveGraph();
       } else {
@@ -88,7 +88,7 @@ const sequencesController = (() => {
    */
   function editSequence(seqName) {
     DOM.$name.value = seqName;
-    const sequenceData = document.getElementById('data_' + seqName).innerHTML;
+    const sequenceData = document.getElementById('data-' + seqName).innerHTML;
     const json = JSON.parse(sequenceData);
     graphController.updateGraph(json);
   }

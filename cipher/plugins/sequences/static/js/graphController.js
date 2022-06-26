@@ -151,7 +151,7 @@ const graphController = (() => {
     network.on('deselectNode', () => DOM.$delSelectionButton.classList.add('hide'));
     network.on('deselectEdge', () => DOM.$delSelectionButton.classList.add('hide'));
 
-    document.querySelector('select[name=newNodeTypeChoice]').addEventListener('change', () => {
+    document.querySelector('select[name=new-node-type-choice]').addEventListener('change', () => {
       updateForm();
     });
 
@@ -179,16 +179,16 @@ const graphController = (() => {
 
   function cacheDom() {
     DOM.$networkContainer = document.getElementById('network');
-    DOM.$newNodeForm = document.getElementById('newNodeForm');
-    DOM.$newTransitionForm = document.getElementById('newTransitionForm');
+    DOM.$newNodeForm = document.getElementById('new-node-form');
+    DOM.$newTransitionForm = document.getElementById('new-transition-form');
 
-    DOM.$addNodeButton = document.getElementById('addNodeButton');
-    DOM.$addTransitionButton = document.getElementById('addTransitionButton');
-    DOM.$delSelectionButton = document.getElementById('delSelectionButton');
+    DOM.$addNodeButton = document.getElementById('add-node-button');
+    DOM.$addTransitionButton = document.getElementById('add-transition-button');
+    DOM.$delSelectionButton = document.getElementById('del-selection-button');
 
-    DOM.$selectedAction = document.querySelector('select[name=newNodeTypeChoice]');
+    DOM.$selectedAction = document.querySelector('select[name=new-node-type-choice]');
 
-    DOM.$transitionTime = document.getElementById('transition_time');
+    DOM.$transitionTime = document.getElementById('transition-time');
   }
 
   /**
@@ -280,9 +280,9 @@ const graphController = (() => {
     action.name = DOM.$selectedAction.value;
     action.parameters = {};
 
-    const $parameters = document.querySelectorAll('[id^=' + action.name + '_]:not([id$=_options])');
+    const $parameters = document.querySelectorAll('[id^=' + action.name + '-]:not([id$=-options])');
     $parameters.forEach(e => {
-      const key = e.id.split(action.name + '_')[1];
+      const key = e.id.split(action.name + '-')[1];
       if (e.type === 'number') {
         action.parameters[key] = parseInt(e.value);
       } else if (e.type === 'checkbox') {
@@ -306,12 +306,12 @@ const graphController = (() => {
    * Update the form to display the options corresponding to the type of button chosen
    */
   function updateForm() {
-    document.querySelectorAll('[id$=_options]')
+    document.querySelectorAll('[id$=-options]')
       .forEach(e => e.classList.add('hide'));
 
-    if (document.querySelector('select[name=newNodeTypeChoice]').value !== '') {
-      const selectedNodeType = document.querySelector('select[name=newNodeTypeChoice]');
-      const selectedNodeForm = document.getElementById(selectedNodeType.value + '_options');
+    if (document.querySelector('select[name=new-node-type-choice]').value !== '') {
+      const selectedNodeType = document.querySelector('select[name=new-node-type-choice]');
+      const selectedNodeForm = document.getElementById(selectedNodeType.value + '-options');
       if (selectedNodeForm != null) {
         selectedNodeForm.classList.remove('hide');
       }

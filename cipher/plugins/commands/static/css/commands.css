@@ -1,0 +1,8 @@
+#misc-panel > .accordion {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#new-button-form div {
+    display: flex;
+}

@@ -7,14 +7,14 @@ from cipher.core.sequence_reader import sequence_reader
 
 @mqtt.on_topic('server/hearing/intent/#')
 def handle_intents(client, userdata, message):
-    intent = message.topic
-    hearing.log.info(intent)
+    payload = json.loads(message.payload.decode('utf-8'))
+    intent = payload['intent']['intentName']
     hearing.log.info("Received intent '" + intent + "'")
     db_intent = Intent.query.filter_by(intent=intent).first()
 
-    if(db_intent is not None):
-        if db_intent.sequence is not None:
-            sequence_reader.launch_sequence(db_intent.sequence.id, **intent)
+    if db_intent is not None:
+        if db_intent.sequence_id is not None:
+            sequence_reader.launch_sequence(db_intent.sequence_id, **payload)
 
 @socketio.on('start_speech_recognition', namespace='/client')
 def start_speech_recognition():

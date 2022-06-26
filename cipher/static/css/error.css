@@ -1,0 +1,22 @@
+/* ERROR */
+body {
+    display: flex;
+    height: 90vh;
+}
+
+.error_panel {
+    background-color: var(--bg-color);
+    padding: 0px 40px 40px 40px;
+    margin: auto auto auto auto;
+    display:grid;
+    border: 2px solid var(--color2);
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .loggin_panel {
+        margin-left: 0px;
+        margin-right: 0px;
+        width: 100%;
+    }
+}

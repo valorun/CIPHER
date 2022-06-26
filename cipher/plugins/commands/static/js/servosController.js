@@ -11,10 +11,10 @@ const servosController = (() => {
   class Servo {
     constructor($tr) {
       this.label = $tr.id;
-      this.$range = document.getElementById(this.label + '_range');
-      this.$valueDisplay = document.getElementById(this.label + '_value');
-      this.$speed = document.getElementById(this.label + '_speed');
-      this.$reset = document.getElementById(this.label + '_reset');
+      this.$range = document.getElementById(this.label + '-range');
+      this.$valueDisplay = document.getElementById(this.label + '-value');
+      this.$speed = document.getElementById(this.label + '-speed');
+      this.$reset = document.getElementById(this.label + '-reset');
       this.defaultValue = parseInt(this.$reset.dataset.default);
 
       this.$range.addEventListener('change', e => { this.updateValue(e.target.value); });
@@ -37,7 +37,7 @@ const servosController = (() => {
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    servos = [...document.getElementById('servos_table').rows].slice(1).map(element => new Servo(element));
+    servos = [...document.getElementById('servos-table').rows].slice(1).map(element => new Servo(element));
   }
 
   function cacheDom() {

@@ -93,7 +93,7 @@ const relaysSettingsController = (() => {
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    document.getElementById('addRelay').addEventListener('click', () => {
+    document.getElementById('add-relay').addEventListener('click', () => {
       fetchJson('/save_relay', 'POST',
         {
           label: DOM.$newRelayLabel.value,
@@ -108,12 +108,12 @@ const relaysSettingsController = (() => {
   }
 
   function cacheDom() {
-    DOM.$newRelayLabel = document.getElementById('newRelayLabel');
-    DOM.$newRelayPin = document.getElementById('newRelayPin');
-    DOM.$newRelayParity = document.getElementById('newRelayParity');
-    DOM.$newRelayRaspiId = document.getElementById('newRelayRaspiId');
+    DOM.$newRelayLabel = document.getElementById('new-relay-label');
+    DOM.$newRelayPin = document.getElementById('new-relay-pin');
+    DOM.$newRelayParity = document.getElementById('new-relay-parity');
+    DOM.$newRelayRaspiId = document.getElementById('new-relay-raspi-id');
 
-    relaysEntries = [...document.getElementById('relays_table').rows].slice(1).map(element => new RelayEntry(element));
+    relaysEntries = [...document.getElementById('relays-table').rows].slice(1).map(element => new RelayEntry(element));
     // remove relay entry from list when its element is deleted
     relaysEntries.forEach(e => e.onDestroy(s => {
       relaysEntries = relaysEntries.filter(s1 => s1.label !== e.label);

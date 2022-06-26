@@ -1,83 +1,71 @@
 <script src="{{ url_for('settings.static', filename='js/relaysSettingsController.js') }}"></script>
 
-<div class="panel">
-    <div class="card round-large tertiary">
-        <button class="btn container primary block left-align accordion-header">
-            <h4><i class="accordion-icon"></i> Ajouter un relai</h4>
-        </button>
-        <div class="accordion-content">
-            <div class="row-padding">
-                <div class="quarter">
-                    <label for="newRelayLabel">Label: </label>
-                    <input id="newRelayLabel" type="text" value="" class="input border">
-                </div>
-                <div class="quarter">
-                    <label for="newRelayPin">Pin: </label>
-                    <input id="newRelayPin" type="text" value="" class="input border">
-                </div>
-                <div class="quarter">
-                    <label for="newRelayParity">Parité: </label>
-                    <input id="newRelayParity" type="text" value="" class="input border">
-                </div>
-                <div class="quarter">
-                    <label for="newRelayRaspiId">Raspberry: </label>
-                    <input id="newRelayRaspiId" type="text" value="" class="input border" list="availableRaspies">
-                </div>
+<div class="accordion">
+	<header class="accordion-header">
+        <i class="accordion-icon"></i> Ajouter un relai
+    </header>
+    <div class="accordion-content">
+        <div class="parameter-row">
+            <div class="parameter-wrapper">
+                <label for="new-relay-label">Label: </label>
+                <input id="new-relay-label" type="text" value="">
             </div>
-
-            <div class="container padding-16">
-                <input class="button secondary" id="addRelay" type="button" value="Ajouter">
+            <div class="parameter-wrapper">
+                <label for="new-relay-pin">Pin: </label>
+                <input id="new-relay-pin" type="text" value="">
+            </div>
+            <div class="parameter-wrapper">
+                <label for="new-relay-parity">Parité: </label>
+                <input id="new-relay-parity" type="text" value="">
+            </div>
+            <div class="parameter-wrapper">
+                <label for="new-relay-raspi-id">Raspberry: </label>
+                <input id="new-relay-raspi-id" type="text" value="" list="available-raspies">
             </div>
         </div>
+        <input id="add-relay" type="button" value="Ajouter">
     </div>
 </div>
 
 
-<div class="panel">
-    <div class="card round-large tertiary">
-        <button class="btn container primary block left-align accordion-header">
-            <h4><i class="accordion-icon"></i> Relais enregistrés</h4>
-        </button>
-        <div class="accordion-content">
-            <div class="container">
-                <p>
-                    <table class="table bordered responsive" id="relays_table">
-                        <tr>
-                            <th>Label</th>
-                            <th>Pin</th>
-                            <th>Parité</th>
-                            <th>Raspberry</th>
-                        </tr>
-                        {% for r in relays %}
-                        <tr data-label="{{ r.label }}">
-                            <td class="tertiary"><input type="text" class="input relay-label" value="{{ r.label }}"></td>
-                            <td class="tertiary"><input type="number" class="input relay-pin" value="{{ r.pin }}"></td>
-                            <td class="tertiary"><input type="text" class="input relay-parity" value="{{ r.parity }}"></td>
-                            <td class="tertiary">
-                                <input type="text" class="input relay-raspi" value="{{ r.raspi_id }}" list="availableRaspies">
-                            </td>
-                            <td>
-                                {% if r.enabled==True %}
-                                <input class="check relay-enable" id="relay_{{ r.label }}_enable" type="checkbox" checked="checked">
-                                {% else %}
-                                <input class="check relay-enable" id="relay_{{ r.label }}_enable" type="checkbox">
-                                {% endif %}
-                                <label for="relay_{{ r.label }}_enable">activé</label>
-                            </td>
-                            <td>
-                                <a type="button" class="button secondary relay-delete"><i
-                                        class="fas fa-trash"></i></a>
-                            </td>
-                            <td>
-                                <a type="button" class="button secondary relay-save"><i class="fas fa-save"></i></a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-
-                </p>
-            </div>
-        </div>
+<div class="accordion">
+	<header class="accordion-header">
+        <i class="accordion-icon"></i> Relais enregistrés
+    </header>
+    <div class="accordion-content">
+        <table id="relays-table">
+            <tr>
+                <th>Label</th>
+                <th>Pin</th>
+                <th>Parité</th>
+                <th>Raspberry</th>
+            </tr>
+            {% for r in relays %}
+            <tr data-label="{{ r.label }}">
+                <td><input type="text" class="relay-label" value="{{ r.label }}"></td>
+                <td><input type="number" class="relay-pin" value="{{ r.pin }}"></td>
+                <td><input type="text" class="relay-parity" value="{{ r.parity }}"></td>
+                <td>
+                    <input type="text" class="relay-raspi" value="{{ r.raspi_id }}" list="availableRaspies">
+                </td>
+                <td>
+                    {% if r.enabled==True %}
+                    <input class="relay-enable" id="relay-{{ r.label }}-enable" type="checkbox" checked="checked">
+                    {% else %}
+                    <input class="relay-enable" id="relay-{{ r.label }}-enable" type="checkbox">
+                    {% endif %}
+                    <label for="relay-{{ r.label }}-enable">activé</label>
+                </td>
+                <td>
+                    <button class="relay-delete"><i
+                            class="fas fa-trash"></i></button>
+                </td>
+                <td>
+                    <button class="relay-save"><i class="fas fa-save"></i></button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 </div>
 

@@ -16,28 +16,28 @@ const intentsController = (() => {
   /* PRIVATE METHODS */
   function bindUIEvents() {
     // button to add the sentence to the conversation
-    document.getElementById('addResponseButton').addEventListener('click', () => {
+    document.getElementById('add-response-button').addEventListener('click', () => {
       const intent = DOM.$currentIntent.value;
       if (intent == null || intent === '') {
         failAlert('L\'intention fournie est vide.');
         return;
       }
-      const scriptName = DOM.$currentScriptName.value;
       const sequenceId = DOM.$currentSequence.value;
-      saveIntent(intent, scriptName, sequenceId);
+      const actionName = null;//DOM.$currentAction.value;
+      saveIntent(intent, actionName, sequenceId);
     });
 
     // checkbox to enable or disable the relay
-    document.querySelectorAll('input[name=enableIntent]').forEach((e) => {
-      const intent = e.id.substr(e.id.indexOf('_') + 1);
+    document.querySelectorAll('button[name=enable-intent]').forEach((e) => {
+      const intent = e.id.substring(e.id.indexOf('-') + 1);
       e.addEventListener('change', () => {
         enableIntent(intent, e.checked);
       });
     });
 
     // button to delete the relay
-    document.querySelectorAll('a[name=deleteIntent]').forEach((e) => {
-      const intent = e.id.substr(e.id.indexOf('_') + 1);
+    document.querySelectorAll('button[name=delete-intent]').forEach((e) => {
+      const intent = e.id.substring(e.id.indexOf('-') + 1);
       e.addEventListener('click', () => {
         deleteIntent(intent);
       });
@@ -45,20 +45,20 @@ const intentsController = (() => {
   }
 
   function cacheDom() {
-    DOM.$currentIntent = document.getElementById('currentIntent');
-    DOM.$currentScriptName = document.getElementById('currentScriptName');
-    DOM.$currentSequence = document.getElementById('currentSequence');
+    DOM.$currentIntent = document.getElementById('current-intent');
+    DOM.$currentSequence = document.getElementById('current-sequence');
+    DOM.$currentAction = document.getElementById('current-action');
   }
 
   /**
   * Save an intent
-  * @param {*} intent intant name
-  * @param {*} script_name optional script name
+  * @param {*} intent intent name
+  * @param {*} action_name optional action name
   * @param {*} sequence_id optional sequence id
   */
-  function saveIntent(intent, scriptName, sequenceId) {
+  function saveIntent(intent, actionName, sequenceId) {
     fetchJson('/save_intent', 'POST',
-      { intent: intent, script_name: scriptName, sequence_id: sequenceId })
+      { intent: intent, action_name: actionName, sequence_id: sequenceId })
       .then(() => {
         location.reload();
       });
@@ -66,7 +66,7 @@ const intentsController = (() => {
 
   /**
   * Enable OR disable an intent
-  * @param {string} intent intant name
+  * @param {string} intent intent name
   * @param {boolean} value new state for the intent
   */
   function enableIntent(intent, value) {

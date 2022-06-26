@@ -1,0 +1,43 @@
+.alert-modal-content {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    border: 2px solid var(--color2);
+    z-index: 2;
+    background-color: var(--bg-color);
+    animation: animatetop;
+	animation-duration: 0.5s
+}
+
+.alert-modal-content p {
+    padding: 16px;
+}
+
+.alert-modal-content header {
+    padding: 16px;
+    display: block;
+    font-size: large;
+}
+
+/* Close button */
+.alert-modal-content header a {
+    position: absolute;
+    right: 0;
+    padding: 0;
+    margin: -16px 0 0 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.alert-modal-content.success header {
+    background-color: var(--success-color);
+}
+
+.alert-modal-content.fail header {
+    background-color: var(--error-color);
+}
+
+@keyframes animatetop {
+	from {bottom: -100px;}
+	to {bottom: 0;}
+}

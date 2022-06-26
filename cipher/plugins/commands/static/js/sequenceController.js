@@ -15,7 +15,7 @@ const sequenceController = (() => {
   /* PRIVATE METHODS */
   function bindUIEvents() {
     // directly play a sequence in the list
-    document.getElementById('playSeqButton').addEventListener('click', () => {
+    document.getElementById('play-seq-button').addEventListener('click', () => {
       if (DOM.$sequence.value !== null && DOM.$sequence.value !== '') {
         socket.emit('play_sequence', DOM.$sequence.value);
       }
