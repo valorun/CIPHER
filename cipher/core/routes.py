@@ -54,7 +54,6 @@ def check_sequence():
     else:
         return jsonify((True, None)), 200
 
-
 @core.route('/favicon.ico')
 def favicon():
     return send_from_directory(join(core.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')

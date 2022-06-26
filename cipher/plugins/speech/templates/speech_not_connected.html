@@ -1,12 +1,10 @@
 {% extends 'template.html' %}
 {% block content %}
 <script src="{{ url_for('speech.static', filename='js/speechNotConnectedController.js') }}"></script>
-<div  class="container">
-    <h2>Le serveur MaryTTS n'est pas joignable, tentative de connexion ...</h2>
-    <ul class="loader">
-        <li></li><li></li><li></li><li></li><li></li><li></li>    
-    </ul>
-</div>
+<h2>Le serveur MaryTTS n'est pas joignable, tentative de connexion ...</h2>
+<ul class="loader">
+    <li></li><li></li><li></li><li></li><li></li><li></li>    
+</ul>
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', () => {
 		speechNotConnectedController.init();

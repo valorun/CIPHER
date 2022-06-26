@@ -34,10 +34,10 @@ const connectionManager = (() => {
       }
     });
     socket.on('connect', () => {
-      document.getElementById('socketErrorModal').style.display = 'none';
+      document.getElementById('socket-error-modal').style.display = 'none';
     });
     socket.on('disconnect', () => {
-      document.getElementById('socketErrorModal').style.display = 'block';
+      document.getElementById('socket-error-modal').style.display = 'block';
     });
   }
 

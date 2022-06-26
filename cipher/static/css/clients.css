@@ -1,0 +1,26 @@
+#clients-bar:empty {
+    display: none;
+}
+#clients-bar {
+    margin: auto 0 auto 10px    
+}
+.client-tag {
+    border-radius: 5px;
+    background-color: var(--success-color) !important;
+    display: inline-block;
+    text-align: center;
+    font-size: small;
+    margin: auto;
+    padding: 2px;
+    color: var(--color3);
+}
+
+.client-tag > header {
+    font-size: large;
+}
+
+@media screen and (max-width: 768px) {
+    .client-tag {
+        display: none;
+    }
+}

@@ -97,7 +97,7 @@ const servosSettingsController = (() => {
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    document.getElementById('addServo').addEventListener('click', () => {
+    document.getElementById('add-servo').addEventListener('click', () => {
       fetchJson('/save_servo', 'POST',
         {
           label: DOM.$newServoLabel.value,
@@ -110,7 +110,7 @@ const servosSettingsController = (() => {
         location.reload();
       });
     });
-    servosEntries = [...document.getElementById('servos_table').rows].slice(1).map(element => new ServoEntry(element));
+    servosEntries = [...document.getElementById('servos-table').rows].slice(1).map(element => new ServoEntry(element));
     // remove servo entry from list when its element is deleted
     servosEntries.forEach(e => e.onDestroy(s => {
       servosEntries = servosEntries.filter(s1 => s1.label !== e.label);
@@ -118,12 +118,12 @@ const servosSettingsController = (() => {
   }
 
   function cacheDom() {
-    DOM.$newServoLabel = document.getElementById('newServoLabel');
-    DOM.$newServoPin = document.getElementById('newServoPin');
-    DOM.$newServoMinPulseWidth = document.getElementById('newServoMinPulseWidth');
-    DOM.$newServoMaxPulseWidth = document.getElementById('newServoMaxPulseWidth');
-    DOM.$newServoDefPulseWidth = document.getElementById('newServoDefPulseWidth');
-    DOM.$newServoRaspiId = document.getElementById('newServoRaspiId');
+    DOM.$newServoLabel = document.getElementById('new-servo-label');
+    DOM.$newServoPin = document.getElementById('new-servo-pin');
+    DOM.$newServoMinPulseWidth = document.getElementById('new-servo-min-pulse-width');
+    DOM.$newServoMaxPulseWidth = document.getElementById('new-servo-max-pulse-width');
+    DOM.$newServoDefPulseWidth = document.getElementById('new-servo-def-pulse-width');
+    DOM.$newServoRaspiId = document.getElementById('new-servo-raspi-id');
   }
 
   return {

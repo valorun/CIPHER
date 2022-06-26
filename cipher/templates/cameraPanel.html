@@ -1,18 +1,12 @@
 <script src="{{ url_for('static', filename='js/cameraController.js') }}"></script>
 
-<div class="panel">
-    <div class="card round-large tertiary">
-        <button class="btn container primary block left-align accordion-header">
-            <h4><i class="accordion-icon"></i> Caméra</h4>
-        </button>
-        <div  class="accordion-content">
-            <div class="container padding-16">
-                <p>
-                    <img id="camera" ></img>
-                    <i class="button secondary fas fa-play" id="startCameraButton"></i>
-                </p>
-            </div>
-        </div>
+<div class="accordion">
+    <header class="accordion-header">
+        <i class="accordion-icon"></i> Caméra
+    </header>
+    <div  class="accordion-content">
+        <img id="camera" ></img>
+        <i class="button fas fa-play" id="start-camera-button"></i>
     </div>
 </div>
 <script type="text/javascript">

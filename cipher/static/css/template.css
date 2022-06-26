@@ -1,0 +1,209 @@
+:root {
+    --topbar-height: 50px;
+    --sidebar-width: 250px;
+
+}
+
+body {
+    display: flex;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#content {
+    width: calc(100% - var(--sidebar-width));
+    padding: 30px;
+    position: absolute;
+    right: 0;
+    top: var(--topbar-height);
+    transition: all 1s;
+    box-sizing: border-box;
+}
+
+/* SIDEBAR */
+#sidebar {
+    z-index: 3;
+    width: var(--sidebar-width);
+    background-color: var(--color4);
+    color: var(--color2);
+    position: fixed;
+    min-height: 100vh;
+    bottom: 0px;
+    top: var(--topbar-height);
+    transition: all 1s;
+}
+
+#sidebar .header img {
+    width: 40%;
+    margin: auto;
+}
+
+#sidebar .header {
+    text-align: center;
+    margin: auto;
+    width: 90%;
+    color: var(--color2);
+    border-bottom: 2px solid var(--color2);
+    padding: 16px 0px;
+
+}
+
+#sidebar .header > * {
+    display: block;
+    padding: 10px;
+}
+
+
+#sidebar .header :first-child {
+    padding: 5px;
+    width:fit-content;
+    font-size: x-large;
+    font-weight: bold;
+    margin: auto;
+    background-color: var(--color2);
+    color: var(--color4);
+}
+
+#sidebar a {
+    display: block;
+    color: var(--color2);
+    padding: 10px;
+    text-decoration: none;
+}
+
+#sidebar a:hover {
+    background-color: rgba(255,255,255,0.2);
+    color: var(--color4);
+}
+
+.no-sidebar #sidebar {
+    margin-left: calc(var(--sidebar-width) * -1);
+}
+
+.no-sidebar #content {
+    width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+    #close-sidebar-button {
+        display: none !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #sidebar {
+        width: 100%;
+        height: auto;
+        position: absolute;
+        z-index: 4; 
+    }
+    #content {
+        width: 100%;
+    }
+    .no-sidebar #sidebar {
+        margin-left: -100%;
+    }
+    .sidebar .header img {
+        display: none !important;
+    }
+}
+
+/* TOPBAR */
+#topbar {
+    z-index: 4; 
+    position: fixed;
+    height: var(--topbar-height);
+    width: 100%;
+    background-color: var(--color3);
+    border-bottom: 2px solid var(--color2);
+    display: flex;
+}
+
+#topbar #link-buttons *,
+#topbar #logout-button {
+    background-color: var(--color3);
+    border: none;
+}
+
+#topbar #logout-button {
+    margin-left: auto;
+}
+
+#home-button {
+    padding-right: 0;
+}
+
+#link-buttons {
+    margin: auto 0 auto 0
+}
+
+#link-buttons > sup > a {
+    padding: 0;
+}
+
+/* FOOTER */
+footer {
+    background-color: var(--color3);
+    width: 100%;
+    position: absolute;
+    left: 0;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+footer > * {
+    width: fit-content;
+    display: block;
+    padding: 3px;
+    margin: auto;
+}
+
+/* ACCORDION */
+.accordion, .panel {
+    border: 2px solid var(--color2);
+    margin-bottom: 16px;
+}
+
+.accordion-header {
+    font-weight: bold;
+    border: 1px solid transparent;
+    background-color: var(--color1);
+    color: var(--color2);
+    text-decoration: none;
+	padding:14px;
+    cursor: pointer;
+}
+
+.accordion-content, .panel {
+    padding: 14px;
+    overflow-x: auto;
+}
+
+.accordion-content > * {
+    margin-bottom: 8px;
+}
+
+.hide {
+    display: none !important;
+}
+
+
+.parameter-row {
+	display: flex;
+	width: 100%;
+}
+
+.parameter-wrapper {
+    display:block;
+	margin: 8px 8px 8px 0;
+	width: 100%;
+}
+
+.parameter-wrapper input[type="checkbox"] {
+	margin: 16px 0 0 0;
+}
+
+.parameter-row label {
+    margin: auto auto auto 0;
+}

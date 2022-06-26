@@ -7,8 +7,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/modals.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/clients.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/template.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/alert.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/loader.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome.css') }}">
 	<script src="{{ url_for('static', filename='vendor/socket.io.js') }}"></script>
@@ -17,84 +19,61 @@
 	<script src="{{ url_for('static', filename='js/templateController.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/clientsController.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/clientsDisplayController.js') }}"></script>
+
 
 </head>
 
-<body class="background">
-
+<body class="no-sidebar">
 	<!-- Top container -->
-	<div class="bar top black large card-4" id="topbar">
-		<div class="bar-item left hide-large">
-			<button class="btn hover-text-light-grey" id="sidebarButton"><i class="fa fa-bars"></i>  Menu</button>
-		</div>
-		<div class="bar-item left hide-small hide-medium">
-			<a href="/" class="btn hover-text-light-grey"><strong>C.I.P.H.E.R<sup>v{{ version }}</sup></strong></a>
-		</div>
-		<div class="bar-item right">
-			<a href="/logout" class="button"><i class="fas fa-lock-open"></i>  Déconnexion</a>
-		</div>
+	<div id="topbar">
+		<a class="button" id="sidebar-button"><i class="fa fa-bars"></i> Menu</a>
+		<span id="link-buttons">
+			<a href="/" class="button" id="home-button">C.I.P.H.E.R</a>
+			<sup><a href="https://github.com/valorun/CIPHER/commits/master" class="button">v{{ version }}</a></sup>
+		</span>
+		<span id="clients-bar"></span>
+		<a href="/logout" class="button" id="logout-button"><i class="fas fa-lock-open"></i> Déconnexion</a>
 	</div>
 
 	<!-- Sidebar/menu -->
-	<nav class="sidebar collapse primary animate-left" id="sidebar"><br>
-		<div class="container center">
-			<h3 class="tag tertiary">{{ robot_name }}</h3>
+	<nav class="sidebar" id="sidebar">
+		<div class="header">
+			<span>{{ robot_name }}</span>
 			{% if session.logged_in %}
-			<h3>Bienvenue {{ session['username'] }} !</h3>
+			<span>Bienvenue {{ session['username'] }} !</span>
 			{% endif %}
-			<!-- <i class="xxxlarge fas fa-robot"></i> -->
-			<img src="/static/favicon.ico" class="margin-right">
+			<img src="/static/favicon.ico">
 		</div>
-		<hr>
-		<div class="container">
-			<h4>Navigation</h4>
-		</div>
-		<div class="bar-block">
-			{% for p in plugins %}
-			<a href="/{{ p.name }}" class="bar-item button padding"><i class="fas {{ p.icon }}"></i>  {{ p.label }}</a>
-			{% endfor %}
-			<a href="#" class="bar-item button padding-16 hide-large dark-grey hover-black" title="fermer le menu" id="closeSidebarButton"><i class="fa fa-chevron-left"></i></a>
-		</div>
+		{% for p in plugins %}
+		<a href="/{{ p.name }}"><i class="fas {{ p.icon }}"></i> {{ p.label }}</a>
+		{% endfor %}
+		<a href="#" title="fermer le menu" id="close-sidebar-button"><i class="fa fa-chevron-left"></i></a>
 	</nav>
-
-
-	<!-- Overlay effect when opening sidebar on small screens -->
-	<div class="overlay hide-large animate-opacity" id="overlay"></div>
-
 	
-	<div id="socketErrorModal" class="modal">
-		<div class="modal-content animate-top card-4">
-			<header class="container dark-red">
+	<div id="socket-error-modal" class="modal">
+		<div class="modal-content">
+			<header class="modal-header">
 				<h2><i class="fas fa-exclamation-triangle"></i> Connexion perdue</h2>
 			</header>
-			<div class="container center">
-				<h3>Tentative de reconnexion ...</h3>
-				<div class="container">
-					<ul class="loader">
-						<li></li><li></li><li></li><li></li><li></li><li></li>    
-					</ul>
-				  </div>
+			<div class="modal-body">
+				<span>Tentative de reconnexion ...</span>
+				<ul class="loader">
+					<li></li><li></li><li></li><li></li><li></li><li></li>    
+				</ul>
 			</div>
 		</div>
 	</div>
 
 	<!-- !PAGE CONTENT! -->
-	<div class="main">
-		<header class="container padding-16">
-			<h2><b><i class="fa {{ icon }}"></i> {{ label }}</b></h2>
+	<div id="content">
+		<header>
+			<h1><i class="fa {{ icon }}"></i> {{ label }}</h1>
 		</header>
 		{% block content %}
 		{% endblock %}
 
-		<!-- Footer -->
-		<footer class="container padding-16 center">
-			<a href="#" class="button secondary margin"><i class="fa fa-arrow-up margin-right"></i>Remonter</a>
-			<p><a href="https://clarius-robot.com/" target="_blank">La confrérie du Boulon</a></p>
-			<p>Réalisation: Valorun - Ronan COLLIER</p>
-			<p>Control Interface for Programmable Homemade Entertainment Robot</p>
-		</footer>
-
-		<!-- End page content -->
+	<!-- End page content -->
 	</div>
 
 	<script>
@@ -102,10 +81,12 @@
 			templateController.init();
 			connectionManager.init();
 			clientsController.init();
+			clientsDisplayController.init();
+
 		});
 	</script>
 
-	<div class="alert-modal bottom"></div>
+	<div class="alert-modal"></div>
 
 </body>
 </html>

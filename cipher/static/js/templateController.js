@@ -69,18 +69,14 @@ const templateController = (() => {
   /* PRIVATE METHODS */
   function bindUIEvents() {
     DOM.$sidebarButton.addEventListener('click', () => {
-      if (DOM.$sidebar.style.display !== 'none') {
+      if (!document.body.classList.contains('no-sidebar')) {
         closeSidebar();
       } else {
         openSidebar();
       }
     });
 
-    document.getElementById('closeSidebarButton').addEventListener('click', () => {
-      closeSidebar();
-    });
-
-    DOM.$overlayBg.addEventListener('click', () => {
+    document.getElementById('close-sidebar-button').addEventListener('click', () => {
       closeSidebar();
     });
 
@@ -91,19 +87,15 @@ const templateController = (() => {
   }
 
   function cacheDom() {
-    DOM.$sidebar = document.getElementById('sidebar');
-    DOM.$sidebarButton = document.getElementById('sidebarButton');
-    DOM.$overlayBg = document.getElementById('overlay');
+    DOM.$sidebarButton = document.getElementById('sidebar-button');
   }
 
   function openSidebar() {
-    DOM.$sidebar.style.display = 'block';
-    DOM.$overlayBg.style.display = 'block';
+    document.body.classList.remove('no-sidebar');
   }
 
   function closeSidebar() {
-    DOM.$sidebar.style.display = 'none';
-    DOM.$overlayBg.style.display = 'none';
+    document.body.classList.add('no-sidebar');
   }
 
   return {

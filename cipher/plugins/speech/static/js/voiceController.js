@@ -66,10 +66,10 @@ const voiceController = (() => {
   }
 
   function cacheDom() {
-    DOM.$voiceName = document.getElementById('voiceName');
-    DOM.$saveVoiceButton = document.getElementById('saveVoiceButton');
-    DOM.$testVoiceButton = document.getElementById('testVoiceButton');
-    effectsEntries = [...document.getElementById('effects_table').rows].slice(1).map(element => new VoiceEffectEntry(element));
+    DOM.$voiceName = document.getElementById('voice-name');
+    DOM.$saveVoiceButton = document.getElementById('save-voice-button');
+    DOM.$testVoiceButton = document.getElementById('test-voice-button');
+    effectsEntries = [...document.getElementById('effects-table').rows].slice(1).map(element => new VoiceEffectEntry(element));
   }
 
   return {

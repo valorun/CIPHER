@@ -29,23 +29,24 @@ class SequenceReader:
         If a pattern corresponding to '${slot_name:fallback}' appears, value is replaced. 
         """
         for p in parameters.keys():
+            if not isinstance(parameters[p], str):
+                continue
             raw_potential_slots = re.findall('\${([^}]+)}', parameters[p])
 
             for s in raw_potential_slots:
                 # Split the parameter string after ':'. 
                 # First part correspond to slot name, second one to fallback value.
                 potential_slot = s.split(':', 1)
-
                 # Replace matched slots by their values.
                 if potential_slot[0] in slots:
                     value = slots[potential_slot[0]]['value']
                     while type(value) is dict:
                         value = value['value']
-                    parameters[p].replace('${' + s + '}', value)
+                    parameters[p] = parameters[p].replace('${' + s + '}', value)
                 # Unmatched slots use their default value.
                 else:
                     fallback = potential_slot[1] if len(potential_slot) > 1 else ''
-                    parameters[p].replace('${' + s + '}', fallback)
+                    parameters[p] = parameters[p].replace('${' + s + '}', fallback)
         return parameters
 
     def _get_action_from_json(self, data: dict, **kwargs):
@@ -56,10 +57,12 @@ class SequenceReader:
             core.log.info(str(data))
             raise ValueError('Invalid JSON Action format')
         action_name = data['name']
-        kwargs['slots'] = {s['slotName']:s for s in kwargs['slots']}
+        if 'slots' in kwargs:
+            kwargs['slots'] = {s['slotName']:s for s in kwargs['slots']}
+        else:
+            kwargs['slots'] = {}
         action_parameters = self._parse_slot_parameters(data['parameters'], kwargs['slots'])
         action = Action.get_from_name(action_name)
-        
         return Node(action, action_parameters, [self._get_transition_from_json(t, **kwargs) for t in data['transitions']])
 
     def _get_transition_from_json(self, data: dict, **kwargs):

@@ -1,28 +1,27 @@
 /* exported failAlert */
 function failAlert(message) {
-  alert('<i class=\'fas fa-times-circle\'></i> Attention !', message, 'dark-red');
+  alert('<i class=\'fas fa-times-circle\'></i> Attention !', message, 'fail');
 }
 
 /* exported successAlert */
 function successAlert(message) {
-  alert('<i class=\'fas fa-check-circle\'></i> Succès !', message, 'green');
+  alert('<i class=\'fas fa-check-circle\'></i> Succès !', message, 'success');
 }
 
-function alert(title, message, color) {
+function alert(title, message, additionnal_class) {
   const $el = document.getElementsByClassName('alert-modal')[0];
   $el.innerHTML = '';
   $el.insertAdjacentHTML('beforeend',
-    '<div class=\'display-bottomright\'>' +
-      '<div class=\'panel card-4 animate-bottom display-container ' + color + '\'>' +
-        '<span onclick=\'this.parentElement.style.display=\'none\'\' ' +
-        'class=\'button large display-topright ' + color + '\'>&times;' +
-        '</span>' +
-        '<h4>' + title + '</h4>' +
+      '<div class=\'alert-modal-content ' + additionnal_class + '\'>' +
+        '<header>' + title +
+          '<a onclick=\'this.parentElement.parentElement.style.display=\"none\"\' >' +
+          '&times;' +
+          '</a>' +
+        '</header>' +
         '<p>' +
           message +
         '</p>' +
-      '</div>' +
-    '</div>');
+      '</div>');
   setTimeout(() => {
     while ($el.firstChild) { $el.removeChild($el.firstChild); }
   }, 3000);

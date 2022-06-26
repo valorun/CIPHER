@@ -1,36 +1,29 @@
 <script src="{{ url_for('commands.static', filename='js/motionController.js') }}"></script>
 
 {% if motion_raspi_id is not none and enable_motion %}
-<div class="panel">
-    <div class="card round-large tertiary" id="motion">
-        <button class="btn container primary block left-align accordion-header">
-            <h4><i class="accordion-icon"></i> Chariot</h4>
-        </button>
-        <div  class="accordion-content">
-            <div class="container padding-16">
-
-                <table class="container cell">
-                    <tr>
-                        <td></td>
-                        <td><i class="button secondary fas fa-arrow-up motion-direction" value="motion_forwards"></i></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td><i class="button secondary fas fa-arrow-left motion-direction" value="motion_left"></i></td>
-                        <td></td>
-                        <td><i class="button secondary fas fa-arrow-right motion-direction" value="motion_right"></i></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><i class="button secondary fas fa-arrow-down motion-direction" value="motion_backwards"></i></td>
-                        <td></td>
-                    </tr>
-                </table>
-                <div class="container">
-                    <input type="range" id="motion_speed" name="motion_speed" min="0" max="100">
-                </div>
-            </div>
-        </div>
+<div class="accordion" id="motion">
+    <header class="accordion-header">
+        <i class="accordion-icon"></i> Chariot
+    </header>
+    <div  class="accordion-content">
+        <table>
+            <tr>
+                <td></td>
+                <td><i class="button fas fa-arrow-up motion-direction" value="motion-forwards"></i></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><i class="button fas fa-arrow-left motion-direction" value="motion-left"></i></td>
+                <td></td>
+                <td><i class="button fas fa-arrow-right motion-direction" value="motion-right"></i></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><i class="button fas fa-arrow-down motion-direction" value="motion-backwards"></i></td>
+                <td></td>
+            </tr>
+        </table>
+        <input type="range" id="motion-speed" name="motion-speed" min="0" max="100">
     </div>
 </div>
 <script type="text/javascript">

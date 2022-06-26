@@ -16,27 +16,28 @@ const intentsController = (() => {
   /* PRIVATE METHODS */
   function bindUIEvents() {
     // button to add the sentence to the conversation
-    document.getElementById('addResponseButton').addEventListener('click', () => {
+    document.getElementById('add-response-button').addEventListener('click', () => {
       const intent = DOM.$currentIntent.value;
       if (intent == null || intent === '') {
         failAlert('L\'intention fournie est vide.');
         return;
       }
       const sequenceId = DOM.$currentSequence.value;
-      saveIntent(intent, sequenceId);
+      const actionName = null;//DOM.$currentAction.value;
+      saveIntent(intent, actionName, sequenceId);
     });
 
     // checkbox to enable or disable the relay
-    document.querySelectorAll('input[name=enableIntent]').forEach((e) => {
-      const intent = e.id.substring(e.id.indexOf('_') + 1);
+    document.querySelectorAll('button[name=enable-intent]').forEach((e) => {
+      const intent = e.id.substring(e.id.indexOf('-') + 1);
       e.addEventListener('change', () => {
         enableIntent(intent, e.checked);
       });
     });
 
     // button to delete the relay
-    document.querySelectorAll('a[name=deleteIntent]').forEach((e) => {
-      const intent = e.id.substring(e.id.indexOf('_') + 1);
+    document.querySelectorAll('button[name=delete-intent]').forEach((e) => {
+      const intent = e.id.substring(e.id.indexOf('-') + 1);
       e.addEventListener('click', () => {
         deleteIntent(intent);
       });
@@ -44,9 +45,9 @@ const intentsController = (() => {
   }
 
   function cacheDom() {
-    DOM.$currentIntent = document.getElementById('currentIntent');
-    DOM.$currentSequence = document.getElementById('currentSequence');
-    DOM.$currentAction = document.getElementById('currentAction');
+    DOM.$currentIntent = document.getElementById('current-intent');
+    DOM.$currentSequence = document.getElementById('current-sequence');
+    DOM.$currentAction = document.getElementById('current-action');
   }
 
   /**

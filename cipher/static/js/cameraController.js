@@ -47,7 +47,7 @@ const cameraController = (() => {
   }
 
   function cacheDom() {
-    DOM.$start_camera_button = document.getElementById('startCameraButton');
+    DOM.$start_camera_button = document.getElementById('start-camera-button');
     DOM.$camera = document.getElementById('camera');
   }
 

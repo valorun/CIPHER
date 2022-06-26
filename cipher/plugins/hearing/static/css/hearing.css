@@ -1,0 +1,8 @@
+#saved-intents tr td:nth-child(2),
+#saved-intents tr td:first-child {
+	width: 40%;
+}
+
+#saved-intents {
+	width: inherit;
+}

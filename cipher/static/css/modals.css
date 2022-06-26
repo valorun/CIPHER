@@ -1,0 +1,56 @@
+#socket-error-modal {
+	z-index: 4;
+}
+
+
+.modal {
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	color: var(--color3);
+	display: none;
+}
+
+
+.modal-content {
+	position: relative;
+	color: var(--color2);
+	background-color: var(--bg-color);
+	margin: 15% auto; /* 15% from the top and centered */
+	padding: 0px;
+	border: 2px solid var(--color2);
+	width: 80%; /* Could be more or less, depending on screen size */
+    animation: animatetop;
+	animation-duration: 0.5s
+}
+  
+.modal-header {
+	padding: 5px 16px 5px 16px;
+	background-color: var(--color1);
+	margin-bottom: 16px;
+}
+
+/* Close button */
+.modal-header a {
+    position: absolute;
+    right: 0;
+    padding: 0;
+    margin: -5px 0 0 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.modal-body {
+	padding: 2px 16px;
+}
+
+@keyframes animatetop {
+	from {top: -300px;}
+	to {top: 0;}
+}

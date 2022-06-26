@@ -1,5 +1,4 @@
 .loader{
-	
 	z-index: 3;
 	margin: auto auto ;
 	left: 0;
@@ -8,8 +7,8 @@
 	width: 180px;
 	height: 90px;
   	list-style: none;
-  
 }
+
 @keyframes loadbars {
 	0%{
 		height: 10px;
@@ -24,6 +23,7 @@
 		margin-top: 25px;
 	}
 }
+
 .loader > li{
 	background-color: #82100A;
 	width: 10px;
@@ -32,21 +32,28 @@
 	margin-right: 5px;
     box-shadow: 0px 20px 10px rgba(0,0,0,0.2);
 }
+
 .loader > li:first-child{
 	animation: loadbars 1s cubic-bezier(0.645,0.045,0.355,1) infinite 0s;
 }
+
 .loader > li:nth-child(2){
 	animation: loadbars 1s ease-in-out infinite -0.2s;
 }
+
 .loader > li:nth-child(3){
 	animation: loadbars 1s ease-in-out infinite -0.4s;
 }
+
 .loader > li:nth-child(4){
 	animation: loadbars 1s ease-in-out infinite -0.6s;
 }
+
 .loader > li:nth-child(5){
 	animation: loadbars 1s ease-in-out infinite -0.8s;
 }
+
 .loader > li:nth-child(6){
 	animation: loadbars 1s ease-in-out infinite -1.0s;
 }
+

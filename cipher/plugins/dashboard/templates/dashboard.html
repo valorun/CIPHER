@@ -1,34 +1,23 @@
 {% extends 'template.html' %}
 {% block content %}
-<script src="{{ url_for('dashboard.static', filename='js/clientsDisplayController.js') }}"></script>
+<script src="{{ url_for('dashboard.static', filename='js/clientsManagementController.js') }}"></script>
 <script src="{{ url_for('dashboard.static', filename='js/logController.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/dashboard.css') }}">
 
-<div class="panel">
-	<div class="card tertiary">
-		<div class="container row-padding" id="clients">
 
-		</div>
-	</div>
-</div>
+<div class="panel" id="clients"></div>
 
-<div class="panel">
-	<div class="card tertiary">
-		<div class="container">
-			<p>
-				<i class="xxlarge secondary button fa fa-power-off" id="shutdownButton"></i>
-				<i class="xxlarge secondary button fa fa-redo" id="rebootButton"></i>
-			</p>
-		</div>
-	</div>
+<div class="panel" id="command-buttons">
+	<i class="button fa fa-power-off" id="shutdown-button"></i>
+	<i class="button fa fa-redo" id="reboot-button"></i>
 </div>
 
 {% include 'dashboardLogPanel.html' %}
 {% include 'cameraPanel.html' %}
 
-
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-		clientsDisplayController.init();
+		clientsManagementController.init();
 		logController.init();
 	});
 </script>

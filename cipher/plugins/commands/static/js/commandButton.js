@@ -21,20 +21,20 @@ class CommandButton {
 
     this.$el = document.createElement('div');
 
-    this.$button = document.createElement('button');
-    this.$button.id = '_' + Math.random().toString(36).substring(2, 2 + 9);
-    this.$button.classList.add('display-container', 'command-button');
+    this.$button = document.createElement('input');
+    this.$button.type = 'button';
+    this.$button.id = '-' + Math.random().toString(36).substring(2, 2 + 9);
+    this.$button.classList.add('command-button');
     if (color != null) {
       this.$button.dataset.color = color;
-      this.$button.classList.add(color);
+      this.$button.style.background = color;
     }
-    this.$button.innerHTML = label;
+    this.$button.value = label;
     this.$el.appendChild(this.$button);
 
     // cross element
-    this.$cross = document.createElement('span');
-    this.$cross.type = 'button';
-    this.$cross.classList.add('button', 'display-topright');
+    this.$cross = document.createElement('a');
+    this.$cross.classList.add('delete-grid-item');
     this.$cross.innerHTML = '&times';
     this.$el.appendChild(this.$cross);
 
@@ -104,7 +104,6 @@ class RelayButton extends CommandButton {
     }
     this.action.parameters.label = relay;
 
-    this.$button.style.border = '4px solid';
     this.deactivate();
   }
 
@@ -114,13 +113,13 @@ class RelayButton extends CommandButton {
   }
 
   activate() {
-    this.$button.classList.add('border-green');
-    this.$button.classList.remove('border-dark-red');
+    this.$button.classList.add('activated');
+    this.$button.classList.remove('deactivated');
   }
 
   deactivate() {
-    this.$button.classList.add('border-dark-red');
-    this.$button.classList.remove('border-green');
+    this.$button.classList.add('deactivated');
+    this.$button.classList.remove('activated');
   }
 }
 

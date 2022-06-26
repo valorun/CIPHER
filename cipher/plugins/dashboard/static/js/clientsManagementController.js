@@ -1,8 +1,8 @@
 /* globals socket */
 /* globals clientsController */
 
-/* exported clientsDisplayController */
-const clientsDisplayController = (() => {
+/* exported clientsManagementController */
+const clientsManagementController = (() => {
   'use strict';
   const DOM = {};
 
@@ -15,10 +15,10 @@ const clientsDisplayController = (() => {
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    document.getElementById('shutdownButton').addEventListener('click', () => {
+    document.getElementById('shutdown-button').addEventListener('click', () => {
       socket.emit('shutdown');
     });
-    document.getElementById('rebootButton').addEventListener('click', () => {
+    document.getElementById('reboot-button').addEventListener('click', () => {
       socket.emit('reboot');
     });
   }
@@ -35,15 +35,15 @@ const clientsDisplayController = (() => {
   function addClientCard(client) {
     // first delete the already existing card for the client (if it exists) ...
     removeClientCard(client);
-    const card = '<div id=\'' + client.id + '_card\' class=\'container cell center pale-green round-large border border-green padding-16\'' +
-    '<h3><strong><i class=\'xxxlarge ' + client.icon + '\'></i></strong></h3>' +
-    '<h3>' + client.id + '</h3>' +
+    const card = '<div id=\'' + client.id + '-card\' class=\'client-card\'>' +
+    '<header><i class=\'' + client.icon + '\'></i></header>' +
+    '<span>' + client.id + '</span>' +
     '</div>';
     DOM.$clients.insertAdjacentHTML('beforeend', card);
   }
 
   function removeClientCard(client) {
-    const el = document.getElementById(client.id + '_card');
+    const el = document.getElementById(client.id + '-card');
     if (el != null) {
       el.parentNode.removeChild(el);
     }
