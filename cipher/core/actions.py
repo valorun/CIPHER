@@ -1,8 +1,6 @@
 import json
-import importlib.util
 from typing import List, Tuple
 from subprocess import Popen
-from os.path import join, exists
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
 from cipher import socketio, mqtt

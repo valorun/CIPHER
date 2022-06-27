@@ -3,7 +3,7 @@ import re
 import threading
 from flask import Flask, session, request, jsonify
 from . import hearing
-from .model import Intent
+from .model import Intent, chat_queue
 from cipher.model import Sequence, db, resources
 from cipher.security import login_required
 from cipher.core.actions import CUSTOM_ACTIONS
@@ -13,7 +13,7 @@ from cipher.core.actions import CUSTOM_ACTIONS
 def hearing_page():
     sequences = Sequence.query.all()
     intents = Intent.query.all()
-    return hearing.render_page('hearing.html', sequences=sequences, intents=intents, )
+    return hearing.render_page('hearing.html', sequences=sequences, intents=intents, chat_records=list(chat_queue))
 
 
 @hearing.route('/save_intent', methods=['POST'])

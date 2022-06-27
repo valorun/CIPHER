@@ -28,21 +28,11 @@ const speechDetectionController = (() => {
     });
 
     // server response when a sentence must be play on the client
-    socket.on('response', (msg) => {
-      const time = new Date();
-      DOM.$detectionResult.insertAdjacentHTML('beforeend', '<li>' +
-      '<div class="row">' +
-      '<div class="col l2 m2 s3 center">' +
-      '<span class="border circle large btn hover-none"><i class="fas fa-robot fa-fw"></i></span>' +
-      '</div>' +
-      '<div class="container round-large light-grey border col l10 m10 s9">' +
-      '<div class="left-align"><p>' +
-      msg +
-      '</p></div>' +
-      '<div class="right-align"><p>' + time.getHours() + ':' + time.getMinutes() + '</p></div>' +
-      '</div>' +
-      '</div>' +
-      '</li>');
+    socket.on('chat', (msg) => {
+      const className = msg.source === 'robot' ? 'rcvd' : 'sent';
+      DOM.$detectionResult.insertAdjacentHTML('beforeend',
+        '<div data-time="' + msg.time + '" class="msg ' + className + '">' + msg.message + '</div>'
+      );
       DOM.$detectionResult.parentElement.scrollTop = DOM.$detectionResult.parentElement.offsetHeight;
     });
   }
