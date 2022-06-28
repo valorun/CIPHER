@@ -40,9 +40,9 @@ const servosSettingsController = (() => {
         new_label: this.$label.value,
         pin: this.$pin.value,
         raspi_id: this.$raspi.value,
-        min_pulse_width: this.$min.value,
-        max_pulse_width: this.$max.value,
-        def_pulse_width: this.$default.value
+        min_angle: this.$min.value,
+        max_angle: this.$max.value,
+        def_angle: this.$default.value
       }).then((r) => {
         successAlert(r);
         console.log(this.label + ' updated');
@@ -102,9 +102,9 @@ const servosSettingsController = (() => {
         {
           label: DOM.$newServoLabel.value,
           pin: DOM.$newServoPin.value,
-          min_pulse_width: DOM.$newServoMinPulseWidth.value,
-          max_pulse_width: DOM.$newServoMaxPulseWidth.value,
-          def_pulse_width: DOM.$newServoDefPulseWidth.value,
+          min_angle: DOM.$newServoMinAngle.value,
+          max_angle: DOM.$newServoMaxAngle.value,
+          def_angle: DOM.$newServoDefAngle.value,
           raspi_id: DOM.$newServoRaspiId.value
         }).then(() => {
         location.reload();
@@ -120,9 +120,9 @@ const servosSettingsController = (() => {
   function cacheDom() {
     DOM.$newServoLabel = document.getElementById('new-servo-label');
     DOM.$newServoPin = document.getElementById('new-servo-pin');
-    DOM.$newServoMinPulseWidth = document.getElementById('new-servo-min-pulse-width');
-    DOM.$newServoMaxPulseWidth = document.getElementById('new-servo-max-pulse-width');
-    DOM.$newServoDefPulseWidth = document.getElementById('new-servo-def-pulse-width');
+    DOM.$newServoMinAngle = document.getElementById('new-servo-min-angle');
+    DOM.$newServoMaxAngle = document.getElementById('new-servo-max-angle');
+    DOM.$newServoDefAngle = document.getElementById('new-servo-def-angle');
     DOM.$newServoRaspiId = document.getElementById('new-servo-raspi-id');
   }
 

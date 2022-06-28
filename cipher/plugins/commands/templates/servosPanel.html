@@ -23,16 +23,16 @@
 					<label for="{{ s.label }}-range">{{ s.label }}: </label>
 				</td>
 				<td>
-					<input type="range" id="{{ s.label }}-range" name="{{ s.label }}-range" min="{{ s.min_pulse_width }}" max="{{ s.max_pulse_width }}" value="{{ s.def_pulse_width }}">
+					<input type="range" id="{{ s.label }}-range" name="{{ s.label }}-range" min="{{ s.min_angle }}" max="{{ s.max_angle }}" value="{{ s.def_angle }}">
 				</td>
 				<td>
-					<span id="{{ s.label }}-value">{{ s.def_pulse_width }}</span>
+					<span id="{{ s.label }}-value">{{ s.def_angle }}</span>
 				</td>
 				<td>
 					<input type="number" id="{{ s.label }}-speed" value="0" min="0" max="100">
 				</td>
 				<td>
-					<input id="{{ s.label }}-reset" type="button" data-default="{{ s.def_pulse_width }}" value="reset">
+					<input id="{{ s.label }}-reset" type="button" data-default="{{ s.def_angle }}" value="reset">
 				</td>
 			</tr>
 			{% endfor %}

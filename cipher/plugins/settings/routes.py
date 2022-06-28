@@ -113,30 +113,30 @@ def save_servo():
     label = request.json.get('label')
     pin = request.json.get('pin')
     raspi_id = request.json.get('raspi_id')
-    min_pulse_width = int(request.json.get('min_pulse_width'))
-    max_pulse_width = int(request.json.get('max_pulse_width'))
-    def_pulse_width = int(request.json.get('def_pulse_width'))
+    min_angle = int(request.json.get('min_angle'))
+    max_angle = int(request.json.get('max_angle'))
+    def_angle = int(request.json.get('def_angle'))
 
     if not label or ' ' in label:
         return jsonify("Un label de servo moteur ne doit pas être vide ou contenir d'espace."), 400
     if not pin or ' ' in pin:
         return jsonify("Un pin ne doit pas être vide ou contenir d'espace."), 400
-    if not min_pulse_width:
-        return jsonify("La largeur d'impulsion minimale n'est pas valide."), 400
-    if not max_pulse_width:
-        return jsonify("La largeur d'impulsion maximale n'est pas valide."), 400
-    if not def_pulse_width:
-        return jsonify("La largeur d'impulsion par défaut n'est pas valide."), 400
-    if min_pulse_width > max_pulse_width:
-        return jsonify("La largeur d'impulsion minimum doit être inférieure à la largeur d'impulsion maximum"), 400
-    if def_pulse_width < min_pulse_width or def_pulse_width > max_pulse_width:
-        return jsonify("La largeur d'impulsion par défaut doit être comprise entre son minimum et son maximum."), 400
+    if not min_angle:
+        return jsonify("L'angle' minimal n'est pas valide."), 400
+    if not max_angle:
+        return jsonify("L'angle maximal n'est pas valide."), 400
+    if not def_angle:
+        return jsonify("L'angle par défaut n'est pas valide."), 400
+    if min_angle > max_angle:
+        return jsonify("L'angle minimal doit être inférieur à l'angle maximal"), 400
+    if def_angle < min_angle or def_angle > max_angle:
+        return jsonify("L'angle par défaut doit être comprise entre son minimal et son maximal."), 400
     if not raspi_id or ' ' in raspi_id:
         return jsonify("Un id de raspberry ne doit pas être vide ou contenir d'espace."), 400
     if Servo.query.filter_by(label=label).first() is not None:
         return jsonify("Un servomoteur portant le même label existe déjà."), 400
     settings.log.info("Saving servo '%s'", label)
-    db_servo = Servo(label=label, pin=pin, enabled=True, min_pulse_width=min_pulse_width, max_pulse_width=max_pulse_width, def_pulse_width=def_pulse_width, raspi_id=raspi_id)
+    db_servo = Servo(label=label, pin=pin, enabled=True, min_angle=min_angle, max_angle=max_angle, def_angle=def_angle, raspi_id=raspi_id)
     db.session.add(db_servo)
     db.session.commit()
     return jsonify("Le servo moteur '" + label + "' a été sauvegardé avec succès."), 200
@@ -156,9 +156,9 @@ def update_servo():
     new_label = request.json.get('new_label') or label
     pin = request.json.get('pin') or db_servo.pin
     raspi_id = request.json.get('raspi_id') or db_servo.raspi_id
-    min_pulse_width = int(request.json.get('min_pulse_width')) or db_servo.min_pulse_width
-    max_pulse_width = int(request.json.get('max_pulse_width')) or db_servo.max_pulse_width
-    def_pulse_width = int(request.json.get('def_pulse_width')) or db_servo.def_pulse_width
+    min_angle = int(request.json.get('min_angle')) or db_servo.min_angle
+    max_angle = int(request.json.get('max_angle')) or db_servo.max_angle
+    def_angle = int(request.json.get('def_angle')) or db_servo.def_angle
 
     if ' ' in new_label:
         return jsonify("Le nouveau label de servo moteur ne doit pas contenir d'espace."), 400
@@ -172,14 +172,14 @@ def update_servo():
         return jsonify("Un id de raspberry ne doit pas être vide ou contenir d'espace."), 400
     db_servo.raspi_id = raspi_id
 
-    if min_pulse_width > max_pulse_width:
-        return jsonify("La largeur d'impulsion minimum doit être inférieure à la largeur d'impulsion maximum"), 400
+    if min_angle > max_angle:
+        return jsonify("L'angle minimal doit être inférieur à l'angle maximal"), 400
 
-    if def_pulse_width < min_pulse_width or def_pulse_width > max_pulse_width:
-        return jsonify("La largeur d'impulsion par défaut doit être comprise entre son minimum et son maximum."), 400
-    db_servo.min_pulse_width = min_pulse_width
-    db_servo.max_pulse_width = max_pulse_width
-    db_servo.def_pulse_width = def_pulse_width
+    if def_angle < min_angle or def_angle > max_angle:
+        return jsonify("L'angle par défaut doit être comprise entre son minimal et son maximal."), 400
+    db_servo.min_angle = min_angle
+    db_servo.max_angle = max_angle
+    db_servo.def_angle = def_angle
 
     db.session.commit()
     return jsonify("Le servo moteur '" + label + "' a été mis à jour avec succès."), 200
