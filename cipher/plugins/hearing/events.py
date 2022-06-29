@@ -29,6 +29,7 @@ def handle_intents(client, userdata, message):
     payload = json.loads(message.payload.decode('utf-8'))
     intent = payload['intent']['intentName']
     hearing.log.info("Received intent '" + intent + "'")
+    hearing.log.debug(str(payload))
     db_intent = Intent.query.filter_by(intent=intent).first()
 
     if db_intent is not None:

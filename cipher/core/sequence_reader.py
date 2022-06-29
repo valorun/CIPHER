@@ -28,11 +28,12 @@ class SequenceReader:
         Parse parameters related to slots.
         If a pattern corresponding to '${slot_name:fallback}' appears, value is replaced. 
         """
+        parameters = parameters.copy()
         for p in parameters.keys():
             if not isinstance(parameters[p], str):
                 continue
             raw_potential_slots = re.findall('\${([^}]+)}', parameters[p])
-
+            core.log.debug(f"Detected slots for parameter {p}: {str(raw_potential_slots)}")
             for s in raw_potential_slots:
                 # Split the parameter string after ':'. 
                 # First part correspond to slot name, second one to fallback value.

@@ -1,7 +1,7 @@
 from flask import Flask, session, request, jsonify
 import json
 from . import sequences
-from cipher.model import Sequence, Servo, Relay, db, resources
+from cipher.model import Sequence, db, resources
 from cipher.security import login_required
 from cipher.core.sequence_reader import sequence_reader
 from cipher.core.actions import CUSTOM_ACTIONS, DEFAULT_ACTIONS
