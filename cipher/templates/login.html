@@ -21,7 +21,7 @@
 	{% endfor %}</span>
 	{% endif %}
 
-	<div class="loggin_panel">
+	<div class="login_panel">
 		<form action="/login" method="POST">
 			<h2>Connexion au panneau de gestion</h2>
 			<input type="hidden" name="next" value="{{ request.args.get('next', '') }}">

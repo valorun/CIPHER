@@ -14,7 +14,7 @@ body {
 }
 
 @media (max-width: 768px) {
-    .loggin_panel {
+    .error_panel {
         margin-left: 0px;
         margin-right: 0px;
         width: 100%;
