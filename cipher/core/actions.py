@@ -1,8 +1,6 @@
 import json
-import importlib.util
 from typing import List, Tuple
 from subprocess import Popen
-from os.path import join, exists
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
 from cipher import socketio, mqtt
@@ -180,8 +178,8 @@ class ServoAction(Action):
             db_servo = Servo.query.filter_by(label=label, enabled=True).first()
             if db_servo is None:
                 return False, "Unknown or disabled servo '" + label + "'."
-            if position < db_servo.min_pulse_width or position > db_servo.max_pulse_width:
-                return False, "Out of range position " + str(position) + " for servo '" + label + "'. The value must be between " + str(db_servo.min_pulse_width) + " and " + str(db_servo.max_pulse_width) + "."
+            if position < db_servo.min_angle or position > db_servo.max_angle:
+                return False, "Out of range position " + str(position) + " for servo '" + label + "'. The value must be between " + str(db_servo.min_angle) + " and " + str(db_servo.max_angle) + "."
         return True, None
 
     @staticmethod

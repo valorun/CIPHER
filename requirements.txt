@@ -5,3 +5,5 @@ Flask-MQTT==1.0.7
 Flask-SocketIO==4.3.2
 Flask-SQLAlchemy==2.5.1
 markupsafe==2.0.1
+
+meteofrance-api

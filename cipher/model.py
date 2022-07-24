@@ -37,9 +37,9 @@ class Relay(db.Model):
 class Servo(db.Model):
     label = db.Column(db.String(50), primary_key=True)
     pin = db.Column(db.String(4), nullable=False)
-    def_pulse_width = db.Column(db.Integer, nullable=False)
-    min_pulse_width = db.Column(db.Integer, nullable=False)
-    max_pulse_width = db.Column(db.Integer, nullable=False)
+    def_angle = db.Column(db.Integer, nullable=False)
+    min_angle = db.Column(db.Integer, nullable=False)
+    max_angle = db.Column(db.Integer, nullable=False)
     enabled = db.Column(db.Boolean, nullable=False)
     raspi_id = db.Column(db.String(20), nullable=False)
 

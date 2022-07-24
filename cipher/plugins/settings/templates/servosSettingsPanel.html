@@ -19,21 +19,18 @@
                 <input id="new-servo-raspi-id" type="text" value="" list="available-raspies">
             </div>
         </div>
-        <div class="container padding">
-            Les "largeurs d'impulsions" peuvent se traduire comme "position".
-        </div>
         <div class="parameter-row">
             <div class="parameter-wrapper">
-                <label for="new-servo-min-pulse-width">Largeur d'impulsion minimum (µs): </label>
-                <input type="number" id="new-servo-min-pulse-width" value="544" min="0">
+                <label for="new-servo-min-angle">Angle minimum (degré): </label>
+                <input type="number" id="new-servo-min-angle" value="0" min="0" max="360">
             </div>
             <div class="parameter-wrapper">
-                <label for="new-servo-max-pulse-width">Largeur d'impulsion maximun (µs): </label>
-                <input type="number" id="new-servo-max-pulse-width" value="2400" min="0">
+                <label for="new-servo-max-angle">Angle maximum (degré): </label>
+                <input type="number" id="new-servo-max-angle" value="180" min="0" max="360">
             </div>
             <div class="parameter-wrapper">
-                <label for="new-servo-def-pulse-width">Largeur d'impulsion par défaut (µs): </label>
-                <input type="number" id="new-servo-def-pulse-width" value="544" min="0">
+                <label for="new-servo-def-angle">Angle par défaut (degré): </label>
+                <input type="number" id="new-servo-def-angle" value="90" min="0" max="360">
             </div>
         </div>
 
@@ -53,18 +50,18 @@
             <tr>
                 <th>Label</th>
                 <th>Pin</th>
-                <th>Impulsion min</th>
-                <th>Impulsion max</th>
-                <th>Impulsion par défaut</th>
+                <th>Angle min</th>
+                <th>Angle max</th>
+                <th>Angle par défaut</th>
                 <th>Raspberry</th>
             </tr>
             {% for s in servos %}
             <tr data-label="{{ s.label }}">
                 <td><input type="text" class="servo-label" value="{{ s.label }}"></td>
                 <td><input type="number" class="servo-pin" value="{{ s.pin }}"></td>
-                <td><input type="number" class="servo-min" value="{{ s.min_pulse_width }}" min="0"></td>
-                <td><input type="number" class="servo-max" value="{{ s.max_pulse_width }}" min="0"></td>
-                <td><input type="number" class="servo-default"id="{{ s.label }}-default" value="{{ s.def_pulse_width }}" min="0"></td>
+                <td><input type="number" class="servo-min" value="{{ s.min_angle }}" min="0" max="360"></td>
+                <td><input type="number" class="servo-max" value="{{ s.max_angle }}" min="0" max="360"></td>
+                <td><input type="number" class="servo-default"id="{{ s.label }}-default" value="{{ s.def_angle }}" min="0" max="360"></td>
                 <td>
                     <input type="text" class="servo-raspi" value="{{ s.raspi_id }}" list="available-raspies">
                 </td>

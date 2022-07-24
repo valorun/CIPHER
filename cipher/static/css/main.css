@@ -71,6 +71,7 @@ textarea {
 input[type="button"],input[type="submit"], button, .button {
     font-weight: bold;
     border: 1px solid transparent;
+    border-radius: 5px;
     background-color: var(--color1);
     color: var(--color2);
     text-decoration: none;

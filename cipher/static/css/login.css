@@ -3,12 +3,12 @@ body {
     padding: 0;
 }
 
-.loggin_panel {
+.login_panel {
     display: flex;
     height: 90vh;
 }
 
-.loggin_panel form {
+.login_panel form {
     background-color: var(--bg-color);
     padding: 0px 40px 40px 40px;
     margin: auto auto auto auto;
@@ -17,7 +17,7 @@ body {
 }
 
 @media (max-width: 768px) {
-    .loggin_panel form {
+    .login_panel form {
         margin-left: 0px;
         margin-right: 0px;
         width: 100%;

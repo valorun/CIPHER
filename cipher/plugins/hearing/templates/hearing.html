@@ -8,9 +8,17 @@
 	<header class="accordion-header">
 		<i class="accordion-icon"></i> Reconnaissance
 	</header>
-	<div  class="accordion-content">
+	<div class="accordion-content">
 		<input id="start-stop-recognition" type="button" value="Lancer la reconnaissance">
-		<ul id="detection-result"></ul>
+		<div id="detection-result" class="panel chat">
+			{% for r in chat_records %}
+			{% if r['source'] == 'robot' %}
+			<div data-time="{{ r.time }}" class="msg rcvd">{{ r.message }}</div>
+			{% else %}
+			<div data-time="{{ r.time }}" class="msg sent">{{ r.message }}</div>
+			{% endif %}
+			{% endfor %}
+		</div>
 	</div>
 </div>
 
@@ -18,7 +26,7 @@
 	<header class="accordion-header">
 		<i class="accordion-icon"></i> Liaison des intentions
 	</header>
-	<div  class="accordion-content">
+	<div class="accordion-content">
 		<p>
 			Vous pouvez ici relier une intention avec une séquence ou une action. Les séquences ou actions reçoivent en paramètre l'intention et tout autre information détectée. Vous pouvez rendre les paramètres d'une action dynamique à l'aide de la syntaxe suivante: <code>${mon_slot:valeur_par_défaut}</code>. Si le slot n'est pas détecté, la valeur par défaut sera utilisée à la place.
 		</p>
