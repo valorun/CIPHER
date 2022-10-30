@@ -76,8 +76,13 @@ def update_relays_state(client, userdata, msg):
         for db_rel in Relay.query.filter_by(pin=pin, raspi_id=raspi_id):
             label = db_rel.label
             relays_list.append({'relay': label, 'state': state})
-        # update the local state dictionnary
+        # update the local state dictionary
         RelayAction.relay_states[label] = state
     core.log.info("New relay status: " + str(relays_list))
     # finally send the list of the relays to update on the clients
     socketio.emit('receive_relays_state', relays_list, namespace="/client", broadcast=True)
+
+
+@mqtt.on_topic('server/servo/receive_position')
+def receive_servo_value(client, userdata, msg):
+    pass

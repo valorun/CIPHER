@@ -113,20 +113,25 @@ def save_servo():
     label = request.json.get('label')
     pin = request.json.get('pin')
     raspi_id = request.json.get('raspi_id')
-    min_angle = int(request.json.get('min_angle'))
-    max_angle = int(request.json.get('max_angle'))
-    def_angle = int(request.json.get('def_angle'))
+    min_angle = request.json.get('min_angle')
+    max_angle = request.json.get('max_angle')
+    def_angle = request.json.get('def_angle')
+
+    if not min_angle:
+        return jsonify("L'angle minimal n'est pas valide."), 400
+    if not max_angle:
+        return jsonify("L'angle maximal n'est pas valide."), 400
+    if not def_angle:
+        return jsonify("L'angle par défaut n'est pas valide."), 400
+
+    min_angle = int(min_angle)
+    max_angle = int(max_angle)
+    def_angle = int(def_angle)
 
     if not label or ' ' in label:
         return jsonify("Un label de servo moteur ne doit pas être vide ou contenir d'espace."), 400
     if not pin or ' ' in pin:
         return jsonify("Un pin ne doit pas être vide ou contenir d'espace."), 400
-    if not min_angle:
-        return jsonify("L'angle' minimal n'est pas valide."), 400
-    if not max_angle:
-        return jsonify("L'angle maximal n'est pas valide."), 400
-    if not def_angle:
-        return jsonify("L'angle par défaut n'est pas valide."), 400
     if min_angle > max_angle:
         return jsonify("L'angle minimal doit être inférieur à l'angle maximal"), 400
     if def_angle < min_angle or def_angle > max_angle:

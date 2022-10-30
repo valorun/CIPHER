@@ -207,3 +207,8 @@ footer > * {
 .parameter-row label {
     margin: auto auto auto 0;
 }
+
+.note {
+    border-left: 6px solid var(--success-color);
+    padding: 5px;
+}

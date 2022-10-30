@@ -9,10 +9,22 @@
 	width: inherit;
 }
 
-#saved-sequences {
+#saved-sequences, 
+#linked-triggers{
 	width: inherit;
 }
 
-#saved-sequences tr td:first-child {
+#saved-sequences tr td:first-child, 
+#linked-triggers tr td:first-child {
 	width: 50%;
+}
+
+@media screen and (min-width: 768px) {
+	#creation-wrapper {
+		display: flex;
+	}
+
+	#creation-wrapper > div {
+		margin: 10px;
+	}
 }

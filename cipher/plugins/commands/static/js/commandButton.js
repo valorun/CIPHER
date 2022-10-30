@@ -21,7 +21,7 @@ class CommandButton {
 
     this.$el = document.createElement('div');
 
-    this.$button = document.createElement('input');
+    this.$button = document.createElement('button');
     this.$button.type = 'button';
     this.$button.id = '-' + Math.random().toString(36).substring(2, 2 + 9);
     this.$button.classList.add('command-button');
@@ -29,7 +29,7 @@ class CommandButton {
       this.$button.dataset.color = color;
       this.$button.style.background = color;
     }
-    this.$button.value = label;
+    this.$button.innerHTML = label;
     this.$el.appendChild(this.$button);
 
     // cross element

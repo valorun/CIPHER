@@ -5,68 +5,74 @@
 <script src="{{ url_for('sequences.static', filename='js/actionNode.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/graphController.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/sequencesController.js') }}"></script>
+<script src="{{ url_for('sequences.static', filename='js/triggersController.js') }}"></script>
 
 <div class="accordion" id="creation">
 	<header class="accordion-header">
 		<i class="accordion-icon"></i> Création
 	</header>
-	<div  class="accordion-content">
+	<div class="accordion-content">
+		<div class="note">
+		Vous pouvez rendre les paramètres d'une action dynamique à l'aide de la syntaxe suivante: <code>${mon_slot:valeur_par_défaut}</code>. Si le slot n'est pas renseigné lors de l'execution, la valeur par défaut sera utilisée à la place. Une fois associé à un déclencheur, les slots seront remplacés par les éventuelles informations additionnelles fournies par le déclencheur.
+		</div>
 		<i class="button fas fa-plus" id="add-node-button"></i>
 		<i class="button fas fa-long-arrow-alt-right" id="add-transition-button"></i>
 		<i class="button fas fa-trash" id="del-selection-button"></i>
 
-		<div class="hide" id="new-transition-form">
-			<label for="transition-time">Délai(ms):</label>
-			<input type="number" id="transition-time" value="0" min="0">
-		</div>
+		<div id="creation-wrapper">
+			<div class="hide" id="new-transition-form">
+				<label for="transition-time">Délai(ms):</label>
+				<input type="number" id="transition-time" value="0" min="0">
+			</div>
 
-		<div class="hide" id="new-node-form">
+			<div class="hide" id="new-node-form">
 
-			<select name="new-node-type-choice">
-				<option value="" disabled selected>Choisir une action</option>
+				<select name="new-node-type-choice">
+					<option value="" disabled selected>Choisir une action</option>
+					{% for a_name, a in actions.items() %}
+					<option value="{{ a_name }}">{{ a.display_name }}</option>
+					{% endfor %}
+				</select>
+
 				{% for a_name, a in actions.items() %}
-				<option value="{{ a_name }}">{{ a.display_name }}</option>
-				{% endfor %}
-			</select>
+				<div id="{{ a_name }}-options" class="parameter-row">
+					{% for p in a.get_parameters() %}
+					<div class="parameter-wrapper">
+						<label for="{{ a_name }}-{{ p.name }}">{{ p.display_name }}:</label>
+						{% if p.get_type() == 'str' %}
+							{% if p.possible_values is not none %}
+							<select name="{{ a_name }}-{{ p.name }}" id="{{ a_name }}-{{ p.name }}">
+								<option value="" disabled selected>Choisir une valeur</option>
+								{% for p_key, p_value in p.possible_values.items() %}
+								<option value="{{ p_key }}">{{ p_value }}</option>
+								{% endfor %}
+							</select>
+							{% else %}
+							<input type="text" id="{{ a_name }}-{{ p.name }}" value="" placeholder="{{ p.hint }}">
+							{% endif %}
 
-			{% for a_name, a in actions.items() %}
-			<div id="{{ a_name }}-options" class="parameter-row">
-				{% for p in a.get_parameters() %}
-				<div class="parameter-wrapper">
-					<label for="{{ a_name }}-{{ p.name }}">{{ p.display_name }}:</label>
-					{% if p.get_type() == 'str' %}
-						{% if p.possible_values is not none %}
-						<select name="{{ a_name }}-{{ p.name }}" id="{{ a_name }}-{{ p.name }}">
-							<option value="" disabled selected>Choisir une valeur</option>
-							{% for p_key, p_value in p.possible_values.items() %}
-							<option value="{{ p_key }}">{{ p_value }}</option>
-							{% endfor %}
-						</select>
-						{% else %}
-						<input type="text" id="{{ a_name }}-{{ p.name }}" value="" placeholder="{{ p.hint }}">
+						{% elif p.get_type() == 'int' %}
+							<input type="number" id="{{ a_name }}-{{ p.name }}" value="{{ p.minValue }}" 
+							{% if p.minValue is not none %}
+							min="{{ p.minValue }}"
+							{% endif %}
+							{% if p.maxValue is not none %} 
+							max="{{ p.maxValue }}"
+							{% endif %}
+							>
+						{% elif p.get_type() == 'bool' %}
+							<input type="checkbox" checked="checked" id="{{ a_name }}-{{ p.name }}">
 						{% endif %}
-
-					{% elif p.get_type() == 'int' %}
-						<input type="number" id="{{ a_name }}-{{ p.name }}" value="{{ p.minValue }}" 
-						{% if p.minValue is not none %}
-						min="{{ p.minValue }}"
-						{% endif %}
-						{% if p.maxValue is not none %} 
-						max="{{ p.maxValue }}"
-						{% endif %}
-						>
-					{% elif p.get_type() == 'bool' %}
-						<input type="checkbox" checked="checked" id="{{ a_name }}-{{ p.name }}">
-					{% endif %}
+					</div>
+					{% endfor %}
 				</div>
 				{% endfor %}
+
+				
 			</div>
-			{% endfor %}
 
-			
+			<div id="network"></div>
 		</div>
-
-		<div id="network"></div>
 
 		<input type="text" id="name" value="" placeholder="Exemple: sequence1">
 		<input type="button" id="save-button" value="Enregistrer">
@@ -74,45 +80,108 @@
 	</div>
 </div>
 
-
 <div class="accordion">
 	<header class="accordion-header">
 		<i class="accordion-icon"></i> Séquences enregistrées
 	</header>
 	<div class="accordion-content">
+		
 		<table id="saved-sequences">
 			{% for s in sequences %}
-			<tr id="{{ s.id }}">
+			<tr id="seq-{{ s.id }}">
 				<td>{{ s.id }}</td>
 				<td>
 					{% if s.enabled %}
-					<input id="enable-{{ s.id }}" type="checkbox" name="enable-seq" checked="checked" class="check">
+					<input id="enable-seq-{{ s.id }}" type="checkbox" name="enable-seq" checked="checked" class="check">
 					{% else %}
-					<input id="enable-{{ s.id }}" type="checkbox" name="enable-seq" class="check">
+					<input id="enable-seq-{{ s.id }}" type="checkbox" name="enable-seq" class="check">
 					{% endif %}
-					<label for="enable-{{ s.id }}">activé</label>
+					<label for="enable-seq-{{ s.id }}">activé</label>
 				</td>
 				<td>
-					<button id="edit-{{ s.id }}" name="edit-seq">
+					<button id="edit-seq-{{ s.id }}" name="edit-seq">
 						<i class="fas fa-edit "></i>
 					</button>
 				</td>
 				<td>
-					<button id="delete-{{ s.id }}" name="delete-seq">
+					<button id="delete-seq-{{ s.id }}" name="delete-seq">
 						<i class="fas fa-trash"></i>
 					</button>
 				</td>
-				<td class="hide"><div id="data-{{ s.id }}" name="data-seq">{{ s.value }}</div></td>
+				<td class="hide"><div id="data-seq-{{ s.id }}" name="data-seq">{{ s.value }}</div></td>
 			</tr>
 			{% endfor %}
 		</table>
 	</div>
 </div>
+
+<div class="accordion">
+	<header class="accordion-header">
+        <i class="accordion-icon"></i> Associer un déclencheur
+    </header>
+    <div class="accordion-content">
+        <div class="parameter-row">
+            <div class="parameter-wrapper">
+				<select name="link-trigger-name" id="new-trigger-name">
+					<option value="" disabled selected>Choisir un déclencheur</option>
+					{% for t in registered_triggers %}
+					<option value="{{ t }}">{{ t }}</option>
+					{% endfor %}
+				</select>
+            </div>
+            <div class="parameter-wrapper">
+				<select name="link-trigger-sequence" id="new-trigger-sequence">
+					<option value="" disabled selected>Choisir une séquence</option>
+					{% for s in sequences %}
+					<option value="{{ s.id }}">{{ s.id }}</option>
+					{% endfor %}
+				</select>
+            </div>
+        </div>
+        <input id="link-trigger-button" type="button" value="Associer">
+    </div>
+</div>
+
+<div class="accordion">
+	<header class="accordion-header">
+		<i class="accordion-icon"></i> Déclencheurs
+	</header>
+	<div class="accordion-content">
+		<table id="linked-triggers">
+			<tr>
+                <th>Déclencheur</th>
+                <th>Séquence</th>
+            </tr>
+			{% for t in triggers %}
+			<tr id="trigger-{{ t.trigger_name }}-{{ t.sequence_id }}">
+				<td>{{ t.trigger_name }}</td>
+				<td>{{ t.sequence_id }}</td>
+
+				<td>
+					{% if t.enabled %}
+					<input id="enable-trigger-{{ t.trigger_name }}-{{ t.sequence_id }}" type="checkbox" name="enable-trigger" checked="checked" class="check">
+					{% else %}
+					<input id="enable-trigger-{{ t.trigger_name }}-{{ t.sequence_id }}" type="checkbox" name="enable-trigger" class="check">
+					{% endif %}
+					<label for="enable-trigger-{{ t.trigger_name }}-{{ t.sequence_id }}">activé</label>
+				</td>
+				<td>
+					<button id="delete-trigger-{{ t.trigger_name }}-{{ t.sequence_id }}" name="delete-trigger">
+						<i class="fas fa-trash"></i>
+					</button>
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>
+
 <script type="text/javascript">
 
     document.addEventListener('DOMContentLoaded', () => {
 		graphController.init();
 		sequencesController.init();
+		triggersController.init();
 	});
 
 </script>

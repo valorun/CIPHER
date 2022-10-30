@@ -1,10 +1,10 @@
 import json
 from . import hearing
-from .model import Intent, chat_queue
+from .model import chat_queue
 from flask_socketio import SocketIO, emit
 from datetime import datetime as dt
 from cipher import socketio, mqtt
-from cipher.core.sequence_reader import sequence_reader
+from cipher.core.triggers import execute_trigger, registered_triggers
 
 @hearing.startup()
 def on_startup():
@@ -22,6 +22,13 @@ def on_speak(client, userdata, message):
     chat_queue.append(msg_obj)
     socketio.emit('chat', msg_obj, namespace='/client', broadcast=True)
 
+@mqtt.on_topic('server/hearing/register')
+def register_intents(client, userdata, message):
+    global registered_triggers
+    data = json.loads(message.payload.decode('utf-8'))
+    for intent in data:
+        registered_triggers.add('intent_' + intent)
+
 
 @mqtt.on_topic('server/hearing/intent/#')
 def handle_intents(client, userdata, message):
@@ -30,12 +37,7 @@ def handle_intents(client, userdata, message):
     intent = payload['intent']['intentName']
     hearing.log.info("Received intent '" + intent + "'")
     hearing.log.debug(str(payload))
-    db_intent = Intent.query.filter_by(intent=intent).first()
-
-    if db_intent is not None:
-        if db_intent.sequence_id is not None:
-            sequence_reader.launch_sequence(db_intent.sequence_id, **payload)
-    
+    execute_trigger(intent, **payload)
     msg_obj = {'message': payload['input'], 'source': 'user', 'time':  dt.now().strftime('%H:%M')}
     chat_queue.append(msg_obj)
     socketio.emit('chat', msg_obj, namespace='/client', broadcast=True)

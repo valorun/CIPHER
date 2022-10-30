@@ -19,20 +19,24 @@ const sequencesController = (() => {
   /* PRIVATE METHODS */
   function bindUIEvents() {
     document.querySelectorAll('input[name=enable-seq]').forEach((e) => {
-      const seqName = e.id.substring(e.id.indexOf('-') + 1);
+      const [,, ...rest] = e.id.split('-');
+      const seqName = rest.join('-');
+      console.log(seqName)
       e.addEventListener('click', () => {
         enableSequence(seqName, e.checked);
       });
     });
     document.querySelectorAll('button[name=delete-seq]').forEach((e) => {
-      const seqName = e.id.substring(e.id.indexOf('-') + 1);
+      const [,, ...rest] = e.id.split('-');
+      const seqName = rest.join('-');
       e.addEventListener('click', () => {
         deleteSequence(seqName);
       });
     });
     document.querySelectorAll('button[name=edit-seq]').forEach((e) => {
       e.addEventListener('click', () => {
-        const seqName = e.id.substring(e.id.indexOf('-') + 1);
+        const [,, ...rest] = e.id.split('-');
+        const seqName = rest.join('-');
 
         editSequence(seqName);
         templateController.getAccordion('creation').open();
@@ -55,19 +59,19 @@ const sequencesController = (() => {
 
   /**
    * Enable OR disable a sequence
-   * @param {string} seq_name the name of the sequence to enable or disable
+   * @param {string} seqName the name of the sequence to enable or disable
    * @param {boolean} value the new state for the sequence
    */
   function enableSequence(seqName, value) {
     fetchJson('/enable_sequence', 'POST', { seq_name: seqName, value: value })
       .then(() => {
-        console.log(seqName + ' updated');
+        console.log('Sequence ' + seqName + ' updated');
       });
   }
 
   /**
    * Completely delete a sequence
-   * @param {string} seq_name the name of the sequence to delete
+   * @param {string} seqName the name of the sequence to delete
    */
   function deleteSequence(seqName) {
     const confirm = window.confirm('Etes vous sûr de vouloir supprimer la séquence \'' + seqName + '\' ?');
@@ -75,8 +79,8 @@ const sequencesController = (() => {
     if (confirm) {
       fetchJson('/delete_sequence', 'POST', { seq_name: seqName })
         .then(() => {
-          console.log(seqName + ' deleted');
-          const $seqEl = document.getElementById(seqName);
+          console.log('Sequence ' + seqName + ' deleted');
+          const $seqEl = document.getElementById('seq-' + seqName);
           $seqEl.parentNode.removeChild($seqEl);
         });
     }
@@ -88,7 +92,7 @@ const sequencesController = (() => {
    */
   function editSequence(seqName) {
     DOM.$name.value = seqName;
-    const sequenceData = document.getElementById('data-' + seqName).innerHTML;
+    const sequenceData = document.getElementById('data-seq-' + seqName).innerHTML;
     const json = JSON.parse(sequenceData);
     graphController.updateGraph(json);
   }

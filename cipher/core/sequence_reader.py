@@ -9,7 +9,7 @@ from . import core
 # vérif que le parcours partant du noeud de départ soit bien sans orphelins, et qu'il n'y ait pas de boucles
 class SequenceReader:
     """
-    Classe reading sequences.
+    Class reading sequences.
     """
     def __init__(self):
         self.current_sequence = None
