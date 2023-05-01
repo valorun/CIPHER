@@ -1,5 +1,5 @@
 eventlet==0.30.0
-Flask==1.1.4
+Flask==2.3.2
 Flask-Bcrypt==0.7.1
 Flask-MQTT==1.0.7
 Flask-SocketIO==4.3.2
