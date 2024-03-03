@@ -47,15 +47,6 @@ class Servo(db.Model):
         return '<Servo %r>' % self.label
 
 
-class Trigger(db.Model):
-    trigger_name = db.Column(db.String(50), primary_key=True)
-    sequence_id = db.Column(db.String(50), db.ForeignKey('sequence.id'), primary_key=True)
-    enabled = db.Column(db.Boolean, nullable=False)
-
-    def __repr__(self):
-        return '<Trigger %r - %r>' % self.trigger_name % self.sequence_id
-
-
 class Resources():
     """
     Class used to store and manage ressources such as sounds

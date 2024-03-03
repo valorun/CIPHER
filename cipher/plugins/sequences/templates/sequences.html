@@ -5,7 +5,6 @@
 <script src="{{ url_for('sequences.static', filename='js/actionNode.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/graphController.js') }}"></script>
 <script src="{{ url_for('sequences.static', filename='js/sequencesController.js') }}"></script>
-<script src="{{ url_for('sequences.static', filename='js/triggersController.js') }}"></script>
 
 <div class="accordion" id="creation">
 	<header class="accordion-header">
@@ -115,73 +114,12 @@
 	</div>
 </div>
 
-<div class="accordion">
-	<header class="accordion-header">
-        <i class="accordion-icon"></i> Associer un déclencheur
-    </header>
-    <div class="accordion-content">
-        <div class="parameter-row">
-            <div class="parameter-wrapper">
-				<select name="link-trigger-name" id="new-trigger-name">
-					<option value="" disabled selected>Choisir un déclencheur</option>
-					{% for t in registered_triggers %}
-					<option value="{{ t }}">{{ t }}</option>
-					{% endfor %}
-				</select>
-            </div>
-            <div class="parameter-wrapper">
-				<select name="link-trigger-sequence" id="new-trigger-sequence">
-					<option value="" disabled selected>Choisir une séquence</option>
-					{% for s in sequences %}
-					<option value="{{ s.id }}">{{ s.id }}</option>
-					{% endfor %}
-				</select>
-            </div>
-        </div>
-        <input id="link-trigger-button" type="button" value="Associer">
-    </div>
-</div>
-
-<div class="accordion">
-	<header class="accordion-header">
-		<i class="accordion-icon"></i> Déclencheurs
-	</header>
-	<div class="accordion-content">
-		<table id="linked-triggers">
-			<tr>
-                <th>Déclencheur</th>
-                <th>Séquence</th>
-            </tr>
-			{% for t in triggers %}
-			<tr id="trigger-{{ t.trigger_name }}-{{ t.sequence_id }}">
-				<td>{{ t.trigger_name }}</td>
-				<td>{{ t.sequence_id }}</td>
-
-				<td>
-					{% if t.enabled %}
-					<input id="enable-trigger-{{ t.trigger_name }}-{{ t.sequence_id }}" type="checkbox" name="enable-trigger" checked="checked" class="check">
-					{% else %}
-					<input id="enable-trigger-{{ t.trigger_name }}-{{ t.sequence_id }}" type="checkbox" name="enable-trigger" class="check">
-					{% endif %}
-					<label for="enable-trigger-{{ t.trigger_name }}-{{ t.sequence_id }}">activé</label>
-				</td>
-				<td>
-					<button id="delete-trigger-{{ t.trigger_name }}-{{ t.sequence_id }}" name="delete-trigger">
-						<i class="fas fa-trash"></i>
-					</button>
-				</td>
-			</tr>
-			{% endfor %}
-		</table>
-	</div>
-</div>
 
 <script type="text/javascript">
 
     document.addEventListener('DOMContentLoaded', () => {
 		graphController.init();
 		sequencesController.init();
-		triggersController.init();
 	});
 
 </script>

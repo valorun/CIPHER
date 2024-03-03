@@ -56,14 +56,15 @@ def create_app(debug=False):
 
     db.app = app
     db.init_app(app)
-    db.create_all()
+    with app.app_context():
+        db.create_all()
 
-    # create admin if not exists
-    exists = User.query.filter_by(username='admin').first()
-    if not exists:
-        new_db_user = User(username='admin', password='$2y$10$hAb.CRq1buok3UhTl1BLJe1L2gQ.06mnDCzhlq5uOGxMlcW8g.B1q', active=True)
-        db.session.merge(new_db_user)
-        db.session.commit()
+        # create admin if not exists
+        exists = User.query.filter_by(username='admin').first()
+        if not exists:
+            new_db_user = User(username='admin', password='$2y$10$hAb.CRq1buok3UhTl1BLJe1L2gQ.06mnDCzhlq5uOGxMlcW8g.B1q', active=True)
+            db.session.merge(new_db_user)
+            db.session.commit()
     
     @mqtt.on_connect()
     def on_server_connect(client, userdata, flags, rc):

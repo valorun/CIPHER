@@ -28,7 +28,7 @@ Le client (disponible à l'adresse suivante: <https://github.com/valorun/CIPHER-
 
 Dans le cadre de notre exemple, l'application est décompressée dans le dossier ```/home/pi```.
 La communication entre le serveur et les client se faisant via le protocole MQTT, il est nécessaire d'installer un broker.
-Nous utilisons ici mosquitto: ```sudo apt install```
+Nous utilisons ici mosquitto: ```sudo apt install mosquitto```
 Pour mettre en route le serveur au démarrage du raspberry, plusieurs méthodes existent.
 Dans notre cas, la ligne ```nohup /home/pi/CIPHER/app.py``` est ajoutée avant le 'exit 0' du fichier ```etc/rc.local```.
 

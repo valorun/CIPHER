@@ -1,10 +1,12 @@
 import json
 from . import hearing
 from .model import chat_queue
+from .config import llm_config
 from flask_socketio import SocketIO, emit
 from datetime import datetime as dt
 from cipher import socketio, mqtt
-from cipher.core.triggers import execute_trigger, registered_triggers
+from cipher.core.sequence_reader import sequence_reader
+from cipher.core.actions import SpeechAction
 
 @hearing.startup()
 def on_startup():
@@ -22,23 +24,26 @@ def on_speak(client, userdata, message):
     chat_queue.append(msg_obj)
     socketio.emit('chat', msg_obj, namespace='/client', broadcast=True)
 
-@mqtt.on_topic('server/hearing/register')
-def register_intents(client, userdata, message):
-    global registered_triggers
-    data = json.loads(message.payload.decode('utf-8'))
-    for intent in data:
-        registered_triggers.add('intent_' + intent)
 
 
-@mqtt.on_topic('server/hearing/intent/#')
+@mqtt.on_topic('server/hearing/transcription')
 def handle_intents(client, userdata, message):
     global chat_queue
-    payload = json.loads(message.payload.decode('utf-8'))
-    intent = payload['intent']['intentName']
-    hearing.log.info("Received intent '" + intent + "'")
+    message = message.payload.decode('utf-8')
+    # TODO call LLM
+    # use llm_config
+
+    action = payload['action']
+    hearing.log.info(f"Received actions '{action['name']}'")
     hearing.log.debug(str(payload))
-    execute_trigger(intent, **payload)
-    msg_obj = {'message': payload['input'], 'source': 'user', 'time':  dt.now().strftime('%H:%M')}
+    if action['name'] == 'speak':
+        if 'text' in action['parameters']:
+            SpeechAction.execute(action['parameters']['text'])
+        else:
+            hearing.log.error("No text in the action parameters")
+    else:
+        sequence_reader.launch_sequence(action['name'], **action['parameters'])
+    msg_obj = {'message': message, 'source': 'user', 'time':  dt.now().strftime('%H:%M')}
     chat_queue.append(msg_obj)
     socketio.emit('chat', msg_obj, namespace='/client', broadcast=True)
 
