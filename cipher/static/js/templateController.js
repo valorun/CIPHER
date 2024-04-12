@@ -22,8 +22,7 @@ const templateController = (() => {
       this.$icon = this.$element.getElementsByClassName('accordion-icon')[0];
       this.$icon.classList.add('fas', 'fa-angle-right');
       this.$icon.classList.remove('fa-angle-down');
-      this.$content.style.display = 'none';
-
+       
       $header.addEventListener('click', () => {
         if (this.isOpen) {
           this.close();
@@ -36,19 +35,30 @@ const templateController = (() => {
     open() {
       this.$icon.classList.add('fa-angle-down');
       this.$icon.classList.remove('fa-angle-right');
-      this.$content.style.display = 'block';
+      this.$content.classList.add('opened');
       this.$element.dispatchEvent(openEvent);
+
+      const currentHeight = getComputedStyle(this.$content).height;
+      this.$content.style.height = 'fit-content';
+      // retrieve the maximum height computed before reopening
+      const maxHeight = getComputedStyle(this.$content).height;
+      // set height to current height since transition cannot be triggered from a non specified value like 'fit-content'
+      this.$content.style.height = currentHeight;
+
+      getComputedStyle(this.$content).height; // small hack to allow smooth transition
+      this.$content.style.height = maxHeight;
     }
 
     close() {
+      this.$content.style.height = '0px';
       this.$icon.classList.add('fa-angle-right');
       this.$icon.classList.remove('fa-angle-down');
-      this.$content.style.display = 'none';
+      this.$content.classList.remove('opened')
       this.$element.dispatchEvent(closeEvent);
     }
 
     get isOpen() {
-      return this.$content.style.display !== 'none';
+      return this.$content.classList.contains('opened');
     }
   }
 

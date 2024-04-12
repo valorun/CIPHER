@@ -3,36 +3,20 @@
 <link href="{{ url_for('hearing.static', filename='css/hearing.css') }}" rel="stylesheet" type="text/css" />
 <script src="{{ url_for('hearing.static', filename='js/speechDetectionController.js') }}"></script>
 
-<div class="accordion">
-	<header class="accordion-header">
-		<i class="accordion-icon"></i> Reconnaissance
-	</header>
-	<div class="accordion-content">
-		<input id="start-stop-recognition" type="button" value="Lancer la reconnaissance">
-		<div id="detection-result" class="panel chat">
-			{% for r in chat_records %}
-			{% if r['source'] == 'robot' %}
-			<div data-time="{{ r.time }}" class="msg rcvd">{{ r.message }}</div>
-			{% else %}
-			<div data-time="{{ r.time }}" class="msg sent">{{ r.message }}</div>
-			{% endif %}
-			{% endfor %}
-		</div>
-	</div>
+<div class="pannel">
+    <input id="toggle-recognition" type="button" value="Démarrer la reconnaissance">
+    <input id="trigger-recognition" type="button" value="Enregistrer">
+    <div id="detection-result" class="panel chat">
+        {% for r in chat_records %}
+        {% if r['source'] == 'robot' %}
+        <div data-time="{{ r.time }}" class="msg rcvd">{{ r.message }}</div>
+        {% else %}
+        <div data-time="{{ r.time }}" class="msg sent">{{ r.message }}</div>
+        {% endif %}
+        {% endfor %}
+    </div>
 </div>
 
-<div class="accordion">
-	<header class="accordion-header">
-		<i class="accordion-icon"></i> Intentions
-	</header>
-	<div class="accordion-content">
-		<ul>
-		{% for i in intents %}
-		<li>{{ i }}</li>
-		{% endfor %}
-		</ul>
-	</div>
-</div>
 
 <script type="text/javascript">
 	document.addEventListener('DOMContentLoaded', () => {

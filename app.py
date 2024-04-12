@@ -7,6 +7,7 @@ from os.path import join, dirname
 import logging
 
 DEBUG = core_config.DEBUG
+print(f"DEBUG: {DEBUG}")
 if __name__ == '__main__':
     setup_logger(debug=DEBUG)
     app = create_app(debug=DEBUG)

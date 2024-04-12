@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import eventlet as _eventlet
-_eventlet.monkey_patch()
+_eventlet.monkey_patch(socket=True)
 
 from os import urandom
 import logging
@@ -82,6 +82,7 @@ def create_app(debug=False):
     socketio.init_app(app)
 
     connected = False
+
     while not connected:
         try:
             mqtt.init_app(app)

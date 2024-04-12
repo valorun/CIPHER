@@ -2,7 +2,7 @@ import json
 from flask_socketio import SocketIO, emit
 from flask_mqtt import Mqtt
 from cipher import socketio, mqtt
-from cipher.model import Relay
+from cipher.model import Relay, db
 from . import core
 
 clients = []
@@ -23,10 +23,11 @@ def on_client_connect(client, userdata, msg):
     clients.append(new_client)
 
     relays_list = []
-    # add its relays to the list ...
-    for relay in Relay.query.filter_by(raspi_id=new_client['id']):
-        pin = relay.pin
-        relays_list.append(pin)
+    with db.app.app_context():
+        # add its relays to the list ...
+        for relay in Relay.query.filter_by(raspi_id=new_client['id']):
+            pin = relay.pin
+            relays_list.append(pin)
     # then ask the state of these relays to the raspberry
     mqtt.publish('client/' + new_client['id'] + '/relay/update_state', json.dumps({'gpios': relays_list}))
 

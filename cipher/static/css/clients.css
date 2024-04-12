@@ -13,6 +13,7 @@
     margin: auto;
     padding: 2px;
     color: var(--color3);
+    margin: 3px;
 }
 
 .client-tag > header {

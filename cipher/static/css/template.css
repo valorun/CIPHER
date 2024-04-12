@@ -17,7 +17,7 @@ body {
     position: absolute;
     right: 0;
     top: var(--topbar-height);
-    transition: all 1s;
+    transition: all 0.3s;
     box-sizing: border-box;
 }
 
@@ -31,7 +31,7 @@ body {
     min-height: 100vh;
     bottom: 0px;
     top: var(--topbar-height);
-    transition: all 1s;
+    transition: all 0.3s;
 }
 
 #sidebar .header img {
@@ -49,7 +49,7 @@ body {
 
 }
 
-#sidebar .header > * {
+#sidebar .header>* {
     display: block;
     padding: 10px;
 }
@@ -57,7 +57,7 @@ body {
 
 #sidebar .header :first-child {
     padding: 5px;
-    width:fit-content;
+    width: fit-content;
     font-size: x-large;
     font-weight: bold;
     margin: auto;
@@ -73,7 +73,7 @@ body {
 }
 
 #sidebar a:hover {
-    background-color: rgba(255,255,255,0.2);
+    background-color: rgba(255, 255, 255, 0.2);
     color: var(--color4);
 }
 
@@ -96,14 +96,17 @@ body {
         width: 100%;
         height: auto;
         position: absolute;
-        z-index: 4; 
+        z-index: 4;
     }
+
     #content {
         width: 100%;
     }
+
     .no-sidebar #sidebar {
         margin-left: -100%;
     }
+
     .sidebar .header img {
         display: none !important;
     }
@@ -111,7 +114,7 @@ body {
 
 /* TOPBAR */
 #topbar {
-    z-index: 4; 
+    z-index: 4;
     position: fixed;
     height: var(--topbar-height);
     width: 100%;
@@ -130,6 +133,10 @@ body {
     margin-left: auto;
 }
 
+#topbar #sidebar-button {
+    border-radius: 0px;
+}
+
 #home-button {
     padding-right: 0;
 }
@@ -138,7 +145,7 @@ body {
     margin: auto 0 auto 0
 }
 
-#link-buttons > sup > a {
+#link-buttons>sup>a {
     padding: 0;
 }
 
@@ -152,7 +159,7 @@ footer {
     margin-top: 10px;
 }
 
-footer > * {
+footer>* {
     width: fit-content;
     display: block;
     padding: 3px;
@@ -160,9 +167,11 @@ footer > * {
 }
 
 /* ACCORDION */
-.accordion, .panel {
+.accordion,
+.panel {
     border: 2px solid var(--color2);
     margin-bottom: 16px;
+
 }
 
 .accordion-header {
@@ -171,16 +180,28 @@ footer > * {
     background-color: var(--color1);
     color: var(--color2);
     text-decoration: none;
-	padding:14px;
+    padding: 14px;
     cursor: pointer;
 }
 
-.accordion-content, .panel {
+.accordion-content,
+.panel {
     padding: 14px;
     overflow-x: auto;
 }
 
-.accordion-content > * {
+.accordion-content {
+    transition: all 0.3s;
+    height: 0px;
+    padding: 0 14px 0 14px;
+}
+
+.accordion-content.opened{
+    padding: 14px;
+}
+
+
+.accordion-content>* {
     margin-bottom: 8px;
 }
 
@@ -190,18 +211,18 @@ footer > * {
 
 
 .parameter-row {
-	display: flex;
-	width: 100%;
+    display: flex;
+    width: 100%;
 }
 
 .parameter-wrapper {
-    display:block;
-	margin: 8px 8px 8px 0;
-	width: 100%;
+    display: block;
+    margin: 8px 8px 8px 0;
+    width: 100%;
 }
 
 .parameter-wrapper input[type="checkbox"] {
-	margin: 16px 0 0 0;
+    margin: 16px 0 0 0;
 }
 
 .parameter-row label {

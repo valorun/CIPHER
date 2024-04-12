@@ -6,7 +6,7 @@ const speechDetectionController = (() => {
 
   const DOM = {};
 
-  let startStopButtonState = true;
+  let toggleButtonState = true;
 
   /* PUBLIC METHODS */
   function init() {
@@ -16,16 +16,21 @@ const speechDetectionController = (() => {
 
   /* PRIVATE METHODS */
   function bindUIEvents() {
-    DOM.$startStopRecognition.addEventListener('click', () => {
-      if (startStopButtonState) {
-        socket.emit('start_speech_recognition');
-        DOM.$startStopRecognition.value = 'Arrêter la reconnaissance';
+    DOM.$toggleRecognition.addEventListener('click', () => {
+      if (toggleButtonState) {
+        socket.emit('enable_speech_recognition');
+        DOM.$toggleRecognition.value = 'Désactiver la reconnaissance';
       } else {
-        socket.emit('stop_speech_recognition');
-        DOM.$startStopRecognition.value = 'Lancer la reconnaissance';
+        socket.emit('disable_speech_recognition');
+        DOM.$toggleRecognition.value = 'Activer la reconnaissance';
       }
-      startStopButtonState = !startStopButtonState;
+      toggleButtonState = !toggleButtonState;
     });
+
+    DOM.$triggerRecognition.addEventListener('click', () => {
+        socket.emit('trigger_speech_recognition');
+    });
+
 
     // server response when a sentence must be play on the client
     socket.on('chat', (msg) => {
@@ -38,7 +43,8 @@ const speechDetectionController = (() => {
   }
 
   function cacheDom() {
-    DOM.$startStopRecognition = document.getElementById('start-stop-recognition');
+    DOM.$toggleRecognition = document.getElementById('toggle-recognition');
+    DOM.$triggerRecognition = document.getElementById('trigger-recognition');
     DOM.$speechDetectionModal = document.getElementById('speech-detection-modal');
     DOM.$detectionResult = document.getElementById('detection-result');
   }

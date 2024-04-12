@@ -16,6 +16,7 @@ class User(db.Model):
 
 class Sequence(db.Model):
     id = db.Column(db.String(50), primary_key=True)
+    description = db.Column(db.String(50), nullable=False)
     value = db.Column(db.Text, nullable=False)
     enabled = db.Column(db.Boolean, nullable=False)
 

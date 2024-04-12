@@ -8,16 +8,10 @@ class LLMConfig(ConfigFile):
     def __init__(self, filepath):
         ConfigFile.__init__(self, filepath)
 
-    def get_llm_server_address(self):
-        return self.get('LLM', 'SERVER_ADDRESS', fallback='localhost')
+    def get_llm_server_inference_url(self):
+        return self.get('LLM', 'INFERENCE_URL', fallback='http://localhost:8000')
     
-    def set_llm_server_address(self, server_address: str):
-        self.set('LLM', 'SERVER_ADDRESS', server_address)
-
-    def get_llm_server_port(self):
-        return self.getint('LLM', 'SERVER_PORT', fallback=5000)
-
-    def set_llm_server_port(self, server_port: int):
-        self.set('LLM', 'SERVER_PORT', server_port)
+    def set_llm_server_inference_url(self, inference_url: str):
+        self.set('LLM', 'INFERENCE_URL', inference_url)
 
 llm_config = LLMConfig(CONFIG_FILE)
