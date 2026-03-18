@@ -68,16 +68,17 @@ def update_relays_state(client, userdata, msg):
     relays_list = []  # relays to update
     data = json.loads(msg.payload.decode('utf-8'))
     # for each specified relay ...
-    for rel in data['relays']:
-        raspi_id = rel['raspi_id']
-        pin = rel['gpio']
-        state = rel['state']
-        # retrieve the missing information: the label corresponding to the pin
-        for db_rel in Relay.query.filter_by(pin=pin, raspi_id=raspi_id):
-            label = db_rel.label
-            relays_list.append({'relay': label, 'state': state})
-        # update the local state dictionnary
-        RelayAction.relay_states[label] = state
+    with mqtt.app.app_context():
+        for rel in data['relays']:
+            raspi_id = rel['raspi_id']
+            pin = rel['gpio']
+            state = rel['state']
+            # retrieve the missing information: the label corresponding to the pin
+            for db_rel in Relay.query.filter_by(pin=pin, raspi_id=raspi_id):
+                label = db_rel.label
+                relays_list.append({'relay': label, 'state': state})
+                # update the local state dictionnary
+                RelayAction.relay_states[label] = state
     core.log.info("New relay status: " + str(relays_list))
     # finally send the list of the relays to update on the clients
-    socketio.emit('receive_relays_state', relays_list, namespace="/client", broadcast=True)
+    socketio.emit('receive_relays_state', relays_list, namespace="/client")

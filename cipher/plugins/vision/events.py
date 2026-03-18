@@ -10,23 +10,23 @@ def on_camera_stream(client, userdata, msg):
     Function called when a frame is captured by the camera.
     """
     vision.log.debug("Received camera frame.")
-    socketio.emit('camera_stream_data', msg.payload.decode('utf-8'), namespace="/client", broadcast=True)
+    socketio.emit('camera_stream_data', msg.payload.decode('utf-8'), namespace="/client")
 
 @mqtt.on_topic('server/objects_detected')
 def on_objects_detected(client, userdata, msg):
     """
     Function called when the camera detected some object.
     """
-    socketio.emit('camera_objects_detected', 'data:image/jpeg;base64,{}'.format(msg), namespace="/client", broadcast=True)
+    socketio.emit('camera_objects_detected', 'data:image/jpeg;base64,{}'.format(msg), namespace="/client")
 
 @mqtt.on_topic('server/camera_stream/started')
 def on_started_camera_stream(client, userdata, msg):
-    socketio.emit('started_camera_stream', namespace='/client', broadcast=True)
+    socketio.emit('started_camera_stream', namespace='/client')
     vision.log.info("Camera streaming successfully started.")
 
 @mqtt.on_topic('server/camera_stream/stopped')
 def on_stopped_camera_stream(client, userdata, msg):
-    socketio.emit('stopped_camera_stream', namespace='/client', broadcast=True)
+    socketio.emit('stopped_camera_stream', namespace='/client')
     vision.log.info("Camera streaming successfully stopped.")
 
 @socketio.on('stop_camera_stream', namespace='/client')

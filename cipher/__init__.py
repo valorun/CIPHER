@@ -1,8 +1,5 @@
 # coding: utf-8
 
-import eventlet as _eventlet
-_eventlet.monkey_patch()
-
 from os import urandom
 import logging
 import importlib
@@ -17,7 +14,7 @@ from .config import core_config
 from .model import db, User
 from .constants import __version__
 
-socketio = SocketIO(logger=True, async_mode='eventlet')  # socketio server used to communicate with web client
+socketio = SocketIO(logger=True, async_mode='threading')  # socketio server used to communicate with web client
 mqtt = Mqtt()  # mqtt client, need to be connected to a brocker (in local)
 
 
@@ -56,14 +53,15 @@ def create_app(debug=False):
 
     db.app = app
     db.init_app(app)
-    db.create_all()
 
-    # create admin if not exists
-    exists = User.query.filter_by(username='admin').first()
-    if not exists:
-        new_db_user = User(username='admin', password='$2y$10$hAb.CRq1buok3UhTl1BLJe1L2gQ.06mnDCzhlq5uOGxMlcW8g.B1q', active=True)
-        db.session.merge(new_db_user)
-        db.session.commit()
+    with app.app_context():
+        db.create_all()
+
+        exists = User.query.filter_by(username='admin').first()
+        if not exists:
+            new_db_user = User(username='admin', password='$2y$10$hAb.CRq1buok3UhTl1BLJe1L2gQ.06mnDCzhlq5uOGxMlcW8g.B1q', active=True)
+            db.session.merge(new_db_user)
+            db.session.commit()
     
     @mqtt.on_connect()
     def on_server_connect(client, userdata, flags, rc):

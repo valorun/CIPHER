@@ -11,4 +11,5 @@ if __name__ == '__main__':
     setup_logger(debug=DEBUG)
     app = create_app(debug=DEBUG)
     logging.info("Application started")
-    socketio.run(app, host='0.0.0.0', port=5000)
+    logging.getLogger('werkzeug').setLevel(logging.ERROR)
+    socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)

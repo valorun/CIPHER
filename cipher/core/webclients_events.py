@@ -17,7 +17,7 @@ def webclient_connect():
 
 
 @socketio.on('disconnect', namespace='/client')
-def webclient_disconnect():
+def webclient_disconnect(sid):
     """
     Function called when a client disconnects.
     """

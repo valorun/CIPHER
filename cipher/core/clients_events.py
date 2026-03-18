@@ -24,13 +24,14 @@ def on_client_connect(client, userdata, msg):
 
     relays_list = []
     # add its relays to the list ...
-    for relay in Relay.query.filter_by(raspi_id=new_client['id']):
-        pin = relay.pin
-        relays_list.append(pin)
+    with mqtt.app.app_context():
+        for relay in Relay.query.filter_by(raspi_id=new_client['id']):
+            pin = relay.pin
+            relays_list.append(pin)
     # then ask the state of these relays to the raspberry
     mqtt.publish('client/' + new_client['id'] + '/relay/update_state', json.dumps({'gpios': relays_list}))
 
-    socketio.emit('client_connect', new_client, namespace='/client', broadcast=True)
+    socketio.emit('client_connect', new_client, namespace='/client')
 
 
 @mqtt.on_topic('server/client_disconnect')
@@ -45,7 +46,7 @@ def on_client_disconnect(client, userdata, msg):
     core.log.info("Client " + client_id + " disconnected.")
     clients = [c for c in clients if c['id'] != client_id]
     mqtt.unsubscribe('client/' + client_id + '/#')
-    socketio.emit('client_disconnect', old_client, namespace='/client', broadcast=True)
+    socketio.emit('client_disconnect', old_client, namespace='/client')
 
 
 @socketio.on('shutdown', namespace='/client')

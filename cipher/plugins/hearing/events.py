@@ -20,7 +20,7 @@ def on_speak(client, userdata, message):
     """
     msg_obj = {'message': json.loads(message.payload.decode('utf-8'))['text'], 'source': 'robot', 'time': dt.now().strftime('%H:%M')}
     chat_queue.append(msg_obj)
-    socketio.emit('chat', msg_obj, namespace='/client', broadcast=True)
+    socketio.emit('chat', msg_obj, namespace='/client')
 
 
 @mqtt.on_topic('server/hearing/intent/#')
@@ -30,15 +30,16 @@ def handle_intents(client, userdata, message):
     intent = payload['intent']['intentName']
     hearing.log.info("Received intent '" + intent + "'")
     hearing.log.debug(str(payload))
-    db_intent = Intent.query.filter_by(intent=intent).first()
-
-    if db_intent is not None:
-        if db_intent.sequence_id is not None:
-            sequence_reader.launch_sequence(db_intent.sequence_id, **payload)
+    with mqtt.app.app_context():
+        db_intent = Intent.query.filter_by(intent=intent).first()
+    
+        if db_intent is not None:
+            if db_intent.sequence_id is not None:
+                sequence_reader.launch_sequence(db_intent.sequence_id, **payload)
     
     msg_obj = {'message': payload['input'], 'source': 'user', 'time':  dt.now().strftime('%H:%M')}
     chat_queue.append(msg_obj)
-    socketio.emit('chat', msg_obj, namespace='/client', broadcast=True)
+    socketio.emit('chat', msg_obj, namespace='/client')
 
 
 @socketio.on('start_speech_recognition', namespace='/client')
