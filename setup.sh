@@ -26,23 +26,19 @@ add_to_startup(){
 ### requirements ###
 apt-get -y update
 apt-get -y install "python3"
-apt-get -y install "python3-pip"
 apt-get -y install "mosquitto"
 apt-get -y install "mplayer"
 
 APP_PATH=$(cd $(dirname "$0") && pwd)
 echo "Application path: $APP_PATH"
-python3 -m venv venv
-#source $APP_PATH/venv/bin/activate
 
-if [ -e $APP_PATH/requirements.txt ]
-then
-    echo "Installing python dependencies ..."
-    $APP_PATH/venv/bin/pip3 install -U -r $APP_PATH/requirements.txt
+if command -v pixi &> /dev/null; then
+    echo "Installing python dependencies via pixi..."
+    pixi install
 else
-    echo "No requirements file found."
+    echo "Error: pixi not found. Please install it first."
+    exit 1
 fi
-
 
 ### add to startup ###
 cat > $APP_PATH/cipher.service <<EOF
@@ -52,7 +48,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=$APP_PATH
-ExecStart=$APP_PATH/venv/bin/python3 $APP_PATH/app.py
+ExecStart=/usr/bin/env pixi run python $APP_PATH/app.py
 Restart=always
 
 [Install]
@@ -63,10 +59,6 @@ add_to_startup "$APP_PATH/cipher.service"
 
 for D in cipher/plugins/*; do
     if [ -d "${D}" ]; then
-        if [ -f ${D}/requirements.txt ]; then
-            echo "Installing python dependencies for plugin in ${D} ..."
-            $APP_PATH/venv/bin/pip3 install -U -r ${D}/requirements.txt
-        fi
         if [ -f ${D}/setup.sh ]; then
             echo "Setting up plugin in ${D} ..."
             source "${D}/setup.sh"

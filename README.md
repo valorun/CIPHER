@@ -17,20 +17,22 @@ Interface de contrôle robotique C.I.P.H.E.R. Il s'agit d'une interface web réa
 ## Installation
 
 Téléchargez et décompressez l'archive de C.I.P.H.E.R sur le serveur à l'emplacement désiré.
-Pour une installation automatique, exécutez le script ```setup.sh``` disponible à la racine du dossier.
-Le client (disponible à l'adresse suivante: <https://github.com/valorun/CIPHER-raspberry-client>) doit être ensuite installé sur tout les raspberries devant être connectés.
+Pour une installation automatique, assurez-vous que [pixi](https://pixi.sh/) est installé, puis exécutez le script ```setup.sh``` disponible à la racine du dossier.
+Le client (disponible à l'adresse suivante: <https://github.com/valorun/CIPHER-raspberry-client>) doit être ensuite installé sur tous les raspberries devant être connectés.
 
 ### Pré-requis
 
 - Python3 sur le raspberry serveur, et sur les raspberries connectés
+- [pixi](https://pixi.sh/) sur le raspberry serveur
 
 ### Installation manuelle
 
 Dans le cadre de notre exemple, l'application est décompressée dans le dossier ```/home/pi```.
-La communication entre le serveur et les client se faisant via le protocole MQTT, il est nécessaire d'installer un broker.
-Nous utilisons ici mosquitto: ```sudo apt install```
+La communication entre le serveur et les clients se faisant via le protocole MQTT, il est nécessaire d'installer un broker.
+Nous utilisons ici mosquitto: ```sudo apt install mosquitto```
+Les dépendances Python sont gérées via `pixi`. Exécutez `pixi install` dans le répertoire du projet pour les installer.
 Pour mettre en route le serveur au démarrage du raspberry, plusieurs méthodes existent.
-Dans notre cas, la ligne ```nohup /home/pi/CIPHER/app.py``` est ajoutée avant le 'exit 0' du fichier ```etc/rc.local```.
+Dans notre cas, le service systemd généré par `setup.sh` est utilisé.
 
 ## Utilisation
 
