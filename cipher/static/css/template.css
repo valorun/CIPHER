@@ -21,6 +21,11 @@ body {
     box-sizing: border-box;
 }
 
+/* Disable transitions on load */
+.preload * {
+  transition: none !important;
+}
+
 /* SIDEBAR */
 #sidebar {
     z-index: 3;

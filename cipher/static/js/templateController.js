@@ -56,6 +56,14 @@ const templateController = (() => {
   function init() {
     cacheDom();
     bindUIEvents();
+    restoreSidebarState();
+  }
+
+  function restoreSidebarState() {
+    const isOpen = localStorage.getItem('sidebar-open') === 'true';
+    if (isOpen) {
+      openSidebar();
+    }
   }
 
   /**
@@ -92,10 +100,12 @@ const templateController = (() => {
 
   function openSidebar() {
     document.body.classList.remove('no-sidebar');
+    localStorage.setItem('sidebar-open', 'true');
   }
 
   function closeSidebar() {
     document.body.classList.add('no-sidebar');
+    localStorage.setItem('sidebar-open', 'false');
   }
 
   return {

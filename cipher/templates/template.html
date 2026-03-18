@@ -21,10 +21,14 @@
 	<script src="{{ url_for('static', filename='js/clientsController.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/clientsDisplayController.js') }}"></script>
 
-
 </head>
 
-<body class="no-sidebar">
+<body class="no-sidebar preload">
+	<script>
+		if (localStorage.getItem('sidebar-open') === 'true') {
+			document.body.classList.remove('no-sidebar');
+		}
+	</script>
 	<!-- Top container -->
 	<div id="topbar">
 		<a class="button" id="sidebar-button"><i class="fa fa-bars"></i> Menu</a>
@@ -82,7 +86,10 @@
 			connectionManager.init();
 			clientsController.init();
 			clientsDisplayController.init();
-
+			// Remove preload class after a short delay to ensure transitions are disabled during initial render
+			setTimeout(() => {
+				document.body.classList.remove('preload');
+			}, 100);
 		});
 	</script>
 
