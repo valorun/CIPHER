@@ -19,6 +19,13 @@
 				<button type="submit"><i class="fa fa-check"></i></button>
 			</div>
 		</form>
+		<form id="llm-system-prompt-form">
+			<label for="llm-system-prompt">Prompt système du LLM (Utilisez {robot_name} pour inclure le nom dynamiquement): </label>
+			<div class="parameter-row">
+				<textarea id="llm-system-prompt" rows="4" style="width: 100%;">{{ llm_system_prompt }}</textarea>
+				<button type="submit"><i class="fa fa-check"></i></button>
+			</div>
+		</form>
 		<div class="parameter-row">
 			{% if audio_on_server==True %}
 			<input id="audio-on-server" type="checkbox" name="audio-on-server" checked="checked">

@@ -69,6 +69,7 @@
 		<div id="network"></div>
 
 		<input type="text" id="name" value="" placeholder="Exemple: sequence1">
+		<input type="text" id="description" value="" placeholder="Description...">
 		<input type="button" id="save-button" value="Enregistrer">
 
 	</div>
@@ -81,9 +82,17 @@
 	</header>
 	<div class="accordion-content">
 		<table id="saved-sequences">
+			<tr>
+				<th>Nom</th>
+				<th>Description</th>
+				<th>Activé</th>
+				<th>Editer</th>
+				<th>Supprimer</th>
+			</tr>
 			{% for s in sequences %}
 			<tr id="{{ s.id }}">
 				<td>{{ s.id }}</td>
+				<td>{{ s.description }}</td>
 				<td>
 					{% if s.enabled %}
 					<input id="enable-{{ s.id }}" type="checkbox" name="enable-seq" checked="checked" class="check">
@@ -102,7 +111,10 @@
 						<i class="fas fa-trash"></i>
 					</button>
 				</td>
-				<td class="hide"><div id="data-{{ s.id }}" name="data-seq">{{ s.value }}</div></td>
+				<td class="hide">
+					<div id="data-{{ s.id }}" name="data-seq">{{ s.value }}</div>
+					<div id="desc-{{ s.id }}" name="desc-seq">{{ s.description }}</div>
+				</td>
 			</tr>
 			{% endfor %}
 		</table>

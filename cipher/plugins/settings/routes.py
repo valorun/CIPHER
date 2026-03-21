@@ -14,7 +14,8 @@ def settings_page():
     audio_on_server = core_config.get_audio_on_server()
     motion_raspi_id = core_config.get_motion_raspi_id() or ''
     enable_motion = core_config.get_enable_motion()
-    return settings.render_page('settings.html', relays=relays, servos=servos, audio_on_server=audio_on_server, motion_raspi_id=motion_raspi_id, enable_motion=enable_motion)
+    llm_system_prompt = core_config.get_llm_system_prompt()
+    return settings.render_page('settings.html', relays=relays, servos=servos, audio_on_server=audio_on_server, motion_raspi_id=motion_raspi_id, enable_motion=enable_motion, llm_system_prompt=llm_system_prompt)
 
 
 @settings.route('/save_relay', methods=['POST'])
@@ -265,3 +266,11 @@ def update_robot_name():
     settings.log.info("Updating robot name: " + name)
     core_config.set_robot_name(name)
     return jsonify("Le nom du robot a été mis à jour."), 200
+
+@settings.route('/update_llm_system_prompt', methods=['POST'])
+@login_required
+def update_llm_system_prompt():
+    prompt = request.json.get('llm_system_prompt')
+    settings.log.info("Updating LLM system prompt: " + prompt)
+    core_config.set_llm_system_prompt(prompt)
+    return jsonify("Le prompt système du LLM a été mis à jour."), 200

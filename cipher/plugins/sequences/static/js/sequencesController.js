@@ -51,6 +51,7 @@ const sequencesController = (() => {
 
   function cacheDom() {
     DOM.$name = document.getElementById('name');
+    DOM.$description = document.getElementById('description');
   }
 
   /**
@@ -89,7 +90,9 @@ const sequencesController = (() => {
   function editSequence(seqName) {
     DOM.$name.value = seqName;
     const sequenceData = document.getElementById('data-' + seqName).innerHTML;
+    const descriptionData = document.getElementById('desc-' + seqName).innerHTML;
     const json = JSON.parse(sequenceData);
+    DOM.$description.value = descriptionData;
     graphController.updateGraph(json);
   }
 
@@ -99,7 +102,7 @@ const sequencesController = (() => {
    */
   function saveGraph(overwrite = false) {
     const sequence = graphController.getGraph();
-    fetchJson('/save_sequence', 'POST', { seq_name: DOM.$name.value, seq_data: sequence, seq_overwrite: overwrite })
+    fetchJson('/save_sequence', 'POST', { seq_name: DOM.$name.value, seq_description: DOM.$description.value, seq_data: sequence, seq_overwrite: overwrite })
       .then(() => {
         location.reload();
       }).catch(e => {

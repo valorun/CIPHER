@@ -51,7 +51,7 @@ class CoreConfig(ConfigFile):
         # SOUNDS LOCATION
         self.SOUNDS_LOCATION = self.get('SERVER', 'SOUNDS_LOCATION',
                 fallback=join(dirname(__file__), 'sounds/'))
-        
+
         # DEBUG
         self.DEBUG = self.getboolean('GENERAL', 'DEBUG',
                 fallback=False)
@@ -63,6 +63,21 @@ class CoreConfig(ConfigFile):
         # CAMERA FRAME RATE (Hz)
         self.CAMERA_FRAME_RATE = self.getint('GENERAL', 'CAMERA_FRAME_RATE',
                 fallback=30)
+
+        # LLM
+        self.LLM_URL = self.get('LLM', 'URL', fallback='http://localhost:11434')
+        self.LLM_MODEL = self.get('LLM', 'MODEL', fallback='tomng/lfm2.5-instruct:1.2b-q4_K_M')
+        self.LLM_SYSTEM_PROMPT = self.get('LLM', 'SYSTEM_PROMPT', fallback='Tu es un assistant robotique nommé {robot_name}. Tu peux converser avec l\'utilisateur et utiliser les outils à ta disposition pour accomplir des actions ou fournir des informations. Sois concis et naturel dans tes réponses.')
+
+    # LLM SYSTEM PROMPT
+    def set_llm_system_prompt(self, prompt: str):
+        if not prompt.strip():
+            prompt = 'Tu es un robot nommé {robot_name}. Tu peux converser avec l\'utilisateur et utiliser les outils à ta disposition pour accomplir des actions ou fournir des informations. Sois concis et naturel dans tes réponses.'
+        self.set('LLM', 'SYSTEM_PROMPT', prompt)
+
+    def get_llm_system_prompt(self) -> str:
+        return self.get('LLM', 'SYSTEM_PROMPT',
+            fallback='Tu es un robot nommé {robot_name}. Tu peux converser avec l\'utilisateur et utiliser les outils à ta disposition pour accomplir des actions ou fournir des informations. Sois concis et naturel dans tes réponses.')
 
     # AUDIO SOURCE
     def set_audio_on_server(self, mode: bool):
@@ -79,7 +94,7 @@ class CoreConfig(ConfigFile):
         self.set('GENERAL', 'MOTION_RASPI_ID', raspi_id)
 
     def get_motion_raspi_id(self) -> str:
-        value = self.get('GENERAL', 'MOTION_RASPI_ID', 
+        value = self.get('GENERAL', 'MOTION_RASPI_ID',
             fallback=None)
         if value == '':
             value = None
@@ -92,7 +107,7 @@ class CoreConfig(ConfigFile):
         self.set('GENERAL', 'ROBOT_NAME', name)
 
     def get_robot_name(self) -> str:
-        return self.get('GENERAL', 'ROBOT_NAME', 
+        return self.get('GENERAL', 'ROBOT_NAME',
             fallback='My robot')
 
     # ENABLE MOTION

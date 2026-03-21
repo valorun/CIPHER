@@ -23,6 +23,7 @@ def save_sequence():
     Save a sequence in the database.
     """
     seq_name = request.json.get('seq_name')
+    seq_description = request.json.get('seq_description')
     seq_data = request.json.get('seq_data')
     seq_overwrite = request.json.get('seq_overwrite')
     if not seq_name or ' ' in seq_name:
@@ -35,7 +36,7 @@ def save_sequence():
     if sequence is None:
         return jsonify("La séquence n'est pas valide."), 400
     sequences.log.info("Saving sequence '" + seq_name + "'")
-    db_sequence = Sequence(id=seq_name, value=json.dumps(seq_data), enabled=True)
+    db_sequence = Sequence(id=seq_name, description=seq_description, value=json.dumps(seq_data), enabled=True)
     db.session.merge(db_sequence)
     db.session.commit()
     return jsonify("La séquence '" + seq_name + "' a été sauvegardée avec succès."), 200

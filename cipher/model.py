@@ -18,6 +18,7 @@ class Sequence(db.Model):
     id = db.Column(db.String(50), primary_key=True)
     value = db.Column(db.Text, nullable=False)
     enabled = db.Column(db.Boolean, nullable=False)
+    description = db.Column(db.String(255), nullable=True)
 
     def __repr__(self):
         return '<Sequence %r>' % self.id

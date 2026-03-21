@@ -143,3 +143,5 @@ def setup_logger(debug=False):
             'sqlalchemy': {'handlers': ['default', 'file', 'socketio']},
         }
     })
+
+    logging.getLogger('werkzeug').setLevel(logging.ERROR)

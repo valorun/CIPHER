@@ -1,16 +1,14 @@
 {% extends 'template.html' %}
 {% block content %}
 <link href="{{ url_for('hearing.static', filename='css/hearing.css') }}" rel="stylesheet" type="text/css" />
-<script src="{{ url_for('hearing.static', filename='js/intentsController.js') }}"></script>
 <script src="{{ url_for('hearing.static', filename='js/speechDetectionController.js') }}"></script>
 
-<div class="accordion">
+<div class="accordion" id="chat-accordion">
 	<header class="accordion-header">
-		<i class="accordion-icon"></i> Reconnaissance
+		<i class="accordion-icon"></i> Reconnaissance et Saisie textuelle
 	</header>
 	<div class="accordion-content">
-		<input id="start-stop-recognition" type="button" value="Lancer la reconnaissance">
-		<div id="detection-result" class="panel chat">
+		<div id="detection-result" class="panel chat" style="max-height: 400px; overflow-y: auto;">
 			{% for r in chat_records %}
 			{% if r['source'] == 'robot' %}
 			<div data-time="{{ r.time }}" class="msg rcvd">{{ r.message }}</div>
@@ -19,74 +17,19 @@
 			{% endif %}
 			{% endfor %}
 		</div>
-	</div>
-</div>
-
-<div class="accordion">
-	<header class="accordion-header">
-		<i class="accordion-icon"></i> Liaison des intentions
-	</header>
-	<div class="accordion-content">
-		<p>
-			Vous pouvez ici relier une intention avec une séquence ou une action. Les séquences ou actions reçoivent en paramètre l'intention et tout autre information détectée. Vous pouvez rendre les paramètres d'une action dynamique à l'aide de la syntaxe suivante: <code>${mon_slot:valeur_par_défaut}</code>. Si le slot n'est pas détecté, la valeur par défaut sera utilisée à la place.
-		</p>
-		<div class="parameter-row">
-			<div class="parameter-wrapper">
-				<label for="current-intent">Intention: </label>
-				<input id="current-intent" type="text" value="">
-			</div>
-			<div class="parameter-wrapper">
-				<label for="current-sequence">Séquence: </label>
-				<select id="current-sequence" name="sequence">
-					<option value="" disabled selected>Choisir une séquence</option>
-					<option value="" >Aucune</option>
-					{% for s in sequences %}
-					{% if s.enabled %}
-					<option value="{{ s.id }}" >{{ s.id }}</option>
-					{% endif %}
-					{% endfor %}
-				</select>
-			</div>
+		<div style="display: flex; gap: 10px; margin-top: 10px; align-items: center;">
+			<input type="text" id="manual-transcript" placeholder="Entrez une phrase à envoyer..." style="flex: 1; margin: 0; min-width: 0; padding: 14px;">
+			<button id="send-manual-transcript" class="button" style="margin: 0; white-space: nowrap;"><i class="fas fa-paper-plane"></i> Envoyer</button>
+			<button id="start-stop-recognition" class="button" style="margin: 0; white-space: nowrap;"><i class="fas fa-microphone"></i> Lancer la reconnaissance</button>
+			<button id="reset-chat" class="button" style="margin: 0; white-space: nowrap;"><i class="fas fa-trash"></i></button>
 		</div>
-		<input id="add-response-button" type="button" value="Ajouter la réponse">
-	</div>
-</div>
-
-<div class="accordion">
-	<header class="accordion-header">
-		<i class="accordion-icon"></i> Intentions
-	</header>
-	<div class="accordion-content">
-		<table id="saved-intents">
-			<tr>
-				<th>Intention</th>
-				<th>Séquence</th>
-			</tr>
-			{% for i in intents %}
-			<tr id="{{ i.intent }}">
-				<td>{{ i.intent }}</td>
-				<td>{{ i.sequence_id }}</td>
-				<td>
-					{% if i.enabled==True %}
-					<input id="enable-{{ i.intent }}" type="checkbox" name="enable-intent" checked="checked">
-					{% else %}
-					<input id="enable-{{ i.intent }}" type="checkbox" name="enable-intent">
-					{% endif %}
-					<label for="enable-{{ i.intent }}">activé</label>
-				</td>
-				<td>
-					<button id="delete-{{ i.intent }}" type="button" name="delete-intent"><i class="fas fa-trash"></i></button>
-				</td>
-			</tr>
-			{% endfor %}
-		</table>
 	</div>
 </div>
 
 <script type="text/javascript">
-	document.addEventListener('DOMContentLoaded', () => {
-		intentsController.init();
+	window.addEventListener('load', () => {
 		speechDetectionController.init();
+		templateController.getAccordion('chat-accordion').open();
 	});
 </script>
 {% endblock %}

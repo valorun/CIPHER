@@ -43,6 +43,13 @@ const settingsController = (() => {
       fetchJson('/update_robot_name', 'POST', { robot_name: DOM.$robotName.value })
         .then(r => successAlert(r));
     });
+
+    // llm system prompt modification
+    document.getElementById('llm-system-prompt-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      fetchJson('/update_llm_system_prompt', 'POST', { llm_system_prompt: DOM.$llmSystemPrompt.value })
+        .then(r => successAlert(r));
+    });
   }
   function bindSocketIOEvents() {
     // clients autocompletes
@@ -59,6 +66,7 @@ const settingsController = (() => {
 
   function cacheDom() {
     DOM.$robotName = document.getElementById('robot-name');
+    DOM.$llmSystemPrompt = document.getElementById('llm-system-prompt');
     DOM.$motionRaspiId = document.getElementById('motion-raspi-id');
     DOM.$availableRaspies = document.getElementById('available-raspies');
   }
