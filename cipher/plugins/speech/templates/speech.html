@@ -17,28 +17,7 @@
 			>{{ v }}</option>
 			{% endfor %}
 		</select>
-		<table id="effects-table">
-			<tr>
-				<th>Effet</th>
-				<th>Activé</th>
-				<th>valeur</th>
-			</tr>
-			{% for effect_name, effect in voice_config.effects.items() %}
-			<tr data-name="{{ effect_name }}">
-				<td>{{ effect_name }}</td>
-				<td>
-					<input class="effect-enabled" type="checkbox" 
-					{% if effect.is_enabled() %}
-					checked="checked"
-					{% endif %}
-					>
-				</td>
-				<td>
-					<input type="range" value="{{ effect.get() }}" min="{{ effect.MIN }}" max="{{ effect.MAX }}" step="0.01" class="effect-value">
-				</td>
-			</tr>
-			{% endfor %}
-		</table>
+		
 		<input id="save-voice-button" type="button" value="Enregistrer">
 		<button id="test-voice-button"><i class="fas fa-volume-up"></i></button>
 	</div>

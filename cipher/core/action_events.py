@@ -82,3 +82,19 @@ def update_relays_state(client, userdata, msg):
     core.log.info("New relay status: " + str(relays_list))
     # finally send the list of the relays to update on the clients
     socketio.emit('receive_relays_state', relays_list, namespace="/client")
+
+@mqtt.on_topic('client/speech/speak')
+def on_mqtt_speak(client, userdata, msg):
+    """
+    Catch the speech MQTT message and dispatch it as an internal signal.
+    """
+    from .signals import speech_synthesized
+    try:
+        data = json.loads(msg.payload.decode('utf-8'))
+        text = data.get('text', '')
+        if text:
+            # Trigger the internal signal
+            speech_synthesized.send(None, text=text)
+    except Exception as e:
+        core.log.error(f"Error decoding speech message: {e}")
+

@@ -1,35 +1,31 @@
-import requests
+import os
+import glob
 from flask import Flask, session, request, jsonify
 from . import speech
-from .config import voice_config
+from .config import voice_config, VOICES_DIR
 from cipher.security import login_required
-
 
 @speech.route('/speech')
 @login_required
 def speech_page():
-    try:
-        voices = fetch_voices()
-    except requests.exceptions.ConnectionError as err:
-        return speech.render_page('speech_not_connected.html')
+    voices = fetch_voices()
     return speech.render_page('speech.html', voice_config=voice_config, voices=voices)
 
 @speech.route('/save_voice', methods=['POST'])
 @login_required
 def save_voice():
     voice_name = request.json.get('voice_name')
-    effects = request.json.get('effects')
-    for e in effects:
-        voice_config.effects[e['name']].set(e['value']).enable(e['enabled'])
-    
     voices = fetch_voices()
     if voice_name in voices:
         voice_config.set_voice(voice_name)
     return jsonify("La voix a été sauvegardée avec succès."), 200
 
-
 def fetch_voices():
-    voices = requests.get('http://' + voice_config.SERVER_ADDRESS + ':' + str(voice_config.SERVER_PORT) + '/voices')
-    voices = [v.split(' ')[0] for v in voices.text.split('\n')]
-    voices = [v for v in voices if v is not None and v != '']
-    return voices
+    # A voice is valid if both .npy and .txt exist
+    voices = []
+    for npy_file in glob.glob(os.path.join(VOICES_DIR, '*.npy')):
+        base_name = os.path.basename(npy_file)[:-4] # remove .npy
+        txt_file = os.path.join(VOICES_DIR, base_name + '.txt')
+        if os.path.exists(txt_file):
+            voices.append(base_name)
+    return sorted(voices)

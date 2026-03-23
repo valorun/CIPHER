@@ -22,9 +22,13 @@ def call_llm(messages: list, tools: list):
 def on_startup():
     mqtt.subscribe('client/speech/speak')
 
-@mqtt.on_topic('client/speech/speak')
-def on_speak(client, userdata, message):
-    msg_obj = {'message': json.loads(message.payload.decode('utf-8'))['text'], 'source': 'robot', 'time': dt.now().strftime('%H:%M')}
+from cipher.core.signals import speech_synthesized
+@speech_synthesized.connect
+def on_speak(sender, **kwargs):
+    text = kwargs.get('text')
+    if not text:
+        return
+    msg_obj = {'message': text, 'source': 'robot', 'time': dt.now().strftime('%H:%M')}
     chat_queue.append(msg_obj)
     socketio.emit('chat', msg_obj, namespace='/client')
 
