@@ -78,24 +78,43 @@ def handle_transcription(client, userdata, message):
         # Add tools directly using Ollama's native support
         tools.extend(AVAILABLE_TOOLS)
         
-        response = call_llm(llm_messages, tools)
-        print(tools)
+        max_turns = 10
+        turn = 0
         
-        # Determine if we need to call LLM again with tool results
-        needs_second_call = False
-        
-        if response.tool_calls:
-            print(response)
+        while turn < max_turns:
+            response = call_llm(llm_messages, tools)
+            turn += 1
+            
+            if not response.tool_calls:
+                if response.content:
+                    text = response.content
+                    mqtt.publish('client/speech/speak', json.dumps({'text': text}).encode('utf-8'))
+                break
+
+            # Process tool calls
+            formatted_tool_calls = []
+            for tc in response.tool_calls:
+                formatted_tool_calls.append({
+                    "function": {
+                        "name": tc.function.name,
+                        "arguments": tc.function.arguments
+                    }
+                })
+                
+            llm_messages.append({"role": "assistant", "content": response.content or "", "tool_calls": formatted_tool_calls})
+
             for call in response.tool_calls:
                 if call.function.name == "speech":
                     text = call.function.arguments.get("text")
                     if text:
                         # Handle speech
                         mqtt.publish('client/speech/speak', json.dumps({'text': text}).encode('utf-8'))
+                    result = "Speech delivered"
                 elif call.function.name in sequence_map:
                     original_id = sequence_map[call.function.name]
                     hearing.log.info("LLM requested sequence execution: %s", original_id)
                     sequence_reader.launch_sequence(original_id)
+                    result = f"Séquence '{original_id}' lancée"
                 else:
                     # Check if it's a python tool
                     tool_func = next((f for f in AVAILABLE_TOOLS if f.__name__ == call.function.name), None)
@@ -107,32 +126,11 @@ def handle_transcription(client, userdata, message):
                         except Exception as e:
                             hearing.log.error("Error executing tool %s: %s", call.function.name, str(e))
                             result = f"Erreur lors de l'exécution: {str(e)}"
-                            
-                        # Format the tool calls list as expected by ollama (list of dicts)
-                        formatted_tool_calls = []
-                        for tc in response.tool_calls:
-                            formatted_tool_calls.append({
-                                "function": {
-                                    "name": tc.function.name,
-                                    "arguments": tc.function.arguments
-                                }
-                            })
-                            
-                        llm_messages.append({"role": "assistant", "content": "", "tool_calls": formatted_tool_calls})
-                        llm_messages.append({"role": "tool", "content": str(result)})
-                        needs_second_call = True
                     else:
                         hearing.log.warning("LLM tried to call unknown tool: %s", call.function.name)
-        elif response.content:
-             # Handle conversational response
-             text = response.content
-             mqtt.publish('client/speech/speak', json.dumps({'text': text}).encode('utf-8'))
-             
-        # Second call to LLM if tools provided results
-        if needs_second_call:
-            final_response = call_llm(llm_messages, tools)
-            if final_response.content:
-                mqtt.publish('client/speech/speak', json.dumps({'text': final_response.content}).encode('utf-8'))
+                        result = f"Erreur: Outil inconnu '{call.function.name}'"
+                
+                llm_messages.append({"role": "tool", "content": str(result)})
 
 @socketio.on('start_speech_recognition', namespace='/client')
 def start_speech_recognition():

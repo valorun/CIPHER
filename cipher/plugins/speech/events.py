@@ -77,12 +77,10 @@ def on_speak(sender, **kwargs):
     """
     Function called when the robot needs to speak.
     """
-    print("Speaking...")
     if voice_config.get_voice() is None:
         speech.log.debug("Trying to speak but, no voice is set")
         return
         
-    print("#######")
     voice_name = voice_config.get_voice()
     
     ref_audio_path = os.path.join(VOICES_DIR, f"{voice_name}.npy")

@@ -1,5 +1,34 @@
 from datetime import datetime
 from meteofrance_api import MeteoFranceClient
+from cipher.core.actions import SoundAction
+from cipher.model import resources
+
+def play_sound(name: str) -> str:
+    """
+    Play a specific sound from the available sounds library.
+    
+    Args:
+        name (str): The name of the sound file (including extension)
+    """
+    if not isinstance(name, str):
+        return "Erreur : Le nom du son doit être une chaîne de caractères."
+    
+    valid, message = SoundAction.check_parameters(name)
+    if not valid:
+        return f"Erreur : Impossible de jouer le son '{name}'. {message}"
+    
+    SoundAction.execute(name)
+    return f"Le son '{name}' a été joué avec succès."
+
+def list_sounds() -> str:
+    """
+    List all available sounds that can be played by the robot.
+    """
+    sounds = resources.get_sounds()
+    if not sounds:
+        return "Aucun son n'est actuellement disponible."
+    
+    return "Sons disponibles : " + ", ".join(sounds)
 
 def get_datetime() -> str:
     """
@@ -48,4 +77,4 @@ def get_weather(location: str, date: str = None) -> str:
     
     return f"Prévision pour {location} le {date} : {forecast[date]}"
 
-AVAILABLE_TOOLS = [get_datetime, get_weather]
+AVAILABLE_TOOLS = [get_datetime, get_weather, list_sounds, play_sound]
