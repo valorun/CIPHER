@@ -1,7 +1,11 @@
 from datetime import datetime
+
 from meteofrance_api import MeteoFranceClient
+
 from cipher.core.actions import SoundAction
 from cipher.model import resources
+from cipher.plugins.hearing.memory import memory_manager
+
 
 def play_sound(name: str) -> str:
     """
@@ -77,4 +81,22 @@ def get_weather(location: str, date: str = None) -> str:
     
     return f"Prévision pour {location} le {date} : {forecast[date]}"
 
-AVAILABLE_TOOLS = [get_datetime, get_weather, list_sounds, play_sound]
+
+def memorize(topic: str, content: str) -> str:
+    """
+    Mémoriser une information importante (ex: nom de l'utilisateur, préférences).
+    
+    Args:
+        topic (str): Le sujet de l'information (ex: 'Nom de l'utilisateur', 'Plat préféré')
+        content (str): L'information à retenir (ex: 'L'utilisateur s'appelle Alice')
+    """
+    if not isinstance(topic, str) or not isinstance(content, str):
+        return "Erreur : Le sujet et le contenu doivent être des chaînes de caractères."
+        
+    try:
+        memory_manager.add_memory(topic, content)
+        return f"Information sur '{topic}' mémorisée avec succès."
+    except Exception as e:
+        return f"Erreur lors de la mémorisation : {str(e)}"
+
+AVAILABLE_TOOLS = [get_datetime, get_weather, list_sounds, play_sound, memorize]

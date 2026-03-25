@@ -2,6 +2,8 @@ from os.path import isfile, join, exists, dirname
 from configparser import ConfigParser, _UNSET
 from .constants import CONFIG_FILE
 
+DEFAULT_LLM_SYSTEM_PROMPT = "Tu es {robot_name}, un robot amical et utile. Réponds toujours de manière naturelle mais très brève. Si on te demande de faire une action, utilise tes outils pour l'accomplir."
+
 class ConfigFile(ConfigParser):
     """
     Class used to generate and manage a config file
@@ -67,17 +69,17 @@ class CoreConfig(ConfigFile):
         # LLM
         self.LLM_URL = self.get('LLM', 'URL', fallback='http://localhost:11434')
         self.LLM_MODEL = self.get('LLM', 'MODEL', fallback='tomng/lfm2.5-instruct:1.2b-q4_K_M')
-        self.LLM_SYSTEM_PROMPT = self.get('LLM', 'SYSTEM_PROMPT', fallback='Tu es un assistant robotique nommé {robot_name}. Tu peux converser avec l\'utilisateur et utiliser les outils à ta disposition pour accomplir des actions ou fournir des informations. Sois concis et naturel dans tes réponses.')
+        self.LLM_SYSTEM_PROMPT = self.get('LLM', 'SYSTEM_PROMPT', fallback=DEFAULT_LLM_SYSTEM_PROMPT)
 
     # LLM SYSTEM PROMPT
     def set_llm_system_prompt(self, prompt: str):
         if not prompt.strip():
-            prompt = 'Tu es un robot nommé {robot_name}. Tu peux converser avec l\'utilisateur et utiliser les outils à ta disposition pour accomplir des actions ou fournir des informations. Sois concis et naturel dans tes réponses.'
+            prompt = DEFAULT_LLM_SYSTEM_PROMPT
         self.set('LLM', 'SYSTEM_PROMPT', prompt)
 
     def get_llm_system_prompt(self) -> str:
         return self.get('LLM', 'SYSTEM_PROMPT',
-            fallback='Tu es un robot nommé {robot_name}. Tu peux converser avec l\'utilisateur et utiliser les outils à ta disposition pour accomplir des actions ou fournir des informations. Sois concis et naturel dans tes réponses.')
+            fallback=DEFAULT_LLM_SYSTEM_PROMPT)
 
     # AUDIO SOURCE
     def set_audio_on_server(self, mode: bool):

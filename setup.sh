@@ -40,6 +40,9 @@ else
     exit 1
 fi
 
+ollama pull tomng/lfm2.5-instruct:1.2b-q4_K_M
+ollama pull all-minilm:22m
+
 ### add to startup ###
 cat > $APP_PATH/cipher.service <<EOF
 [Unit]

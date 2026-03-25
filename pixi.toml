@@ -12,6 +12,7 @@ platforms = ["linux-64"]
 python = "==3.13.12"
 llama-cpp-python = "*"
 numpy = ">=2.2.6,<2.3.dev0"
+gxx = "*"
 
 [pypi-dependencies]
 eventlet = ">=0.40.4, <0.41"
@@ -25,6 +26,7 @@ dnspython = ">=2.4.0"
 
 # Hearing dependencies
 ollama = ">=0.6.1"
+memvid-sdk = "*"
 meteofrance-api = ">=1.5.0, <2"
 requests = ">=2.21.0"
 # Speech dependencies

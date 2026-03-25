@@ -57,6 +57,26 @@ const speechDetectionController = (() => {
     socket.on('clear_chat', () => {
         DOM.$detectionResult.innerHTML = '';
     });
+
+    // Delete memory
+    document.querySelectorAll('.delete-memory-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        if(confirm("Êtes-vous sûr de vouloir supprimer ce souvenir ?")) {
+          const memoryId = e.currentTarget.getAttribute('data-id');
+          fetchJson('/delete_memory', 'POST', { id: memoryId })
+            .then(r => {
+              if (typeof successAlert === 'function') {
+                  successAlert(r);
+              } else {
+                  console.log(r);
+              }
+              const row = document.getElementById('memory-row-' + memoryId);
+              if(row) row.remove();
+            });
+        }
+      });
+    });
+
   }
 
   function cacheDom() {

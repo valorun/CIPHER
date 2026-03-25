@@ -1,14 +1,18 @@
 import json
+from datetime import datetime as dt
+
 import ollama
+
+from cipher import config, mqtt, socketio
+from cipher.core.sequence_reader import sequence_reader
+from cipher.core.signals import speech_synthesized
+from cipher.model import Sequence
+
 from . import hearing
+from .memory import memory_manager
 from .model import chat_queue
 from .tools import AVAILABLE_TOOLS
-from flask_socketio import SocketIO, emit
-from datetime import datetime as dt
-from cipher import socketio, mqtt, config
-from cipher.core.sequence_reader import sequence_reader
-from cipher.model import Sequence, db
-from cipher.core.actions import DEFAULT_ACTIONS, CUSTOM_ACTIONS
+
 
 def call_llm(messages: list, tools: list):
     response = ollama.chat(
@@ -22,7 +26,6 @@ def call_llm(messages: list, tools: list):
 def on_startup():
     mqtt.subscribe('client/speech/speak')
 
-from cipher.core.signals import speech_synthesized
 @speech_synthesized.connect
 def on_speak(sender, **kwargs):
     text = kwargs.get('text')
@@ -49,6 +52,11 @@ def handle_transcription(client, userdata, message):
         robot_name = config.core_config.get_robot_name()
         system_prompt = config.core_config.get_llm_system_prompt().format(robot_name=robot_name)
         
+        # Inject memory context
+        memory_context = memory_manager.get_relevant_context(transcript)
+        if memory_context:
+            system_prompt += "\n\n" + memory_context
+
         llm_messages = [{"role": "system", "content": system_prompt}]
         for msg in chat_queue:
             role = "user" if msg["source"] == "user" else "assistant"

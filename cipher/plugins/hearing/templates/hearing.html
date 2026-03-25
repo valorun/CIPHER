@@ -26,10 +26,46 @@
 	</div>
 </div>
 
+
+<div class="accordion" id="memory-accordion" style="margin-top: 20px;">
+	<header class="accordion-header">
+		<i class="accordion-icon"></i> Mémoire du Robot
+	</header>
+	<div class="accordion-content">
+		<table>
+			<thead>
+				<tr>
+					<th>Sujet</th>
+					<th>Souvenir</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for mem in memories %}
+				<tr id="memory-row-{{ mem.id }}">
+					<td>{{ mem.topic }}</td>
+					<td>{{ mem.content }}</td>
+					<td style="text-align: center;">
+						<button class="delete-memory-btn" data-id="{{ mem.id }}" title="Supprimer ce souvenir" style="background-color: transparent; border: none; color: #dc3545; cursor: pointer;">
+							<i class="fas fa-trash"></i>
+						</button>
+					</td>
+				</tr>
+				{% else %}
+				<tr>
+					<td colspan="3" style="text-align: center;">Aucun souvenir enregistré pour le moment.</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
 <script type="text/javascript">
 	window.addEventListener('load', () => {
 		speechDetectionController.init();
 		templateController.getAccordion('chat-accordion').open();
 	});
 </script>
+
 {% endblock %}

@@ -44,12 +44,14 @@ const settingsController = (() => {
         .then(r => successAlert(r));
     });
 
+
     // llm system prompt modification
     document.getElementById('llm-system-prompt-form').addEventListener('submit', (e) => {
       e.preventDefault();
       fetchJson('/update_llm_system_prompt', 'POST', { llm_system_prompt: DOM.$llmSystemPrompt.value })
         .then(r => successAlert(r));
     });
+
   }
   function bindSocketIOEvents() {
     // clients autocompletes
